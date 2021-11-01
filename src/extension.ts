@@ -7,7 +7,7 @@ export function activate(context: vscode.ExtensionContext) {
 	
 	console.log(`Congratulations, your extension "${extName}" is now active!`)
 
-	let languageHelloWorld: string[] = [
+	const languageHelloWorld: string[] = [
 		'Java - System.out.println("Hello World");',
 		'Scala - println("Hello, world!")',
 		'Kotlin - println("Hello, world!")',
