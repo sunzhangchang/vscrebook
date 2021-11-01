@@ -129,5 +129,13 @@
 		"webpack": "^5.52.1",
 		"webpack-cli": "^4.8.0",
 		"@vscode/test-electron": "^1.6.2"
-	}
+	},
+    "bugs": {
+        "url": "https://github.com/sunzhangchang/vscrebook/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sunzhangchang/vscrebook"
+    },
+    "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md"
 }
