@@ -9,15 +9,97 @@
 	"categories": [
 		"Other"
 	],
+	"keywords": [
+		"txt",
+		"novel",
+		"book",
+		"小说",
+		"神器",
+		"摸鱼",
+		"划水"
+	],
+	"publisher": "Cyanogenaq",
 	"activationEvents": [
-		"onCommand:vscrebook.redisplayCode"
+		"*"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
+		"configuration": {
+			"title": "Vscre Book",
+			"type": "object",
+			"properties": {
+				"vscrebook.curPageNumber": {
+					"type": "number",
+					"default": 1,
+					"description": "当前小说页数(支持跳转) & Pages of Current Novels (Support jumping)"
+				},
+				"vscrebook.pageSize": {
+					"type": "number",
+					"default": 25,
+					"description": "每页文字数量 & Number of text per page"
+				},
+				"vscrebook.lineBreak": {
+					"type": "string",
+					"default": " ",
+					"description": "换行分隔符号，默认一个空格 & Line Break Separation Symbol,Default a space"
+				},
+				"vscrebook.filePath": {
+					"type": "string",
+					"default": "",
+					"description": "TXT格式小说绝对路径 & Absolute Path of TXT Format Novels"
+				}
+			}
+		},
 		"commands": [
 			{
-				"command": "vscrebook.redisplayCode",
-				"title": "redisplayCode"
+				"command": "vscrebook.displayCode",
+				"title": "displayCode"
+			},
+			{
+				"command": "vscrebook.prevPage",
+				"title": "prevPage"
+			},
+			{
+				"command": "vscrebook.nextPage",
+				"title": "nextPage"
+			},
+			{
+				"command": "vscrebook.jumpPage",
+				"title": "jumpPage"
+			},
+			{
+				"command": "vscrebook.refresh",
+				"title": "refresh"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "vscrebook.displayCode",
+				"key": "ctrl+alt+/",
+				"mac": "cmd+/"
+			},
+			{
+				"command": "vscrebook.prevPage",
+				"key": "ctrl+alt+,",
+				"mac": "cmd+,",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "vscrebook.nextPage",
+				"key": "ctrl+alt+.",
+				"mac": "cmd+.",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "vscrebook.jumpPage",
+				"key": "ctrl+alt+'",
+				"mac": "cmd+'",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "vscrebook.refresh",
+				"key": "ctrl+alt+;",
+				"mac": "cmd+;"
 			}
 		]
 	},
