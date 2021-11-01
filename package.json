@@ -10,14 +10,14 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:vscrebook.helloWorld"
+		"onCommand:vscrebook.redisplayCode"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "vscrebook.helloWorld",
-				"title": "Hello World"
+				"command": "vscrebook.redisplayCode",
+				"title": "redisplayCode"
 			}
 		]
 	},
