@@ -5,11 +5,11 @@ const defaultPageSize = 25
 
 const vscconfig = vscode.workspace.getConfiguration
 
-export const bookconfig = {
-	curPage: 'vscrebook.curPageNumber',
-	pageSize: 'vscrebook.pageSize',
-	lineBreak: 'vscrebook.lineBreak',
-	filePath: 'vscrebook.filePath',
+export enum bookconfig {
+	curPage = 'vscrebook.curPageNumber',
+	pageSize = 'vscrebook.pageSize',
+	lineBreak = 'vscrebook.lineBreak',
+	filePath = 'vscrebook.filePath',
 }
 
 export default class Book {
