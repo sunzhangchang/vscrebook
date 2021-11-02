@@ -29,11 +29,6 @@
 			"title": "Vscre Book",
 			"type": "object",
 			"properties": {
-				"vscrebook.curPageNumber": {
-					"type": "number",
-					"default": 1,
-					"description": "当前小说页数(支持跳转) & Pages of Current Novels (Support jumping)"
-				},
 				"vscrebook.pageSize": {
 					"type": "number",
 					"default": 25,
