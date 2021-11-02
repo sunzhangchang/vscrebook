@@ -2,7 +2,7 @@
 	"name": "vscrebook",
 	"displayName": "vscrebook",
 	"description": "VSCode 摸鱼阅读器",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"engines": {
 		"vscode": "^1.61.0"
 	},
