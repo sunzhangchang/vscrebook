@@ -1,6 +1,11 @@
 declare type configType = {
-	curPage: number,
+	// curPage: number,
 	pageSize: number,
 	lineBreak: string,
-	filePath: string | undefined
+	// filePath: string | undefined
+}
+
+declare type bookInfo = {
+	bookPath: string,
+	curPage: number,
 }

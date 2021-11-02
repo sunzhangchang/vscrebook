@@ -1,26 +1,52 @@
+## 本插件为学习项目
 
-在 [VSCode 插件](https://github.com/cteamx/Thief-Book-VSCode) [hub.fastgit.org](https://hub.fastgit.org/cteamx/Thief-Book-VSCode)  的基础上做了一些修改。
 
-1. 优化翻页响应速度(将小说缓存，并只在手动刷新或配置中小说路径更改时才重新读取)
+在 [Thief-Book-VSCode](https://github.com/cteamx/Thief-Book-VSCode) 及 [shadow-reader](https://github.com/igzhang/shadowReader)  的基础上做了一些修改。
 
-2. 变成手动刷新(比原来更弱了，因为原来是每个操作都重新读取配置，并重新读取小说文件)
+## 功能
+- 支持状态栏显示
+- 支持本地文本阅读
+- 其他编码格式自动转码为 **UTF-8**
 
-3. 增强跳转页功能
+## 安装
+vscode插件市场，搜索 `vscrebook`，安装
 
-4. 修改默认每页字数为 25 (原 50)
+## 快速开始
+### 主菜单
+1. 按下 `Ctrl + Shift + P`，搜索 `start` ，或按下启动快捷键(默认为 `Ctrl + Alt + ;` / `Command + ;`)
 
-5. 删除是否为英文
+### 新增书籍
+1. 选择 `添加书籍`
+2. 选择文件，并起一个名字
 
-6. 老板键新增 `Kotlin`, `Groovy`, `C#`, `JavaScript`, `TypeScript`, `ReScript`, `PureScript`, `Scala.js` 等语言的 `Hello, World!` 及 弹出运行和运行失败信息
+### 开始阅读
+1. 在主菜单选择 `选择书籍` ，选择已添加的书名
+2. 使用快捷键，上一页 `Ctrl + Alt + ,` / `Command + ,`，下一页 `Ctrl + Alt + .` / `Command + .`，老板键 `Ctrl + Alt + /` / `Command + /`
 
-7. 修改默认快捷键为: 
+### 删除书籍
+1. 在主菜单选择`删除书籍`，选择书名，即可删除
 
-	|按键名称| Windows | Mac |
-	:-:|:-:|:-:
-    |老板键 | Ctrl + Alt + / | Command + / |
-	| 跳转 | Ctrl + Alt + ' | Command + ' |
-	| 下一页 | Ctrl + Alt + . | Command + . |
-	| 上一页 | Ctrl + Alt + , | Command + , |
-	| 刷新 | Ctrl + Alt + ; | Command + ; |
+## 扩展设置
+* `vscrebook.pageSize`：每次最多显示字数（默认25）
+* `vscrebook.lineBreak`: 用来替换换行符的字符
+* 修改快捷键：首选项 -- 键盘快捷方式(`Ctrl + K  Ctrl + S`)
 
-8. 搜索增加 `划水` 关键字
+## 未来功能
+- 优化显示(针对代码)
+- 书籍部分加载
+- 向后搜索
+- 在线书籍(爬虫)
+- 其他格式支持(比如.epub)
+- 其他隐藏显示手段
+
+## 功能对比
+
+功能  | Thief-Book-VSCode | shadow reader | Vscre Book
+:-: | :-: | :-: | :-:
+大文件 | 全部加载 | 部分加载 | 全部加载，代码内存储
+支持编码 | utf8 | 常见 | 常见编码
+转换编码 | 不支持 | UTF-32 LE | UTF-8
+支持书量 | 1本 | 多本 | 多本
+全文搜索 | 不支持 | 向后 | 不支持
+在线书籍 | 不支持 | 支持 | 不支持
+更新时间 | 2019.8.7 | 2021.9.26 | 2021.11.2

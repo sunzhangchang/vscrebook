@@ -1,64 +1,48 @@
 import * as vscode from "vscode"
 import * as fs from "fs"
+import { extConfig, getConfig, defaultPageSize, getWsConfig } from "./utils"
 
-const defaultPageSize = 25
-
-const vscconfig = vscode.workspace.getConfiguration
-
-export enum bookconfig {
-	curPage = 'vscrebook.curPageNumber',
-	pageSize = 'vscrebook.pageSize',
-	lineBreak = 'vscrebook.lineBreak',
-	filePath = 'vscrebook.filePath',
-}
+// TODO
 
 export default class Book {
 	text: string = ''
 	totPage: number = 0
-	curPage: number = 0
+	curPage: number = 1
 	pageSize: number = defaultPageSize
 	lineBreak: string = ' '
-	filePath: string | undefined = undefined
-	context: vscode.ExtensionContext
+	filePath: string = ''
+	fileName: string = ''
 
-	constructor(extensionContext: vscode.ExtensionContext) {
-		this.context = extensionContext
+	constructor(filePath: string, curPage: number | undefined, text?: string) {
+		this.text = text ? text : ''
+		this.filePath = filePath
+		this.curPage = curPage ? curPage : 1
+		let fileNameArr: string[] = this.filePath.split('\\')
+		this.fileName = fileNameArr[fileNameArr.length - 1]
 		this.init()
 		this.refresh()
 	}
 
 	init(): void {
-		let config: configType = this.getConfig()
-		this.curPage = config.curPage
-		this.filePath = config.filePath
+		let config: configType = getConfig()
+		// this.curPage = config.curPage
 		this.lineBreak = config.lineBreak
 		this.pageSize = config.pageSize
 	}
 
 	getSize(): number {
+		if (!this.text) return 0
 		return Math.ceil(this.text.length / this.pageSize)
 	}
 
-	getFileName(): string | undefined {
-		let filePath = this.filePath
-		if (typeof filePath === 'undefined') {
-			return undefined
-		}
-		let fileNameArr: string[] = filePath.split('/')
-		let fileName: string = fileNameArr[fileNameArr.length - 1]
-		console.log(fileName);
-		return fileName
-	}
-
 	getPageNumber(option: string, jumpPageNumber?: string | undefined): number {
-		let curPage: number = vscconfig().get(bookconfig.curPage) as number
 		let page: number = 0
 		if (option === 'prev') {
-			page = curPage <= 1 ? 1 : curPage - 1
+			page = this.curPage <= 1 ? 1 : this.curPage - 1
 		} else if (option === 'next') {
-			page = curPage >= this.totPage  ? this.totPage : curPage + 1
+			page = this.curPage >= this.totPage  ? this.totPage : this.curPage + 1
 		} else if (option === 'jump') {
-			page = (jumpPageNumber ? (+jumpPageNumber) : curPage)
+			page = (jumpPageNumber ? (+jumpPageNumber) : this.curPage)
 		}
 		return page
 	}
@@ -70,37 +54,16 @@ export default class Book {
 
 	readFile(): string {
 		let filePath = this.filePath
-		if (filePath === '' || typeof filePath === 'undefined') {
-			vscode.window.showWarningMessage('请填写TXT格式的小说文件路径 & Please fill in the path of the TXT format novel file')
-			return ''
-		}
+		if (filePath === '' || typeof filePath === 'undefined') return ''
 		let data: string = fs.readFileSync(filePath, 'utf-8')
-		let lineBreak: string = vscconfig().get('vscrebook.lineBreak') as string
-		let text = data.replace(/[\r]+/g,'').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, lineBreak)
+		let lineBreak: string = getWsConfig('vscrebook.lineBreak') as string
+		let text = data.trim().replace(/[\r]+/g,'').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, lineBreak)
 		return text
 	}
 
-	getConfig(): configType {
-		if (typeof vscconfig().get(bookconfig.pageSize) === 'undefined') {
-			vscconfig().update(bookconfig.pageSize, defaultPageSize, true)
-		}
-		if (typeof vscconfig().get(bookconfig.curPage) === 'undefined') {
-			vscconfig().update(bookconfig.curPage, 0, true)
-		}
-		if (typeof vscconfig().get(bookconfig.lineBreak) === 'undefined') {
-			vscconfig().update(bookconfig.lineBreak, 'string', true)
-		}
-		return {
-			curPage: vscconfig().get(bookconfig.curPage) as number,
-			pageSize: vscconfig().get(bookconfig.pageSize) as number,
-			lineBreak: vscconfig().get(bookconfig.lineBreak) as string,
-			filePath: vscconfig().get(bookconfig.filePath)
-		}
-	}
-
 	onConfigChange(): boolean {
-		let {curPage, filePath, lineBreak, pageSize} = this.getConfig()
-		return curPage !== this.curPage || filePath !== this.filePath || lineBreak !== this.lineBreak || pageSize !== this.pageSize
+		let { lineBreak, pageSize} = getConfig()
+		return lineBreak !== this.lineBreak || pageSize !== this.pageSize
 	}
 
 	refresh() {
@@ -114,9 +77,11 @@ export default class Book {
 		if (this.onConfigChange()) {
 			this.refresh()
 		}
+		if (!this.text) return ''
 		this.curPage = this.getPageNumber(option, jumpPageNumber)
-		vscconfig().update(bookconfig.curPage, this.curPage, true)
+		// updateWsConfig(extConfig.curPage, this.curPage, true)
 		let [st, ed] = this.getStartEnd()
+		
 		return `${this.text.substring(st, ed)}    ${this.curPage.toString()}/${this.totPage.toString()}`
 	}
 }
