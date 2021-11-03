@@ -32,7 +32,6 @@ export function activate(context: ExtensionContext) {
 
 	console.log(`Congratulations, your extension "${extName}" is now active!`)
 
-	updateBookList(context, {})
 	let bookInfoma: bookInfo | undefined
 	let book: Book
 
