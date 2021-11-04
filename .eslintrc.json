@@ -10,11 +10,33 @@
     ],
     "rules": {
         "@typescript-eslint/naming-convention": "warn",
-        "@typescript-eslint/semi": "warn",
+        "@typescript-eslint/semi": "off",
+        "@typescript-eslint/no-shadow": "off",
         "curly": "warn",
         "eqeqeq": "warn",
         "no-throw-literal": "warn",
-        "semi": "off"
+        "semi": [
+            "warn",
+            "never"
+        ],
+        "indent": [
+            "warn",
+            4
+        ],
+        "no-unused-vars": "warn",
+        "object-shorthand": "warn",
+        "prefer-arrow-callback": "warn",
+        "no-param-reassign": "error",
+        "no-trailing-spaces": "warn",
+        "no-shadow": [
+            "error",
+            {
+                "allow": [
+                    "ExtConfig",
+                    "LibActions"
+                ]
+            }
+        ]
     },
     "ignorePatterns": [
         "out",
