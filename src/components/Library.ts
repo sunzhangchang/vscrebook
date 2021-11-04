@@ -1,8 +1,9 @@
 import path = require("path")
 import { ExtensionContext, window } from "vscode"
-import { copyFileToUTF8Sync, getWsConfig, updateBookListKV } from "../utils"
 import { existsSync, mkdirSync, unlink } from "fs"
-import { ExtConfig, getBookList, updateBookList } from "../utils"
+import { copyFileToUTF8Sync } from "../utils"
+import { getBookList, updateBookList, updateBookListKV } from "../utils/operBookList"
+import { ExtConfig, getWsConfig } from "../utils/operConfig"
 
 const enum LibActions {
 	choose = '选择书籍',

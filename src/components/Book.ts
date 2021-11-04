@@ -1,6 +1,7 @@
 import * as vscode from "vscode"
 import * as fs from "fs"
-import { getConfig, defaultPageSize, getWsConfig } from "../utils"
+import { defaultPageSize } from "../utils"
+import { getConfig, getWsConfig } from "../utils/operConfig"
 
 // TODO
 
