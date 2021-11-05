@@ -3,7 +3,7 @@ import * as fs from "fs"
 import { defaultPageSize } from "../utils"
 import { getConfig, getWsConfig } from "../utils/operConfig"
 
-// TODO
+// TODO 实时更新txt内容
 
 export default class Book {
 	text: string = ''

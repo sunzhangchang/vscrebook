@@ -86,7 +86,6 @@ async function deleteBook(context: ExtensionContext): Promise<undefined> {
     if (!book) {return}
 
     let books = getBookList(context)
-    // TODO delete history
     delete books[book]
     updateBookList(context, books)
 

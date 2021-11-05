@@ -6,6 +6,8 @@ import { setStatusBar, toggleBossMsg } from "./utils/operStatusBar"
 
 const extName = 'vscrebook'
 
+//TODO 修复在另一窗口阅读的进度更新不同步问题
+
 export function activate(context: ExtensionContext) {
 
     console.log(`Congratulations, your extension "${extName}" is now active!`)
