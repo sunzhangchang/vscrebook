@@ -30,6 +30,7 @@ function _setStatusBar(msg: string) {
 }
 
 function showBossText() {
+    isBossText = true
     let index: number = Math.floor(Math.random() * codes.length)
     _setStatusBar(codes[index])
 
@@ -38,6 +39,7 @@ function showBossText() {
 }
 
 function showNovelText() {
+    isBossText = false
     _setStatusBar(lastText)
 }
 
@@ -47,7 +49,6 @@ export function toggleBossMsg() {
     } else {
         showBossText()
     }
-    isBossText = !isBossText
 }
 
 export function setStatusBar(msg: string) {
