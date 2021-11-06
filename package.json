@@ -43,8 +43,8 @@
 		},
 		"commands": [
 			{
-				"command": "vscrebook.displayCode",
-				"title": "displayCode"
+				"command": "vscrebook.bossKey",
+				"title": "bossKey"
 			},
 			{
 				"command": "vscrebook.prevPage",
@@ -65,7 +65,7 @@
 		],
 		"keybindings": [
 			{
-				"command": "vscrebook.displayCode",
+				"command": "vscrebook.bossKey",
 				"key": "ctrl+alt+/",
 				"mac": "cmd+/"
 			},

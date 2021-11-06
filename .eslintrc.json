@@ -14,6 +14,10 @@
             "warn",
             "never"
         ],
+        "@typescript-eslint/indent": [
+            "warn",
+            4
+        ],
         "curly": "warn",
         "eqeqeq": "warn",
         "no-throw-literal": "warn",
@@ -23,7 +27,10 @@
         ],
         "indent": [
             "warn",
-            4
+            4,
+            {
+                "SwitchCase": 1
+            }
         ],
         "no-unused-vars": "warn",
         "object-shorthand": "warn",

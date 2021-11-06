@@ -2,8 +2,8 @@ import { workspace } from "vscode"
 import { defaultPageSize } from "."
 
 export const enum ExtConfig {
-	pageSize = 'vscrebook.pageSize',
-	lineBreak = 'vscrebook.lineBreak',
+    pageSize = 'vscrebook.pageSize',
+    lineBreak = 'vscrebook.lineBreak',
 }
 
 export const getWsConfig = workspace.getConfiguration().get

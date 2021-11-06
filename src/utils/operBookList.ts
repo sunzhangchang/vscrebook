@@ -1,24 +1,26 @@
 import { ExtensionContext } from "vscode"
-import Book from "../components/Book"
 
-export function getBookList(context: ExtensionContext) {
+let context: ExtensionContext
+
+export function bookListInit(contex: ExtensionContext) {
+    context = contex
+}
+
+export function getBookList() {
     let booksString = context.globalState.get('bookList', '{}')
     return JSON.parse(booksString)
 }
 
-export function updateBookListKV(context: ExtensionContext, key: string, value: BookInfo) {
-    let books = getBookList(context)
-    books[key] = value
-    updateBookList(context, books)
+export function getBook(bookName: string): BookInfo {
+    return getBookList()[bookName]
 }
 
-export function updateBookList(context: ExtensionContext, value: any) {
+export function updateBook(bookName: string, bookInfo: BookInfo) {
+    let books = getBookList()
+    books[bookName] = bookInfo
+    updateBookList(books)
+}
+
+export function updateBookList(value: any) {
     context.globalState.update('bookList', JSON.stringify(value))
-}
-
-export function updateBookCur(context: ExtensionContext, book: Book) {
-    updateBookListKV(context, book.fileName, {
-        bookPath: book.filePath,
-        curPage: book.curPage
-    })
 }

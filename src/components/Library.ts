@@ -2,13 +2,13 @@ import path = require("path")
 import { ExtensionContext, window } from "vscode"
 import { existsSync, mkdirSync, unlink } from "fs"
 import { copyFileToUTF8Sync } from "../utils"
-import { getBookList, updateBookList, updateBookListKV } from "../utils/operBookList"
+import { getBookList, updateBook, updateBookList } from "../utils/operBookList"
 import { ExtConfig, getWsConfig } from "../utils/operConfig"
 
 const enum LibActions {
-	choose = '选择书籍',
-	add = '添加书籍',
-	delete = '删除书籍'
+    choose = '选择书籍',
+    add = '添加书籍',
+    delete = '删除书籍'
 }
 
 export async function action(context: ExtensionContext): Promise<BookInfo | undefined> {
@@ -17,33 +17,33 @@ export async function action(context: ExtensionContext): Promise<BookInfo | unde
     })
     let res: BookInfo | undefined
     switch (act) {
-    case LibActions.choose:
-        res = await chooseBook(context)
-        break
+        case LibActions.choose:
+            res = await chooseBook()
+            break
 
-    case LibActions.add:
-        res = await addBook(context)
-        break
+        case LibActions.add:
+            res = await addBook(context.globalStorageUri.fsPath)
+            break
 
-    case LibActions.delete:
-        res = await deleteBook(context)
-        break
+        case LibActions.delete:
+            res = await deleteBook(context.globalStorageUri.fsPath)
+            break
 
-    default:
-        break
+        default:
+            break
     }
     return res
 }
 
-async function chooseBook(context: ExtensionContext): Promise<BookInfo | undefined> {
-    let book: string | undefined = await showBookList(context)
-    let books = getBookList(context)
+async function chooseBook(): Promise<BookInfo | undefined> {
+    let book: string | undefined = await showBookList()
+    let books = getBookList()
     if (book && book in books) {
         return books[book]
     }
 }
 
-async function addBook(context: ExtensionContext): Promise<BookInfo | undefined> {
+async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
     let filePath = await window.showOpenDialog()
 
     if (!filePath || filePath.length <= 0) {return}
@@ -57,7 +57,6 @@ async function addBook(context: ExtensionContext): Promise<BookInfo | undefined>
 
     if (!newName) {return}
 
-    let gStoPath = context.globalStorageUri.fsPath
     let newPath = path.join(gStoPath, newName)
 
     if (!existsSync(gStoPath)) {mkdirSync(gStoPath)}
@@ -68,7 +67,7 @@ async function addBook(context: ExtensionContext): Promise<BookInfo | undefined>
     copyFileToUTF8Sync(oldPath, newPath,
         (data: string) => data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, lineBreak as string))
 
-    updateBookListKV(context, newName, {
+    updateBook(newName, {
         bookPath: newPath,
         curPage: 1
     })
@@ -80,23 +79,23 @@ async function addBook(context: ExtensionContext): Promise<BookInfo | undefined>
     }
 }
 
-async function deleteBook(context: ExtensionContext): Promise<undefined> {
-    let book: string | undefined = await showBookList(context)
+async function deleteBook(gStoPath: string): Promise<undefined> {
+    let book: string | undefined = await showBookList()
 
     if (!book) {return}
 
-    let books = getBookList(context)
+    let books = getBookList()
     delete books[book]
-    updateBookList(context, books)
+    updateBookList(books)
 
-    let diskFilePath = path.join(context.globalStorageUri.fsPath, book)
+    let diskFilePath = path.join(gStoPath, book)
     unlink(diskFilePath, () => { })
     window.showInformationMessage('删除成功')
     return
 }
 
-async function showBookList(context: ExtensionContext): Promise<string | undefined> {
-    let books = getBookList(context)
+async function showBookList(): Promise<string | undefined> {
+    let books = getBookList()
     return await window.showQuickPick(Object.keys(books), {
         matchOnDescription: true
     })

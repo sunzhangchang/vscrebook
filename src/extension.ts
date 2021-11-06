@@ -1,14 +1,14 @@
 import { window, ExtensionContext, commands } from "vscode"
 import Book from './components/Book'
 import * as Library from './components/Library'
-import { updateBookCur } from './utils/operBookList'
+import { bookListInit, getBook } from './utils/operBookList'
 import { setStatusBar, toggleBossMsg } from "./utils/operStatusBar"
 
 const extName = 'vscrebook'
 
-//TODO 修复在另一窗口阅读的进度更新不同步问题
-
 export function activate(context: ExtensionContext) {
+
+    bookListInit(context)
 
     console.log(`Congratulations, your extension "${extName}" is now active!`)
 
@@ -19,29 +19,27 @@ export function activate(context: ExtensionContext) {
         Library.action(context).then(bp => {
             bookInfoma = bp
             if (!bookInfoma) { return }
-            book = new Book(bookInfoma.bookPath, bookInfoma.curPage)
+            book = new Book(bookInfoma.bookPath)
             setStatusBar(book.getPageText('jump'))
         })
     })
     context.subscriptions.push(start)
 
     // 老板键，弹出调试模式运行，运行失败并，将小说替换成 Hello, World 代码
-    let displayCode = commands.registerCommand(`${extName}.displayCode`, () => {
+    let bossKey = commands.registerCommand(`${extName}.bossKey`, () => {
         toggleBossMsg()
     })
-    context.subscriptions.push(displayCode)
+    context.subscriptions.push(bossKey)
 
     // 下一页
     let nextPage = commands.registerCommand(`${extName}.nextPage`, () => {
         setStatusBar(book.getPageText('next'))
-        updateBookCur(context, book)
     })
     context.subscriptions.push(nextPage)
 
     // 上一页
     let prevPage = commands.registerCommand(`${extName}.prevPage`, () => {
         setStatusBar(book.getPageText('prev'))
-        updateBookCur(context, book)
     })
     context.subscriptions.push(prevPage)
 
@@ -49,11 +47,10 @@ export function activate(context: ExtensionContext) {
     let jumpPage = commands.registerCommand(`${extName}.jumpPage`, () => {
         const option = {
             prompt: '请输入跳转页数: ',
-            placeHolder: `跳转页数(默认跳转到当前页: ${book.curPage})`
+            placeHolder: `跳转页数(默认跳转到当前页: ${getBook(book.name).curPage})`
         }
         window.showInputBox(option).then(val => {
             setStatusBar(book.getPageText('jump', val))
-            updateBookCur(context, book)
         })
     })
     context.subscriptions.push(jumpPage)
