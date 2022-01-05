@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, unlink } from "fs"
 import { copyFileToUTF8Sync } from "../utils"
 import { getBookList, updateBook, updateBookList } from "../utils/operBookList"
 import { ExtConfig, getWsConfig } from "../utils/operConfig"
+import { showBossText } from "../utils/operStatusBar"
 
 const enum LibActions {
     choose = '选择书籍',
@@ -46,7 +47,7 @@ async function chooseBook(): Promise<BookInfo | undefined> {
 async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
     let filePath = await window.showOpenDialog()
 
-    if (!filePath || filePath.length <= 0) {return}
+    if (!filePath || filePath.length <= 0) { return }
 
     let oldPath = filePath[0].fsPath
     let newName: string | undefined = await window.showInputBox({
@@ -55,14 +56,14 @@ async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
         prompt: '请输入书名(重名覆盖)'
     })
 
-    if (!newName) {return}
+    if (!newName) { return }
 
     let newPath = path.join(gStoPath, newName)
 
-    if (!existsSync(gStoPath)) {mkdirSync(gStoPath)}
+    if (!existsSync(gStoPath)) { mkdirSync(gStoPath) }
 
     let lineBreak: string | undefined = getWsConfig(ExtConfig.lineBreak)
-    if (!lineBreak) {lineBreak = ' '}
+    if (!lineBreak) { lineBreak = ' ' }
 
     copyFileToUTF8Sync(oldPath, newPath,
         (data: string) => data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, lineBreak as string))
@@ -82,7 +83,7 @@ async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
 async function deleteBook(gStoPath: string): Promise<undefined> {
     let book: string | undefined = await showBookList()
 
-    if (!book) {return}
+    if (!book) { return }
 
     let books = getBookList()
     delete books[book]
@@ -91,6 +92,7 @@ async function deleteBook(gStoPath: string): Promise<undefined> {
     let diskFilePath = path.join(gStoPath, book)
     unlink(diskFilePath, () => { })
     window.showInformationMessage('删除成功')
+    showBossText()
     return
 }
 

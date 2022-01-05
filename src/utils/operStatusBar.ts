@@ -29,13 +29,10 @@ function _setStatusBar(msg: string) {
     window.setStatusBarMessage(msg)
 }
 
-function showBossText() {
+export function showBossText() {
     isBossText = true
     let index: number = Math.floor(Math.random() * codes.length)
     _setStatusBar(codes[index])
-
-    window.showInformationMessage('Run with debug mode!')
-    setTimeout(() => window.showErrorMessage('Run code failed!'), 1500)
 }
 
 function showNovelText() {
