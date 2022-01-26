@@ -14,12 +14,15 @@ export function activate(context: ExtensionContext) {
     console.log(`Congratulations, your extension "${extName}" is now active!`)
 
     let bookInfoma: BookInfo | undefined
-    let book: Book
+    let book: Book | undefined
 
     let start = commands.registerCommand(`${extName}.start`, () => {
         Library.action(context).then(bp => {
             bookInfoma = bp
-            if (!bookInfoma) { return }
+            if (!bookInfoma) {
+                book = undefined
+                return
+            }
             book = new Book(bookInfoma.bookPath)
             setStatusBar(book.getPageText('jump'))
         })
@@ -34,6 +37,9 @@ export function activate(context: ExtensionContext) {
 
     // 下一页
     let nextPage = commands.registerCommand(`${extName}.nextPage`, () => {
+        if (typeof book === 'undefined') {
+            return
+        }
         setStatusBar(book.getPageText('next'))
     })
     context.subscriptions.push(nextPage)
