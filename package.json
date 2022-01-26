@@ -1,136 +1,159 @@
 {
-	"name": "vscrebook",
-	"displayName": "vscrebook",
-	"description": "VSCode 摸鱼阅读器",
-	"version": "0.2.3",
-	"engines": {
-		"vscode": "^1.61.0"
-	},
-	"icon": "images/icon.png",
-	"categories": [
-		"Other"
-	],
-	"keywords": [
-		"txt",
-		"novel",
-		"book",
-		"小说",
-		"神器",
-		"摸鱼",
-		"划水"
-	],
-	"publisher": "Cyanogenaq",
-	"activationEvents": [
-		"onCommand:vscrebook.start"
-	],
-	"main": "./dist/extension.js",
-	"contributes": {
-		"configuration": {
-			"title": "Vscre Book",
-			"type": "object",
-			"properties": {
-				"vscrebook.pageSize": {
-					"type": "number",
-					"default": 25,
-					"description": "每页文字数量 & Number of text per page"
-				},
-				"vscrebook.lineBreak": {
-					"type": "string",
-					"default": " ",
-					"description": "换行分隔符号，默认一个空格 & Line Break Separation Symbol,Default a space"
-				}
-			}
-		},
-		"commands": [
-			{
-				"command": "vscrebook.bossKey",
-				"title": "bossKey"
-			},
-			{
-				"command": "vscrebook.prevPage",
-				"title": "prevPage"
-			},
-			{
-				"command": "vscrebook.nextPage",
-				"title": "nextPage"
-			},
-			{
-				"command": "vscrebook.jumpPage",
-				"title": "jumpPage"
-			},
-			{
-				"command": "vscrebook.start",
-				"title": "start"
-			}
-		],
-		"keybindings": [
-			{
-				"command": "vscrebook.bossKey",
-				"key": "ctrl+alt+/",
-				"mac": "cmd+/"
-			},
-			{
-				"command": "vscrebook.prevPage",
-				"key": "ctrl+alt+,",
-				"mac": "cmd+,",
-				"when": "editorTextFocus"
-			},
-			{
-				"command": "vscrebook.nextPage",
-				"key": "ctrl+alt+.",
-				"mac": "cmd+.",
-				"when": "editorTextFocus"
-			},
-			{
-				"command": "vscrebook.jumpPage",
-				"key": "ctrl+alt+'",
-				"mac": "cmd+'",
-				"when": "editorTextFocus"
-			},
-			{
-				"command": "vscrebook.start",
-				"key": "ctrl+alt+;",
-				"mac": "cmd+;"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run package",
-		"compile": "webpack",
-		"watch": "webpack --watch",
-		"package": "webpack --mode production --devtool hidden-source-map",
-		"compile-tests": "tsc -p . --outDir out",
-		"watch-tests": "tsc -p -w . --outDir out",
-		"pretest": "npm run compile-tests && npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@swc/core": "^1.2.127",
-		"@swc/helpers": "^0.3.2",
-		"@types/node": "~14.18.5",
-		"@types/vscode": "^1.63.1",
-		"@typescript-eslint/eslint-plugin": "^4.33.0",
-		"@typescript-eslint/parser": "^4.33.0",
-		"@vscode/test-electron": "^1.6.2",
-		"core-js": "^3.20.2",
-		"eslint": "^7.32.0",
-		"regenerator-runtime": "^0.13.9",
-		"swc-loader": "^0.1.15",
-		"typescript": "^4.5.4",
-		"webpack": "^5.65.0",
-		"webpack-cli": "^4.9.1"
-	},
-	"bugs": {
-		"url": "https://github.com/sunzhangchang/vscrebook/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/sunzhangchang/vscrebook"
-	},
-	"homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md",
-	"dependencies": {
-		"chardet": "^1.4.0",
-		"iconv-lite": "^0.6.3"
-	}
+    "name": "vscrebook",
+    "displayName": "vscrebook",
+    "description": "VSCode 摸鱼阅读器",
+    "version": "0.2.2",
+    "engines": {
+        "vscode": "^1.61.0"
+    },
+    "icon": "images/icon.png",
+    "categories": [
+        "Other"
+    ],
+    "files": [
+        "./pkg/crawl/index.js",
+        "./pkg/crawl/index.d.ts"
+    ],
+    "keywords": [
+        "txt",
+        "novel",
+        "book",
+        "小说",
+        "神器",
+        "摸鱼",
+        "划水"
+    ],
+    "publisher": "Cyanogenaq",
+    "activationEvents": [
+        "onCommand:vscrebook.start"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "configuration": {
+            "title": "Vscre Book",
+            "type": "object",
+            "properties": {
+                "vscrebook.pageSize": {
+                    "type": "number",
+                    "default": 25,
+                    "description": "每页文字数量 & Number of text per page"
+                },
+                "vscrebook.lineBreak": {
+                    "type": "string",
+                    "default": " ",
+                    "description": "换行分隔符号，默认一个空格 & Line Break Separation Symbol,Default a space"
+                },
+                "vscrebook.downloadPath": {
+                    "type": "string",
+                    "default": "D:/Downloads",
+                    "description": "下载的小说的储存路径"
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "vscrebook.bossKey",
+                "title": "bossKey"
+            },
+            {
+                "command": "vscrebook.prevPage",
+                "title": "prevPage"
+            },
+            {
+                "command": "vscrebook.nextPage",
+                "title": "nextPage"
+            },
+            {
+                "command": "vscrebook.jumpPage",
+                "title": "jumpPage"
+            },
+            {
+                "command": "vscrebook.start",
+                "title": "start"
+            },
+            {
+                "command": "vscrebook.download",
+                "title": "download"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "vscrebook.bossKey",
+                "key": "ctrl+alt+/",
+                "mac": "cmd+/"
+            },
+            {
+                "command": "vscrebook.prevPage",
+                "key": "ctrl+alt+,",
+                "mac": "cmd+,",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "vscrebook.nextPage",
+                "key": "ctrl+alt+.",
+                "mac": "cmd+.",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "vscrebook.jumpPage",
+                "key": "ctrl+alt+'",
+                "mac": "cmd+'",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "vscrebook.start",
+                "key": "ctrl+alt+;",
+                "mac": "cmd+;"
+            },
+            {
+                "command": "vscrebook.download",
+                "key": "ctrl+alt+d",
+                "mac": "cmd+d"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run package",
+        "install": "cd ./pkg/crawl && pnpm install",
+        "build": "build.cmd",
+        "build:debug": "builddebug.cmd",
+        "check": "check.cmd",
+        "compile": "webpack",
+        "watch": "webpack --watch",
+        "package": "webpack --mode production --devtool hidden-source-map",
+        "compile-tests": "tsc -p . --outDir out",
+        "watch-tests": "tsc -p -w . --outDir out",
+        "pretest": "npm run compile-tests && npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@swc/core": "^1.2.127",
+        "@swc/helpers": "^0.3.2",
+        "@types/node": "~14.18.5",
+        "@types/vscode": "^1.63.1",
+        "@typescript-eslint/eslint-plugin": "^4.33.0",
+        "@typescript-eslint/parser": "^4.33.0",
+        "@vscode/test-electron": "^1.6.2",
+        "core-js": "^3.20.2",
+        "eslint": "^7.32.0",
+        "regenerator-runtime": "^0.13.9",
+        "swc-loader": "^0.1.15",
+        "typescript": "^4.5.4",
+        "webpack": "^5.65.0",
+        "webpack-cli": "^4.9.1"
+    },
+    "bugs": {
+        "url": "https://github.com/sunzhangchang/vscrebook/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sunzhangchang/vscrebook"
+    },
+    "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md",
+    "dependencies": {
+        "chardet": "^1.4.0",
+        "crawl": "file:./pkg/crawl",
+        "iconv-lite": "^0.6.3"
+    }
 }

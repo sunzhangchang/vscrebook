@@ -1,7 +1,9 @@
 import { window, ExtensionContext, commands } from "vscode"
 import Book from './components/Book'
 import * as Library from './components/Library'
+import { jscrawl } from "./utils/crawl"
 import { bookListInit, getBook } from './utils/operBookList'
+import { defaultDownloadPath, ExtConfig, getWsConfig, updateWsConfig } from "./utils/operConfig"
 import { setStatusBar, toggleBossMsg } from "./utils/operStatusBar"
 
 const extName = 'vscrebook'
@@ -54,6 +56,23 @@ export function activate(context: ExtensionContext) {
         })
     })
     context.subscriptions.push(jumpPage)
+
+    let download = commands.registerCommand(`${extName}.download`, () => {
+        window.showInputBox({
+            prompt: '输入小说目录链接(目前只支持采墨阁(www.caimoge.net))'
+        }).then(val => {
+            if (typeof val === 'undefined') {
+                window.showErrorMessage('请输入正确的小说目录链接(目前只支持采墨阁(www.caimoge.net))!')
+            } else {
+                if (!getWsConfig(ExtConfig.downloadPath)) {
+                    updateWsConfig(ExtConfig.downloadPath, defaultDownloadPath, true)
+                }
+                jscrawl(val, getWsConfig(ExtConfig.downloadPath) as string)
+            }
+        })
+    })
+
+    context.subscriptions.push(download)
 }
 
 export function deactivate() {}

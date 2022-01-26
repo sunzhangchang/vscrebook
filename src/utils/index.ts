@@ -2,8 +2,6 @@ import { detectFileSync } from 'chardet'
 import { readFileSync, writeFileSync } from "fs"
 import { decode, encode } from 'iconv-lite'
 
-export const defaultPageSize = 25
-
 export function detect(filePath: string) {
     let decod = detectFileSync(filePath, { sampleSize: 128 })
     if (!decod) {
