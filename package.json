@@ -104,7 +104,7 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "npm run package",
+        "vscode:prepublish": "pnpm run package",
         "install": "cd ./pkg/crawl && pnpm install",
         "build": "build.cmd",
         "build:debug": "builddebug.cmd",
