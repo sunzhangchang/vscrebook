@@ -45,7 +45,7 @@
                 },
                 "vscrebook.downloadPath": {
                     "type": "string",
-                    "default": "D:/Downloads",
+                    "default": "D:/Downloads/",
                     "description": "下载的小说的储存路径"
                 }
             }
@@ -70,10 +70,6 @@
             {
                 "command": "vscrebook.start",
                 "title": "start"
-            },
-            {
-                "command": "vscrebook.download",
-                "title": "download"
             }
         ],
         "keybindings": [
@@ -104,11 +100,6 @@
                 "command": "vscrebook.start",
                 "key": "ctrl+alt+;",
                 "mac": "cmd+;"
-            },
-            {
-                "command": "vscrebook.download",
-                "key": "ctrl+alt+d",
-                "mac": "cmd+d"
             }
         ]
     },
@@ -130,6 +121,7 @@
     "devDependencies": {
         "@swc/core": "^1.2.127",
         "@swc/helpers": "^0.3.2",
+        "@types/lodash": "^4.14.178",
         "@types/node": "~14.18.5",
         "@types/vscode": "^1.63.1",
         "@typescript-eslint/eslint-plugin": "^4.33.0",
@@ -142,7 +134,7 @@
         "node-loader": "^2.0.0",
         "regenerator-runtime": "^0.13.9",
         "swc-loader": "^0.1.15",
-        "typescript": "^4.5.4",
+        "typescript": "4.4.4",
         "webpack": "^5.65.0",
         "webpack-cli": "^4.9.1"
     },
@@ -157,6 +149,7 @@
     "dependencies": {
         "chardet": "^1.4.0",
         "crawl": "file:./pkg/crawl",
-        "iconv-lite": "^0.6.3"
+        "iconv-lite": "^0.6.3",
+        "lodash": "^4.17.21"
     }
 }

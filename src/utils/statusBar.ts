@@ -15,6 +15,7 @@ const codes: string[] = [
     'Python - print("Hello, World!")',
     'PHP - echo "Hello World!";',
     'Ruby - puts "Hello World!";',
+    'Rust - println!("Hello, World!");',
     'Perl - print "Hello, World!";',
     'Lua - print("Hello World!")',
     'Golang - fmt.Println("Hello, World!")',
@@ -40,11 +41,11 @@ function showNovelText() {
     _setStatusBar(lastText)
 }
 
-export function toggleBossMsg() {
-    if (isBossText) {
-        showNovelText()
-    } else {
+export function toggleBossMsg(isDel: boolean) {
+    if (!isBossText || isDel) {
         showBossText()
+    } else {
+        showNovelText()
     }
 }
 

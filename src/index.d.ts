@@ -8,4 +8,3 @@ declare type BookInfo = {
 	bookPath: string,
 	curPage: number,
 }
-

@@ -1,7 +1,7 @@
 import * as vscode from "vscode"
 import * as fs from "fs"
-import { defaultPageSize, getConfig, getWsConfig } from "../utils/operConfig"
-import { getBook, updateBook } from "../utils/operBookList"
+import { defaultPageSize, getConfig, getWsConfig } from "../utils/config"
+import { getBook, updateBook } from "../utils/bookList"
 
 // TODO 实时更新txt内容
 

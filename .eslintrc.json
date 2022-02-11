@@ -36,16 +36,7 @@
         "object-shorthand": "warn",
         "prefer-arrow-callback": "warn",
         "no-param-reassign": "error",
-        "no-trailing-spaces": "warn",
-        "no-shadow": [
-            "error",
-            {
-                "allow": [
-                    "ExtConfig",
-                    "LibActions"
-                ]
-            }
-        ]
+        "no-trailing-spaces": "warn"
     },
     "ignorePatterns": [
         "out",
