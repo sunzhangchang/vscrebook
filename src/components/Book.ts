@@ -1,4 +1,4 @@
-import { Default, ExtConfig, getConfig, getWsConfig, updateWsConfig } from "../utils/config"
+import { Default, getConfig, getWsConfig } from "../utils/config"
 import { getBook, updateBook } from "../utils/bookList"
 import { window } from "vscode"
 import { readFile } from "fs/promises"
@@ -20,7 +20,7 @@ export default class Book {
             this.name = ''
             return
         }
-        this.text = text ? text : ''
+        this.text = !_.isUndefined(text) ? text : ''
         this.bpath = bpath
         let nameArr: string[] = this.bpath.split('\\')
         this.name = nameArr[nameArr.length - 1]
@@ -35,7 +35,9 @@ export default class Book {
     }
 
     getSize(): number {
-        if (!this.text) { return 0 }
+        if (_.isUndefined(this.text)) {
+            return 0
+        }
         return Math.ceil(this.text.length / this.pageSize)
     }
 
@@ -59,7 +61,9 @@ export default class Book {
 
     async readFile(): Promise<string> {
         let bpath = this.bpath
-        if (bpath === '' || typeof bpath === 'undefined') { return '' }
+        if (_.isUndefined(bpath) || _.isEmpty(bpath)) {
+            return ''
+        }
         let data: string = await readFile(bpath, 'utf-8')
         let lineBreak: string = getWsConfig('vscrebook.lineBreak') as string
         let text = data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, lineBreak)
@@ -68,7 +72,7 @@ export default class Book {
 
     onConfigChange(): boolean {
         let { lineBreak, pageSize } = getConfig()
-        return lineBreak !== this.lineBreak || pageSize !== this.pageSize
+        return !_.isEqual(lineBreak, this.lineBreak) || !_.isEqual(pageSize, this.pageSize)
     }
 
     async refresh() {
@@ -82,7 +86,9 @@ export default class Book {
         if (this.onConfigChange()) {
             await this.refresh()
         }
-        if (!this.text) { return '' }
+        if (_.isUndefined(this.text)) {
+            return ''
+        }
         updateBook(this.name, {
             bookPath: this.bpath,
             curPage: this.getPageNumber(option, jumpPageNumber)

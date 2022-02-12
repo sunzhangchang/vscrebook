@@ -5,7 +5,7 @@ import { window } from "vscode"
 import { SearchBook } from "../../pkg/crawl"
 import { copyFileToUTF8 } from "../utils"
 import { getBookList, updateBook } from "../utils/bookList"
-import { defaultDownloadPath, ExtConfig, getWsConfig, updateWsConfig } from "../utils/config"
+import { Default, ExtConfig, getWsConfig, updateWsConfig } from "../utils/config"
 import { download, search } from "../utils/crawl"
 import { error, Errors } from "../utils/error"
 import { changeName } from "./utils"
@@ -75,7 +75,7 @@ async function getAdBook() {
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
             await download(one.目录链接, one.书名)
             if (_.isUndefined(getWsConfig(ExtConfig.downloadPath))) {
-                updateWsConfig(ExtConfig.downloadPath, defaultDownloadPath, true)
+                updateWsConfig(ExtConfig.downloadPath, Default.downloadPath, true)
             }
             bookPath = join(getWsConfig(ExtConfig.downloadPath) as string, one.书名)
             if (await stat(one.书名)) {
