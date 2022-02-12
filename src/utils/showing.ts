@@ -32,6 +32,7 @@ export function setStatusBar(msg: string) {
     window.setStatusBarMessage(msg)
 }
 export function showBossText() {
+    isBoss = true
     let index: number = Math.floor(Math.random() * codes.length)
     setStatusBar(codes[index])
 }
@@ -69,6 +70,7 @@ export function showJump() {
         book.getPageText('jump', val).then(res => {
             setStatusBar(res)
             clearShowBossInterval()
+            setShowBossInterval()
         })
     })
 }
@@ -104,19 +106,22 @@ export function clearShowBossInterval() {
 }
 
 export function setShowBossInterval() {
-    showBossInterval = setInterval(() => showBossText(), 30 * 1000)
+    showBossInterval = setInterval(() => {
+        showBossText()
+        clearShowBossInterval()
+    }, 7 * 1000)
 }
 
 export function clearAutoFlipInterval() {
     if (!_.isNull(autoFlipping)) {
         clearInterval(autoFlipping)
         autoFlipping = null
-        console.log(autoFlipping)
         window.showInformationMessage('停止自动翻页')
     }
 }
 
 export function setAutoFlipInterval() {
+    clearShowBossInterval()
     autoFlipping = setInterval(() => showNext(), getWsConfig(ExtConfig.autoFlipTime) as number)
 }
 
@@ -141,6 +146,7 @@ export function toggleBossMsg() {
         }
     } else {
         clearAutoFlipInterval()
+        clearShowBossInterval()
         showBossText()
         isBoss = true
     }
@@ -160,6 +166,7 @@ export function autoFlipp() {
     }
     if (!_.isNull(autoFlipping)) {
         clearAutoFlipInterval()
+        setShowBossInterval()
         return
     } else {
         window.showInformationMessage(`开始自动翻页! 当前设置: 每 ${getWsConfig(ExtConfig.autoFlipTime) as number} 毫秒(ms)翻页!`)
