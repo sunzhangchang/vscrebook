@@ -14,3 +14,6 @@ vsc-extension-quickstart.md
 **/*.rs
 **/*.cmd
 **/target/**
+**/pkg/**
+swcrc.js
+.swc/**
