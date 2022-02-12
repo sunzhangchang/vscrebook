@@ -1,14 +1,15 @@
-import * as vscode from "vscode"
-import * as fs from "fs"
-import { defaultPageSize, getConfig, getWsConfig } from "../utils/config"
+import { Default, ExtConfig, getConfig, getWsConfig, updateWsConfig } from "../utils/config"
 import { getBook, updateBook } from "../utils/bookList"
+import { window } from "vscode"
+import { readFile } from "fs/promises"
+import _ = require("lodash")
 
 // TODO 实时更新txt内容
 
 export default class Book {
     text: string = ''
     totPage: number = 0
-    pageSize: number = defaultPageSize
+    pageSize: number = Default.pageSize
     lineBreak: string = ' '
     bpath: string = ''
     name: string = ''
@@ -56,10 +57,10 @@ export default class Book {
         return [ed - this.pageSize, ed]
     }
 
-    readFile(): string {
+    async readFile(): Promise<string> {
         let bpath = this.bpath
         if (bpath === '' || typeof bpath === 'undefined') { return '' }
-        let data: string = fs.readFileSync(bpath, 'utf-8')
+        let data: string = await readFile(bpath, 'utf-8')
         let lineBreak: string = getWsConfig('vscrebook.lineBreak') as string
         let text = data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, lineBreak)
         return text
@@ -70,16 +71,16 @@ export default class Book {
         return lineBreak !== this.lineBreak || pageSize !== this.pageSize
     }
 
-    refresh() {
+    async refresh() {
         this.init()
-        this.text = this.readFile()
+        this.text = await this.readFile()
         this.totPage = this.getSize()
-        vscode.window.setStatusBarMessage(this.text)
+        window.setStatusBarMessage(this.text)
     }
 
-    getPageText(option: string, jumpPageNumber?: string | undefined): string {
+    async getPageText(option: string, jumpPageNumber?: string | undefined): Promise<string> {
         if (this.onConfigChange()) {
-            this.refresh()
+            await this.refresh()
         }
         if (!this.text) { return '' }
         updateBook(this.name, {

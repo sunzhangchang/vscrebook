@@ -1,81 +1,14 @@
-import { ExtensionContext, window } from "vscode"
-import { unlink } from "fs"
+import { mkdir, stat } from "fs/promises"
+import _ = require("lodash")
+import { basename, join } from "path"
+import { window } from "vscode"
+import { SearchBook } from "../../pkg/crawl"
 import { copyFileToUTF8 } from "../utils"
-import { getBookList, updateBook, updateBookList } from "../utils/bookList"
+import { getBookList, updateBook } from "../utils/bookList"
 import { defaultDownloadPath, ExtConfig, getWsConfig, updateWsConfig } from "../utils/config"
-import { showBossText } from "../utils/statusBar"
 import { download, search } from "../utils/crawl"
 import { error, Errors } from "../utils/error"
-import _ = require("lodash")
-import { SearchBook } from "../../pkg/crawl"
-import { basename, join } from "path"
-import { mkdir, stat } from "fs/promises"
-
-const enum LibActions {
-    select = '选择书籍',
-    add = '添加书籍',
-    delete = '删除书籍',
-}
-
-export async function action(context: ExtensionContext): Promise<BookInfo | undefined> {
-    let act = await window.showQuickPick([LibActions.select, LibActions.add, LibActions.delete], {
-        matchOnDescription: true
-    })
-    let res: BookInfo | undefined
-    switch (act) {
-        case LibActions.select: {
-            res = await selectBook()
-            break
-        }
-
-        case LibActions.add: {
-            res = await addBook(context.globalStorageUri.fsPath)
-            break
-        }
-
-        case LibActions.delete: {
-            res = await deleteBook(context.globalStorageUri.fsPath)
-            break
-        }
-
-        default: {
-            break
-        }
-    }
-    return res
-}
-
-async function selectBook(): Promise<BookInfo | undefined> {
-    let book: string | undefined = await showBookList()
-    let books = getBookList()
-    if (book && book in books) {
-        return books[book]
-    }
-}
-
-async function changeName(oldName: string): Promise<string | undefined> {
-    let newName: string | undefined = oldName
-    while (true) {
-        newName = await window.showInputBox({
-            value: oldName,
-            placeHolder: '书名',
-            prompt: '请输入书名(重名覆盖)'
-        })
-
-        if (!_.isUndefined(newName)) {
-            break
-        }
-
-        error(Errors.bookNameEmpty)
-
-        let cs = await window.showInformationMessage('是否重新输入书名?', '是', '否')
-        if (_.isUndefined(cs) || _.isEqual(cs, '否')) {
-            newName = oldName
-            break
-        }
-    }
-    return newName
-}
+import { changeName } from "./utils"
 
 const enum Chooses {
     local = '本地书籍',
@@ -153,7 +86,7 @@ async function getAdBook() {
     return bookPath
 }
 
-async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
+export async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
     let oldPath = await getAdBook()
 
     if (_.isUndefined(oldPath)) {
@@ -199,27 +132,4 @@ async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
         bookPath: newPath,
         curPage: 1
     }
-}
-
-async function deleteBook(gStoPath: string): Promise<undefined> {
-    let book: string | undefined = await showBookList()
-
-    if (_.isUndefined(book)) { return }
-
-    let books = getBookList()
-    delete books[book]
-    updateBookList(books)
-
-    let diskFilePath = join(gStoPath, book)
-    unlink(diskFilePath, () => { })
-    window.showInformationMessage('删除成功')
-    showBossText()
-    return
-}
-
-async function showBookList(): Promise<string | undefined> {
-    let books = getBookList()
-    return await window.showQuickPick(Object.keys(books), {
-        matchOnDescription: true
-    })
 }

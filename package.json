@@ -47,6 +47,11 @@
                     "type": "string",
                     "default": "D:/Downloads/",
                     "description": "下载的小说的储存路径"
+                },
+                "vscrebook.autoFlipTime": {
+                    "type": "number",
+                    "default": "3000",
+                    "description": "自动翻页的速度(每页的时间/ms)"
                 }
             }
         },
@@ -69,7 +74,11 @@
             },
             {
                 "command": "vscrebook.start",
-                "title": "start"
+                "title": "start 开始阅读(摸鱼)"
+            },
+            {
+                "command": "vscrebook.autoFlip",
+                "title": "autoFlip"
             }
         ],
         "keybindings": [
@@ -100,6 +109,11 @@
                 "command": "vscrebook.start",
                 "key": "ctrl+alt+;",
                 "mac": "cmd+;"
+            },
+            {
+                "command": "vscrebook.autoFlip",
+                "key": "ctrl+alt+m",
+                "mac": "cmd+m"
             }
         ]
     },
