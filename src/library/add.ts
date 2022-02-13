@@ -38,6 +38,9 @@ async function getAdBook() {
                     placeHolder: '搜索关键字',
                 })
                 if (_.isUndefined(searchKey)) {
+                    return
+                }
+                if (_.isEmpty(searchKey.trim())) {
                     error(Errors.searchKeyEmpty)
                 } else {
                     break
@@ -73,14 +76,12 @@ async function getAdBook() {
                 one.书名 += '.txt'
             }
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
-            await download(one.目录链接, one.书名)
+            download(one.目录链接, one.书名)
             if (_.isUndefined(getWsConfig(ExtConfig.downloadPath))) {
                 updateWsConfig(ExtConfig.downloadPath, Default.downloadPath, true)
             }
             bookPath = join(getWsConfig(ExtConfig.downloadPath) as string, one.书名)
-            if (statSync(one.书名)) {
-                break
-            }
+            break
         }
     }
     return bookPath

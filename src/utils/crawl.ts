@@ -9,7 +9,7 @@ export async function search(searchKey: string) {
     return await rsSearch(searchKey)
 }
 
-export async function download(inputUrl: string, bookName: string) {
+export function download(inputUrl: string, bookName: string) {
     if (_.isUndefined(getWsConfig(ExtConfig.downloadPath))) {
         updateWsConfig(ExtConfig.downloadPath, Default.downloadPath, true)
     }
