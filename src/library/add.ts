@@ -1,9 +1,9 @@
-import { mkdir, stat } from "fs/promises"
+import { mkdirSync, statSync } from "fs"
 import _ = require("lodash")
 import { basename, join } from "path"
 import { window } from "vscode"
 import { SearchBook } from "../../pkg/crawl"
-import { copyFileToUTF8 } from "../utils"
+import { copyFileToUTF8Sync } from "../utils"
 import { getBookList, updateBook } from "../utils/bookList"
 import { Default, ExtConfig, getWsConfig, updateWsConfig } from "../utils/config"
 import { download, search } from "../utils/crawl"
@@ -78,7 +78,7 @@ async function getAdBook() {
                 updateWsConfig(ExtConfig.downloadPath, Default.downloadPath, true)
             }
             bookPath = join(getWsConfig(ExtConfig.downloadPath) as string, one.书名)
-            if (await stat(one.书名)) {
+            if (statSync(one.书名)) {
                 break
             }
         }
@@ -112,14 +112,14 @@ export async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
 
     let newPath = join(gStoPath, newName)
 
-    if (!await stat(gStoPath)) {
-        await mkdir(gStoPath)
+    if (!statSync(gStoPath)) {
+        mkdirSync(gStoPath)
     }
 
     let lineBreak: string | undefined = getWsConfig(ExtConfig.lineBreak)
     if (_.isUndefined(lineBreak)) { lineBreak = ' ' }
 
-    await copyFileToUTF8(oldPath, newPath,
+    copyFileToUTF8Sync(oldPath, newPath,
         (data: string) => data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, lineBreak as string))
 
     updateBook(newName, {
