@@ -48,9 +48,7 @@ export function startt(context: ExtensionContext) {
             return
         }
         book = new Book(bookInfoma.bookPath)
-        book.getPageText('jump').then(res => {
-            setStatusBar(res)
-        })
+        setStatusBar(book.getPageText('jump'))
     })
 }
 
@@ -67,11 +65,9 @@ export function showJump() {
             error(Errors.bookUndefined)
             return
         }
-        book.getPageText('jump', val).then(res => {
-            setStatusBar(res)
-            clearShowBossInterval()
-            setShowBossInterval()
-        })
+        setStatusBar(book.getPageText('jump', val))
+        clearShowBossInterval()
+        setShowBossInterval()
     })
 }
 
@@ -80,9 +76,7 @@ export function showPrev() {
         error(Errors.bookUndefined)
         return
     }
-    book.getPageText('prev').then(res => {
-        setStatusBar(res)
-    })
+    setStatusBar(book.getPageText('prev'))
 }
 
 export function showNext() {
@@ -90,9 +84,7 @@ export function showNext() {
         error(Errors.bookUndefined)
         return
     }
-    book.getPageText('next').then(res => {
-        setStatusBar(res)
-    })
+    setStatusBar(book.getPageText('next'))
 }
 
 let autoFlipping: NodeJS.Timeout | null = null
@@ -109,7 +101,7 @@ export function setShowBossInterval() {
     showBossInterval = setInterval(() => {
         showBossText()
         clearShowBossInterval()
-    }, 7 * 1000)
+    }, 25 * 1000)
 }
 
 export function clearAutoFlipInterval() {
@@ -134,9 +126,7 @@ export function toggleBossMsg() {
         return
     }
     if (isBoss) {
-        book.getPageText('jump').then(res => {
-            setStatusBar(res)
-        })
+        setStatusBar(book.getPageText('jump'))
         isBoss = false
         clearShowBossInterval()
         if (!_.isNull(autoFlipping)) {

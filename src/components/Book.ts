@@ -1,8 +1,8 @@
 import { Default, getConfig, getWsConfig } from "../utils/config"
 import { getBook, updateBook } from "../utils/bookList"
 import { window } from "vscode"
-import { readFile } from "fs/promises"
 import _ = require("lodash")
+import { readFileSync } from "fs"
 
 // TODO 实时更新txt内容
 
@@ -59,12 +59,12 @@ export default class Book {
         return [ed - this.pageSize, ed]
     }
 
-    async readFile(): Promise<string> {
+    readFile(): string {
         let bpath = this.bpath
         if (_.isUndefined(bpath) || _.isEmpty(bpath)) {
             return ''
         }
-        let data: string = await readFile(bpath, 'utf-8')
+        let data: string = readFileSync(bpath, 'utf-8')
         let lineBreak: string = getWsConfig('vscrebook.lineBreak') as string
         let text = data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, lineBreak)
         return text
@@ -75,16 +75,16 @@ export default class Book {
         return !_.isEqual(lineBreak, this.lineBreak) || !_.isEqual(pageSize, this.pageSize)
     }
 
-    async refresh() {
+    refresh() {
         this.init()
-        this.text = await this.readFile()
+        this.text = this.readFile()
         this.totPage = this.getSize()
         window.setStatusBarMessage(this.text)
     }
 
-    async getPageText(option: string, jumpPageNumber?: string | undefined): Promise<string> {
+    getPageText(option: string, jumpPageNumber?: string | undefined): string {
         if (this.onConfigChange()) {
-            await this.refresh()
+            this.refresh()
         }
         if (_.isUndefined(this.text)) {
             return ''
