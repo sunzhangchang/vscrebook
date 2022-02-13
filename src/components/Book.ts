@@ -41,17 +41,17 @@ export default class Book {
         return Math.ceil(this.text.length / this.pageSize)
     }
 
-    getPageNumber(option: string, jumpPageNumber?: string | undefined): number {
-        const curPage = getBook(this.name).curPage
-        let page: number = 0
-        if (option === 'prev') {
-            page = curPage <= 1 ? 1 : curPage - 1
-        } else if (option === 'next') {
-            page = curPage >= this.totPage ? this.totPage : curPage + 1
-        } else if (option === 'jump') {
-            page = (jumpPageNumber ? (+jumpPageNumber) : curPage)
+    getPageNumber(jumpPage?: number): number | string {
+        if (_.isUndefined(jumpPage)) {
+            return getBook(this.name).curPage
         }
-        return page
+        if (jumpPage < 0) {
+            return 'head'
+        }
+        if (jumpPage > this.totPage) {
+            return 'tail'
+        }
+        return jumpPage
     }
 
     getStartEnd(): [number, number] {
@@ -82,16 +82,29 @@ export default class Book {
         window.setStatusBarMessage(this.text)
     }
 
-    getPageText(option: string, jumpPageNumber?: string | undefined): string {
+    getPageText(jumpPage?: number): string {
         if (this.onConfigChange()) {
             this.refresh()
         }
+
         if (_.isUndefined(this.text)) {
             return ''
         }
+
+        let page = this.getPageNumber(jumpPage)
+
+        if (_.isEqual(page, 'head')) {
+            return '已经是第一页了!'
+        }
+        if (_.isEqual(page, 'tail')) {
+            return '已经到最后一页了!'
+        }
+
+        let oPage = page as number
+
         updateBook(this.name, {
             bookPath: this.bpath,
-            curPage: this.getPageNumber(option, jumpPageNumber)
+            curPage: oPage
         })
         let [st, ed] = this.getStartEnd()
 

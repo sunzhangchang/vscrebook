@@ -28,17 +28,59 @@ const codes: string[] = [
     'Scala.js - printl("Hello, World!")',
 ]
 
+let bookInfoma: BookInfo | undefined
+let book: Book | undefined
+
+let autoFlipping: NodeJS.Timeout | null = null
+let showBossInterval: NodeJS.Timeout | null = null
+
+let isBoss: boolean = false
+
+export function setShowBossInterval() {
+    showBossInterval = setInterval(() => {
+        showBossText()
+        clearShowBossInterval()
+    }, 25 * 1000)
+}
+
+export function clearShowBossInterval() {
+    if (!_.isNull(showBossInterval)) {
+        clearInterval(showBossInterval)
+        showBossInterval = null
+    }
+}
+
+export function setAutoFlipInterval() {
+    clearShowBossInterval()
+    autoFlipping = setInterval(() => showNext(), getWsConfig(ExtConfig.autoFlipTime) as number)
+}
+
+export function clearAutoFlipInterval() {
+    if (!_.isNull(autoFlipping)) {
+        clearInterval(autoFlipping)
+        autoFlipping = null
+        window.showInformationMessage('停止自动翻页')
+    }
+}
+
+export function showNovelText(page?: number) {
+    if (_.isUndefined(book)) {
+        error(Errors.bookUndefined)
+        return
+    }
+    setStatusBar(book.getPageText(page))
+    isBoss = false
+}
+
 export function setStatusBar(msg: string) {
     window.setStatusBarMessage(msg)
 }
+
 export function showBossText() {
-    isBoss = true
     let index: number = Math.floor(Math.random() * codes.length)
     setStatusBar(codes[index])
+    isBoss = true
 }
-
-let bookInfoma: BookInfo | undefined
-let book: Book | undefined
 
 export function startt(context: ExtensionContext) {
     showMainMenu(context).then(res => {
@@ -48,7 +90,7 @@ export function startt(context: ExtensionContext) {
             return
         }
         book = new Book(bookInfoma.bookPath)
-        setStatusBar(book.getPageText('jump'))
+        showNovelText()
     })
 }
 
@@ -65,7 +107,7 @@ export function showJump() {
             error(Errors.bookUndefined)
             return
         }
-        setStatusBar(book.getPageText('jump', val))
+        showNovelText(_.isUndefined(val) ? undefined : (+val))
         clearShowBossInterval()
         setShowBossInterval()
     })
@@ -76,7 +118,7 @@ export function showPrev() {
         error(Errors.bookUndefined)
         return
     }
-    setStatusBar(book.getPageText('prev'))
+    showNovelText(getBook(book.name).curPage - 1)
 }
 
 export function showNext() {
@@ -84,40 +126,8 @@ export function showNext() {
         error(Errors.bookUndefined)
         return
     }
-    setStatusBar(book.getPageText('next'))
+    showNovelText(getBook(book.name).curPage + 1)
 }
-
-let autoFlipping: NodeJS.Timeout | null = null
-let showBossInterval: NodeJS.Timeout | null = null
-
-export function clearShowBossInterval() {
-    if (!_.isNull(showBossInterval)) {
-        clearInterval(showBossInterval)
-        showBossInterval = null
-    }
-}
-
-export function setShowBossInterval() {
-    showBossInterval = setInterval(() => {
-        showBossText()
-        clearShowBossInterval()
-    }, 25 * 1000)
-}
-
-export function clearAutoFlipInterval() {
-    if (!_.isNull(autoFlipping)) {
-        clearInterval(autoFlipping)
-        autoFlipping = null
-        window.showInformationMessage('停止自动翻页')
-    }
-}
-
-export function setAutoFlipInterval() {
-    clearShowBossInterval()
-    autoFlipping = setInterval(() => showNext(), getWsConfig(ExtConfig.autoFlipTime) as number)
-}
-
-let isBoss: boolean = false
 
 export function toggleBossMsg() {
     if (_.isUndefined(book)) {
@@ -126,7 +136,7 @@ export function toggleBossMsg() {
         return
     }
     if (isBoss) {
-        setStatusBar(book.getPageText('jump'))
+        showNovelText()
         isBoss = false
         clearShowBossInterval()
         if (!_.isNull(autoFlipping)) {
