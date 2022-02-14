@@ -1,8 +1,9 @@
 import _ = require("lodash")
+import { join } from "path"
 import { ExtensionContext, window } from "vscode"
-import Book from "../components/Book"
+import { book, getPageText, newBook } from "../book"
 import { showMainMenu } from "../library"
-import { getBook } from "./bookList"
+import { getBook, updateBook } from "./bookList"
 import { getConfig } from "./config"
 import { error, Errors } from "./error"
 
@@ -27,9 +28,6 @@ const codes: string[] = [
     'PureScript - log "Hello, World!"',
     'Scala.js - printl("Hello, World!")',
 ]
-
-let bookInfoma: BookInfo | undefined
-let book: Book | undefined
 
 let autoFlipping: NodeJS.Timeout | null = null
 let showBossInterval: NodeJS.Timeout | null = null
@@ -64,11 +62,11 @@ export function clearAutoFlipInterval() {
 }
 
 export function showNovelText(page?: number) {
-    if (_.isUndefined(book)) {
+    if (_.isNull(book)) {
         error(Errors.bookUndefined)
         return
     }
-    setStatusBar(book.getPageText(page))
+    setStatusBar(getPageText(page))
     isBoss = false
 }
 
@@ -84,18 +82,19 @@ export function showBossText() {
 
 export function startt(context: ExtensionContext) {
     showMainMenu(context).then(res => {
-        bookInfoma = res
-        if (_.isUndefined(bookInfoma)) {
-            book = undefined
+        if (_.isUndefined(res)) {
+            newBook()
             return
         }
-        book = new Book(bookInfoma.bookPath)
+        res.curPage = Math.ceil((res.curPage - 1) * res.pageSize / getConfig().pageSize)
+        updateBook(res.bookName, res)
+        newBook(join(context.globalStorageUri.fsPath, res.bookName))
         showNovelText()
     })
 }
 
 export function showJump() {
-    if (_.isUndefined(book)) {
+    if (_.isNull(book)) {
         error(Errors.bookUndefined)
         return
     }
@@ -103,7 +102,7 @@ export function showJump() {
         prompt: '请输入跳转页数: ',
         placeHolder: `跳转页数(默认跳转到当前页: ${getBook(book.name).curPage})`
     }).then(val => {
-        if (_.isUndefined(book)) {
+        if (_.isNull(book)) {
             error(Errors.bookUndefined)
             return
         }
@@ -114,7 +113,7 @@ export function showJump() {
 }
 
 export function showPrev() {
-    if (_.isUndefined(book)) {
+    if (_.isNull(book)) {
         error(Errors.bookUndefined)
         return
     }
@@ -122,7 +121,7 @@ export function showPrev() {
 }
 
 export function showNext() {
-    if (_.isUndefined(book)) {
+    if (_.isNull(book)) {
         error(Errors.bookUndefined)
         return
     }
@@ -130,7 +129,7 @@ export function showNext() {
 }
 
 export function toggleBossMsg() {
-    if (_.isUndefined(book)) {
+    if (_.isNull(book)) {
         isBoss = true
         showBossText()
         return
@@ -153,7 +152,7 @@ export function toggleBossMsg() {
 }
 
 export function autoFlipp() {
-    if (_.isUndefined(book)) {
+    if (_.isNull(book)) {
         error(Errors.bookUndefined)
         return
     }

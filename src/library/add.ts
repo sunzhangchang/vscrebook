@@ -115,22 +115,20 @@ export async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
             mkdirSync(gStoPath)
         }
 
-        let lineBreak = getConfig().lineBreak
-
         console.log(newPath)
 
         copyFileToUTF8Sync(oldPath, newPath,
-            (data: string) => data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, lineBreak as string))
+            (data: string) => data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, ' '))
 
-        updateBook(newName, {
-            bookPath: newPath,
-            curPage: 1
-        })
-
-        window.showInformationMessage('添加成功')
-        return {
-            bookPath: newPath,
+        const newBook: BookInfo = {
+            bookName: newName,
+            pageSize: getConfig().pageSize,
             curPage: 1
         }
+
+        updateBook(newName, newBook)
+
+        window.showInformationMessage('添加成功')
+        return newBook
     }))
 }

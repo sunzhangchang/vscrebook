@@ -2,6 +2,11 @@
 
 在 [Thief-Book-VSCode](https://github.com/cteamx/Thief-Book-VSCode) 及 [shadow-reader](https://github.com/igzhang/shadowReader) 的基础上做了一些修改。
 
+## 注意! ! !
+
+之前版本与此版本(v0.5.0)的书架储存不兼容!
+此版本可以兼容之前版本但之前不兼容此版本!
+
 ## 功能
 
 - 支持状态栏显示
@@ -17,7 +22,7 @@ vscode 插件市场，搜索 `vscrebook`，安装
 
 ### 主菜单
 
-1. 按下 `Ctrl + Shift + P`，搜索 `start` ，或按下启动快捷键(默认为 `Ctrl + Alt + ;` / `Command + ;`)
+1. 按下 `Ctrl + Shift + P` / `F1`，搜索 `start` ，或按下启动快捷键(默认为 `Ctrl + Alt + ;` / `Command + ;`)
 
 ### 新增书籍
 
@@ -44,9 +49,9 @@ vscode 插件市场，搜索 `vscrebook`，安装
 
 ## 扩展设置
 
-- `vscrebook.pageSize`：每次最多显示字数（默认 25）
-- `vscrebook.lineBreak`: 用来替换换行符的字符
-- `vscrebook.downloadPath`: 下载小说的目录
+- `vscrebook.pageSize`：每次最多显示字数(默认 25)
+- `vscrebook.downloadPath`: 下载小说的目录(默认 D:/Downloads/)
+- `vscrebook.autoFlipTime`: 每次自动翻页的时长(默认 3000 (ms))
 - 修改快捷键：首选项 -- 键盘快捷方式(`Ctrl + K Ctrl + S`)
 
 ## 未来功能
@@ -68,4 +73,4 @@ vscode 插件市场，搜索 `vscrebook`，安装
 | 支持书量 |       1 本        |                   多本                   |                   多本                   |
 | 全文搜索 |      不支持       |                   向后                   |                  不支持                  |
 | 在线书籍 |      不支持       | 支持([笔趣阁](https://www.biqugee.com/)) | 支持([采墨阁](https://www.caimoge.net/)) |
-| 更新时间 |     2019.8.7      |                2021.12.20                |                2022.2.13                 |
+| 更新时间 |     2019.8.7      |                2021.12.20                |                2022.2.14                 |

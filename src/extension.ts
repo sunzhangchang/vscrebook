@@ -4,9 +4,9 @@ import { extName } from "./utils/config"
 import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInterval, showJump, showNext, showPrev, startt, toggleBossMsg } from "./utils/showing"
 
 export function activate(context: ExtensionContext) {
-    bookListInit(context)
-
     console.log(`Congratulations, your extension "${extName}" is now active!`)
+
+    bookListInit(context)
 
     let start = commands.registerCommand(`${extName}.start`, () => {
         startt(context)
