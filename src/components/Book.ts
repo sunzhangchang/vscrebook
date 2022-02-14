@@ -1,15 +1,15 @@
-import { Default, getConfig, getWsConfig } from "../utils/config"
 import { getBook, updateBook } from "../utils/bookList"
 import { window } from "vscode"
 import _ = require("lodash")
 import { readFileSync } from "fs"
+import { getConfig } from "../utils/config"
 
 // TODO 实时更新txt内容
 
 export default class Book {
     text: string = ''
     totPage: number = 0
-    pageSize: number = Default.pageSize
+    pageSize: number = 0
     lineBreak: string = ' '
     bpath: string = ''
     name: string = ''
@@ -65,7 +65,7 @@ export default class Book {
             return ''
         }
         let data: string = readFileSync(bpath, 'utf-8')
-        let lineBreak: string = getWsConfig('vscrebook.lineBreak') as string
+        let lineBreak = getConfig().lineBreak
         let text = data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, lineBreak)
         return text
     }

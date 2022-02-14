@@ -3,7 +3,7 @@ import { ExtensionContext, window } from "vscode"
 import Book from "../components/Book"
 import { showMainMenu } from "../library"
 import { getBook } from "./bookList"
-import { Default, ExtConfig, getWsConfig, updateWsConfig } from "./config"
+import { getConfig } from "./config"
 import { error, Errors } from "./error"
 
 const codes: string[] = [
@@ -52,7 +52,7 @@ export function clearShowBossInterval() {
 
 export function setAutoFlipInterval() {
     clearShowBossInterval()
-    autoFlipping = setInterval(() => showNext(), getWsConfig(ExtConfig.autoFlipTime) as number)
+    autoFlipping = setInterval(() => showNext(), getConfig().autoFlipTime)
 }
 
 export function clearAutoFlipInterval() {
@@ -157,9 +157,6 @@ export function autoFlipp() {
         error(Errors.bookUndefined)
         return
     }
-    if (_.isUndefined(getWsConfig(ExtConfig.autoFlipTime))) {
-        updateWsConfig(ExtConfig.autoFlipTime, Default.autoFlipTime)
-    }
     if (isBoss) {
         clearAutoFlipInterval()
         return
@@ -169,7 +166,7 @@ export function autoFlipp() {
         setShowBossInterval()
         return
     } else {
-        window.showInformationMessage(`开始自动翻页! 当前设置: 每 ${getWsConfig(ExtConfig.autoFlipTime) as number} 毫秒(ms)翻页!`)
+        window.showInformationMessage(`开始自动翻页! 当前设置: 每 ${getConfig().autoFlipTime} 毫秒(ms)翻页!`)
         setAutoFlipInterval()
     }
 }

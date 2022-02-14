@@ -5,7 +5,7 @@ import { window } from "vscode"
 import { SearchBook } from "../../pkg/crawl"
 import { copyFileToUTF8Sync } from "../utils"
 import { getBookList, updateBook } from "../utils/bookList"
-import { Default, ExtConfig, getWsConfig, updateWsConfig } from "../utils/config"
+import { getConfig } from "../utils/config"
 import { download, search } from "../utils/crawl"
 import { error, Errors } from "../utils/error"
 import { changeName } from "./utils"
@@ -77,10 +77,7 @@ async function getAdBook() {
             }
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
             download(one.目录链接, one.书名)
-            if (_.isUndefined(getWsConfig(ExtConfig.downloadPath))) {
-                updateWsConfig(ExtConfig.downloadPath, Default.downloadPath, true)
-            }
-            bookPath = join(getWsConfig(ExtConfig.downloadPath) as string, one.书名)
+            bookPath = join(getConfig().downloadPath, one.书名)
             break
         }
     }
@@ -88,49 +85,52 @@ async function getAdBook() {
 }
 
 export async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
-    let oldPath = await getAdBook()
-
-    if (_.isUndefined(oldPath)) {
-        return
-    }
-
-    let newName: string
-    let _oldName = basename(oldPath)
-
-    if (_.includes(getBookList(), _oldName)) {
-        let tmp = await changeName(_oldName)
-        if (_.isUndefined(tmp)) {
-            tmp = _oldName
+    return await (getAdBook().then(oldPath => {
+        if (_.isUndefined(oldPath)) {
+            return
         }
-        newName = tmp
-    } else {
-        newName = _oldName
-    }
 
-    if (!_.endsWith(newName, '.txt')) {
-        newName += '.txt'
-    }
+        let _oldName = basename(oldPath)
+        let newName: string = _oldName
 
-    let newPath = join(gStoPath, newName)
+        if (_.includes(getBookList(), _oldName)) {
+            changeName(_oldName).then(res => {
+                if (_.isUndefined(res)) {
+                    newName = _oldName
+                } else {
+                    newName = res
+                }
+            })
+        } else {
+            newName = _oldName
+        }
 
-    if (!statSync(gStoPath)) {
-        mkdirSync(gStoPath)
-    }
+        if (!_.endsWith(newName, '.txt')) {
+            newName += '.txt'
+        }
 
-    let lineBreak: string | undefined = getWsConfig(ExtConfig.lineBreak)
-    if (_.isUndefined(lineBreak)) { lineBreak = ' ' }
+        let newPath = join(gStoPath, newName)
 
-    copyFileToUTF8Sync(oldPath, newPath,
-        (data: string) => data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, lineBreak as string))
+        if (!statSync(gStoPath)) {
+            mkdirSync(gStoPath)
+        }
 
-    updateBook(newName, {
-        bookPath: newPath,
-        curPage: 1
-    })
+        let lineBreak = getConfig().lineBreak
 
-    window.showInformationMessage('添加成功')
-    return {
-        bookPath: newPath,
-        curPage: 1
-    }
+        console.log(newPath)
+
+        copyFileToUTF8Sync(oldPath, newPath,
+            (data: string) => data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, lineBreak as string))
+
+        updateBook(newName, {
+            bookPath: newPath,
+            curPage: 1
+        })
+
+        window.showInformationMessage('添加成功')
+        return {
+            bookPath: newPath,
+            curPage: 1
+        }
+    }))
 }
