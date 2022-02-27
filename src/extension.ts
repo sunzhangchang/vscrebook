@@ -7,8 +7,8 @@ import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInt
 export function activate(context: ExtensionContext) {
     console.log(`Congratulations, your extension "${extName}" is now active!`)
 
-    console.log(process.env)
-    console.error(process.env)
+    console.log(getConfig().downloadPath)
+    // console.error(process.env)
 
     try {
         accessSync(context.globalStorageUri.fsPath, constants.F_OK)

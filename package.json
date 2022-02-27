@@ -40,7 +40,7 @@
         },
         "vscrebook.downloadPath": {
           "type": "string",
-          "default": "D:/Downloads/",
+          "default": "",
           "description": "下载的小说的储存路径"
         },
         "vscrebook.autoFlipTime": {

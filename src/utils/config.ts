@@ -1,12 +1,20 @@
 import { workspace } from "vscode"
 import _ = require("lodash")
+import { join } from "path"
 
 export const extName = 'vscrebook'
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const Default = {
     pageSize: 25,
-    downloadPath: 'D:/Downloads/' && (process.env.HOME || process.env.USERPROFILE),
+    downloadPath: (() => {
+        if (!_.isUndefined(process.env.HOME)) {
+            return join(process.env.HOME, 'downloads')
+        }
+        if (!_.isUndefined(process.env.USERPROFILE)) {
+            return join(process.env.USERPROFILE, 'Downloads')
+        }
+    })(),
     autoFlipTime: 3000,
 }
 
@@ -24,7 +32,7 @@ export function getConfig(): ConfigType {
         updateWsConfig(ExtConfig.pageSize, Default.pageSize, true)
     }
 
-    if (_.isUndefined(getWsConfig(ExtConfig.downloadPath))) {
+    if (_.isUndefined(getWsConfig(ExtConfig.downloadPath)) || _.isEmpty(getWsConfig(ExtConfig.downloadPath))) {
         updateWsConfig(ExtConfig.downloadPath, Default.downloadPath, true)
     }
 
