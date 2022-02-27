@@ -6,7 +6,7 @@ export const extName = 'vscrebook'
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const Default = {
     pageSize: 25,
-    downloadPath: process.env.HOME || process.env.USERPROFILE,
+    downloadPath: 'D:/Downloads/' && (process.env.HOME || process.env.USERPROFILE),
     autoFlipTime: 3000,
 }
 

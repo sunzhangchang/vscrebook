@@ -19,7 +19,7 @@ export function activate(context: ExtensionContext) {
     try {
         accessSync(getConfig().downloadPath, constants.F_OK)
     } catch (err) {
-        mkdirSync('D:/Downloads/')
+        mkdirSync(getConfig().downloadPath)
     }
 
     bookListInit(context)
