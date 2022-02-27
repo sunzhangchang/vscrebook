@@ -1,3 +1,4 @@
+import { mkdirSync, statSync } from "fs"
 import { commands, ExtensionContext } from "vscode"
 import { bookListInit } from "./utils/bookList"
 import { extName } from "./utils/config"
@@ -5,6 +6,14 @@ import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInt
 
 export function activate(context: ExtensionContext) {
     console.log(`Congratulations, your extension "${extName}" is now active!`)
+
+    if (!statSync(context.globalStorageUri.fsPath)) {
+        mkdirSync(context.globalStorageUri.fsPath)
+    }
+
+    if (!statSync('D:/Downloads/')) {
+        mkdirSync('D:/Downloads/')
+    }
 
     bookListInit(context)
 

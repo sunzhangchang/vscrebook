@@ -90,6 +90,10 @@ export async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
             return
         }
 
+        if (!statSync(gStoPath)) {
+            mkdirSync(gStoPath)
+        }
+
         let _oldName = basename(oldPath)
         let newName: string = _oldName
 
