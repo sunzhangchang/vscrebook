@@ -1,4 +1,4 @@
-import { mkdirSync, statSync } from "fs"
+import { accessSync, constants, mkdirSync } from "fs"
 import _ = require("lodash")
 import { basename, join } from "path"
 import { window } from "vscode"
@@ -90,7 +90,9 @@ export async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
             return
         }
 
-        if (!statSync(gStoPath)) {
+        try {
+            accessSync(gStoPath, constants.F_OK)
+        } catch (err) {
             mkdirSync(gStoPath)
         }
 
@@ -115,7 +117,9 @@ export async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
 
         let newPath = join(gStoPath, newName)
 
-        if (!statSync(gStoPath)) {
+        try {
+            accessSync(gStoPath, constants.F_OK)
+        } catch (err) {
             mkdirSync(gStoPath)
         }
 

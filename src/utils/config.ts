@@ -3,10 +3,11 @@ import _ = require("lodash")
 
 export const extName = 'vscrebook'
 
-const enum Default {
-    pageSize = 25,
-    downloadPath = 'D:/Downloads/',
-    autoFlipTime = 3000,
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const Default = {
+    pageSize: 25,
+    downloadPath: process.env.HOME || process.env.USERPROFILE,
+    autoFlipTime: 3000,
 }
 
 const enum ExtConfig {
