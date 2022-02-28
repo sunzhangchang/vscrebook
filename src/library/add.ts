@@ -80,20 +80,11 @@ async function getAdBook() {
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
             return download(one.目录链接, one.书名).then(() => {
                 window.showInformationMessage('ok?')
-                let tmp: string = ''
-                let t = setTimeout(() => {
-                    if (_.isUndefined(one)) {
-                        error(Errors.chooesFaild)
-                        return
-                    }
-                    tmp = join(getConfig().downloadPath, one.书名)
-                    clearTimeout(t)
-                    console.log(t)
-                }, 500)
-                while (t.hasRef()) {
+                if (_.isUndefined(one)) {
+                    error(Errors.chooesFaild)
+                    return
                 }
-                console.log(tmp)
-                return tmp
+                return join(getConfig().downloadPath, one.书名)
             })
         }
     }
