@@ -1,5 +1,9 @@
 // swcrc.js
 const path = require("path")
+
+//@ts-check
+/** @typedef {import('@swc/core').Config} Config **/
+
 module.exports = (isDev = false) => {
     // polyfill
     const polyfillConfig = isDev ? {} : {
@@ -9,7 +13,9 @@ module.exports = (isDev = false) => {
             path: path.resolve(__dirname),
         },
     }
-    return {
+
+    /** @type Config */
+    const config = {
         module: {
             type: "es6",
             ignoreDynamic: true,
@@ -38,5 +44,7 @@ module.exports = (isDev = false) => {
                 decoratorMetadata: true,
             },
         },
+        minify: !isDev
     }
+    return config
 }
