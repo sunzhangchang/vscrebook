@@ -1,4 +1,4 @@
-import { mkdirSync, statSync } from "fs"
+import { accessSync, constants, mkdirSync } from "fs"
 import _ = require("lodash")
 import { basename, join } from "path"
 import { window } from "vscode"
@@ -19,15 +19,14 @@ async function getAdBook() {
     let chos = await window.showQuickPick([Chooses.local, Chooses.online], {
         matchOnDescription: true
     })
-    let bookPath: string | undefined
     switch (chos) {
         case Chooses.local: {
-            let tmp = await window.showOpenDialog()
-            if (_.isUndefined(tmp)) {
-                return
-            }
-            bookPath = tmp[0].fsPath
-            break
+            return window.showOpenDialog().then(res => {
+                if (_.isUndefined(res)) {
+                    return
+                }
+                return res[0].fsPath
+            })
         }
 
         case Chooses.online: {
@@ -55,10 +54,13 @@ async function getAdBook() {
             for (const iter of list) {
                 strlist.push(`${iter.书名} - 作者: ${iter.作者} - 分类: ${iter.分类}`)
             }
-            let bookName = await window.showQuickPick(strlist)
-            if (_.isUndefined(bookName)) {
+            let res = await window.showQuickPick(strlist)
+            if (_.isUndefined(res)) {
                 return
             }
+
+            let bookName = res.slice()
+
             let one: SearchBook | undefined
             bookName = bookName.split(' - ')[0]
             for (const iter of list) {
@@ -76,18 +78,28 @@ async function getAdBook() {
                 one.书名 += '.txt'
             }
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
-            download(one.目录链接, one.书名)
-            bookPath = join(getConfig().downloadPath, one.书名)
-            break
+            return download(one.目录链接, one.书名).then(() => {
+                window.showInformationMessage('ok?')
+                if (_.isUndefined(one)) {
+                    error(Errors.chooesFaild)
+                    return
+                }
+                return join(getConfig().downloadPath, one.书名)
+            })
         }
     }
-    return bookPath
 }
 
 export async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
     return await (getAdBook().then(oldPath => {
         if (_.isUndefined(oldPath)) {
             return
+        }
+
+        try {
+            accessSync(gStoPath, constants.F_OK)
+        } catch (err) {
+            mkdirSync(gStoPath)
         }
 
         let _oldName = basename(oldPath)
@@ -111,7 +123,9 @@ export async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
 
         let newPath = join(gStoPath, newName)
 
-        if (!statSync(gStoPath)) {
+        try {
+            accessSync(gStoPath, constants.F_OK)
+        } catch (err) {
             mkdirSync(gStoPath)
         }
 

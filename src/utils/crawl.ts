@@ -9,7 +9,7 @@ export async function search(searchKey: string) {
     return await rsSearch(searchKey)
 }
 
-export function download(inputUrl: string, bookName: string) {
+export async function download(inputUrl: string, bookName: string) {
     let _bookName = bookName.slice()
     if (!_.endsWith(bookName, '.txt')) {
         _bookName += '.txt'
@@ -17,7 +17,7 @@ export function download(inputUrl: string, bookName: string) {
 
     let downloadPath = join(getConfig().downloadPath, _bookName)
 
-    rsDownload(inputUrl, downloadPath).then(async () => {
+    return rsDownload(inputUrl, downloadPath).then(() => {
         window.showInformationMessage('下载完成!')
     }).catch(err => {
         console.error(err)

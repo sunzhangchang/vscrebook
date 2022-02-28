@@ -1,0 +1,3 @@
+[submodule "pkg/crawl"]
+	path = pkg/crawl
+	url = git@github.com:sunzhangchang/novelcrawl.git

@@ -1,10 +1,26 @@
+import { accessSync, constants, mkdirSync } from "fs"
 import { commands, ExtensionContext } from "vscode"
 import { bookListInit } from "./utils/bookList"
-import { extName } from "./utils/config"
+import { extName, getConfig } from "./utils/config"
 import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInterval, showJump, showNext, showPrev, startt, toggleBossMsg } from "./utils/showing"
 
 export function activate(context: ExtensionContext) {
     console.log(`Congratulations, your extension "${extName}" is now active!`)
+
+    // console.log(getConfig().downloadPath)
+    // console.error(process.env)
+
+    try {
+        accessSync(context.globalStorageUri.fsPath, constants.F_OK)
+    } catch (err) {
+        mkdirSync(context.globalStorageUri.fsPath)
+    }
+
+    try {
+        accessSync(getConfig().downloadPath, constants.F_OK)
+    } catch (err) {
+        mkdirSync(getConfig().downloadPath)
+    }
 
     bookListInit(context)
 
