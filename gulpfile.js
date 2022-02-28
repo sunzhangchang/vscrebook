@@ -1,5 +1,4 @@
 const gulp = require('gulp')
-const gutil = require('gulp-util')
 
 const { build } = require('./scripts/build.js')
 
@@ -13,20 +12,8 @@ function prodCrawl(cb) {
     cb()
 }
 
-const webpack = require('webpack')
+const { runWebpack } = require('./scripts/runWebpack')
 const webpackConfig = require('./webpack.config')
-
-function runWebpack(config, cb) {
-    webpack(config).run((err, stats) => {
-        if (err) {
-            throw new gutil.PluginError("webpack:build-dev", err)
-        }
-        gutil.log("[webpack:build-dev]", stats.toString({
-            colors: true
-        }))
-        cb()
-    })
-}
 
 let devConfig = Object.create(webpackConfig)
 devConfig.mode = "development"
@@ -62,12 +49,13 @@ let watchConfig = Object.create(devConfig)
 watchConfig.watch = true
 
 function watch(cb) {
-    console.log('here')
     runWebpack(watchConfig, cb)
 }
 
-exports.devCrawl = devCrawl
-exports.prodCrawl = prodCrawl
-exports.dev = gulp.series(devCrawl, dev)
-exports.watch = gulp.series(devCrawl, watch)
-exports.prod = gulp.series(prodCrawl, prod)
+module.exports = {
+    devCrawl,
+    prodCrawl,
+    dev: gulp.series(devCrawl, dev),
+    watch: gulp.series(devCrawl, watch),
+    prod: gulp.series(prodCrawl, prod),
+}

@@ -114,7 +114,6 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
-    "check": "check.cmd",
     "compile": "gulp dev",
     "watch": "gulp watch",
     "package": "gulp prod",
