@@ -1,6 +1,6 @@
-import { exec } from "child_process"
+const { exec } = require("child_process")
 
-export function run(cmd, returnString = 'dummy') {
+exports.run = function(cmd, returnString = 'dummy') {
     console.log(`Try to run ${cmd}.`)
     let child = exec(cmd)
     let res = {

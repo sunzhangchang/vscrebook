@@ -1,4 +1,4 @@
-import { EventEmitter, window } from "vscode"
+import { window } from "vscode"
 import { rsSearch, rsDownload } from "../../pkg/crawl"
 import _ = require("lodash")
 import { error, Errors } from "./error"
