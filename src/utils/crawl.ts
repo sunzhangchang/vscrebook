@@ -1,4 +1,4 @@
-import { window } from "vscode"
+import { EventEmitter, window } from "vscode"
 import { rsSearch, rsDownload } from "../../pkg/crawl"
 import _ = require("lodash")
 import { error, Errors } from "./error"
@@ -17,7 +17,7 @@ export function download(inputUrl: string, bookName: string) {
 
     let downloadPath = join(getConfig().downloadPath, _bookName)
 
-    rsDownload(inputUrl, downloadPath).then(async () => {
+    rsDownload(inputUrl, downloadPath).then(() => {
         window.showInformationMessage('下载完成!')
     }).catch(err => {
         console.error(err)

@@ -7,7 +7,7 @@ import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInt
 export function activate(context: ExtensionContext) {
     console.log(`Congratulations, your extension "${extName}" is now active!`)
 
-    console.log(getConfig().downloadPath)
+    // console.log(getConfig().downloadPath)
     // console.error(process.env)
 
     try {

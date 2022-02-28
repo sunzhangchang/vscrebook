@@ -76,7 +76,8 @@ async function getAdBook() {
                 one.书名 += '.txt'
             }
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
-            download(one.目录链接, one.书名)
+            await download(one.目录链接, one.书名)
+            window.showInformationMessage('ok?')
             bookPath = join(getConfig().downloadPath, one.书名)
             break
         }

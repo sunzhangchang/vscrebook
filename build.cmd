@@ -1,1 +1,0 @@
-cd ./pkg/crawl && pnpm build
