@@ -32,8 +32,13 @@ export function getConfig(): ConfigType {
         updateWsConfig(ExtConfig.pageSize, Default.pageSize, true)
     }
 
-    if (_.isUndefined(getWsConfig(ExtConfig.downloadPath)) || _.isEmpty(getWsConfig(ExtConfig.downloadPath))) {
+    // if (_.isUndefined(getWsConfig(ExtConfig.downloadPath)) || _.isEmpty(getWsConfig(ExtConfig.downloadPath))) {
+    //     updateWsConfig(ExtConfig.downloadPath, Default.downloadPath, true)
+    // }
+    const tmp = getWsConfig(ExtConfig.downloadPath)
+    if (_.isEqual(tmp, 'D:/Downloads/') || _.isEmpty(tmp)) {
         updateWsConfig(ExtConfig.downloadPath, Default.downloadPath, true)
+
     }
 
     if (_.isUndefined(getWsConfig(ExtConfig.autoFlipTime))) {
