@@ -1,12 +1,12 @@
 const webpack = require('webpack')
 const gutil = require('gulp-util')
 
-function runWebpack(config, cb) {
+function runWebpack(config, msg, cb) {
     webpack(config).run((err, stats) => {
         if (err) {
-            throw new gutil.PluginError("webpack:build-dev", err)
+            throw new gutil.PluginError(`webpack:${msg}`, err)
         }
-        gutil.log("[webpack:build-dev]", stats.toString({
+        gutil.log(`[webpack:${msg}]`, stats.toString({
             colors: true
         }))
         cb()

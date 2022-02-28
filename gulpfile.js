@@ -19,7 +19,7 @@ let devConfig = Object.create(webpackConfig)
 devConfig.mode = "development"
 
 function dev(cb) {
-    runWebpack(devConfig, cb)
+    runWebpack(devConfig, 'build-dev', cb)
 }
 
 const esbuild = require('esbuild')
@@ -42,14 +42,14 @@ webpackConfig.optimization = {
 }
 
 function prod(cb) {
-    runWebpack(prodConfig, cb)
+    runWebpack(prodConfig, 'build-prod', cb)
 }
 
 let watchConfig = Object.create(devConfig)
 watchConfig.watch = true
 
 function watch(cb) {
-    runWebpack(watchConfig, cb)
+    runWebpack(watchConfig, 'watch', cb)
 }
 
 module.exports = {
