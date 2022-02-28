@@ -19,90 +19,84 @@ async function getAdBook() {
     let chos = await window.showQuickPick([Chooses.local, Chooses.online], {
         matchOnDescription: true
     })
-    let bookPath: string | undefined
-    (() => {switch (chos) {
+    switch (chos) {
         case Chooses.local: {
-            window.showOpenDialog().then(res => {
+            return window.showOpenDialog().then(res => {
                 if (_.isUndefined(res)) {
                     return
                 }
-                bookPath = res[0].fsPath
+                return res[0].fsPath
             })
-            break
         }
 
         case Chooses.online: {
-            (async () => {
-                let searchKey
-                while (true) {
-                    searchKey = await window.showInputBox({
-                        prompt: '请输入搜索关键字: ',
-                        placeHolder: '搜索关键字',
-                    })
-                    if (_.isUndefined(searchKey)) {
+            let searchKey
+            while (true) {
+                searchKey = await window.showInputBox({
+                    prompt: '请输入搜索关键字: ',
+                    placeHolder: '搜索关键字',
+                })
+                if (_.isUndefined(searchKey)) {
+                    return
+                }
+                if (_.isEmpty(searchKey.trim())) {
+                    error(Errors.searchKeyEmpty)
+                } else {
+                    break
+                }
+            }
+            let list = await search(searchKey)
+            if (_.isNil(list)) {
+                error(Errors.searchedNothing)
+                return
+            }
+            let strlist: string[] = []
+            for (const iter of list) {
+                strlist.push(`${iter.书名} - 作者: ${iter.作者} - 分类: ${iter.分类}`)
+            }
+            let res = await window.showQuickPick(strlist)
+            if (_.isUndefined(res)) {
+                return
+            }
+
+            let bookName = res.slice()
+
+            let one: SearchBook | undefined
+            bookName = bookName.split(' - ')[0]
+            for (const iter of list) {
+                if (_.isEqual(bookName, iter.书名)) {
+                    one = iter
+                    break
+                }
+                one = undefined
+            }
+            if (_.isUndefined(one)) {
+                error(Errors.chooesFaild)
+                return
+            }
+            if (!_.endsWith(one.书名, '.txt')) {
+                one.书名 += '.txt'
+            }
+            window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
+            return download(one.目录链接, one.书名).then(() => {
+                window.showInformationMessage('ok?')
+                let tmp: string = ''
+                let t = setTimeout(() => {
+                    if (_.isUndefined(one)) {
+                        error(Errors.chooesFaild)
                         return
                     }
-                    if (_.isEmpty(searchKey.trim())) {
-                        error(Errors.searchKeyEmpty)
-                    } else {
-                        return true
-                    }
+                    tmp = join(getConfig().downloadPath, one.书名)
+                    clearTimeout(t)
+                    console.log(t)
+                }, 500)
+                while (t.hasRef()) {
                 }
-                return await search(searchKey)
-            })().then(async list => {
-                if (list === true) {
-                    return
-                }
-                if (_.isNil(list)) {
-                    error(Errors.searchedNothing)
-                    return
-                }
-                let strlist: string[] = []
-                for (const iter of list) {
-                    strlist.push(`${iter.书名} - 作者: ${iter.作者} - 分类: ${iter.分类}`)
-                }
-                return {
-                    res: await window.showQuickPick(strlist),
-                    list,
-                }
-            }).then(ress => {
-                if (_.isUndefined(ress)) {
-                    return
-                }
-
-                let {res, list} = ress
-
-                if (_.isUndefined(res)) {
-                    return
-                }
-
-                let bookName = res.slice()
-
-                let one: SearchBook | undefined
-                bookName = bookName.split(' - ')[0]
-                for (const iter of list) {
-                    if (_.isEqual(bookName, iter.书名)) {
-                        one = iter
-                        break
-                    }
-                    one = undefined
-                }
-                if (_.isUndefined(one)) {
-                    error(Errors.chooesFaild)
-                    return
-                }
-                if (!_.endsWith(one.书名, '.txt')) {
-                    one.书名 += '.txt'
-                }
-                window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
-                download(one.目录链接, one.书名)
-                window.showInformationMessage('ok?')
-                bookPath = join(getConfig().downloadPath, one.书名)
+                console.log(tmp)
+                return tmp
             })
-            break
         }
-    }})()
-    return bookPath
+    }
 }
 
 export async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
