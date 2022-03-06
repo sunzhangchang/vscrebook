@@ -2,7 +2,16 @@ const gulp = require('gulp')
 const fs = require('fs')
 
 function clear(cb) {
-    fs.rmdirSync('dist')
+    try {
+        fs.accessSync('dist')
+        fs.rmdirSync('dist')
+    } catch (err) {
+        try {
+            fs.accessSync('../dist')
+            fs.rmdirSync('../dist')
+        } catch (er) {
+        }
+    }
     cb()
 }
 

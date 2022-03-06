@@ -1,85 +1,74 @@
 import _ = require("lodash")
-import { fetch } from "../fetch"
 import * as cheerio from 'cheerio'
-import path = require("path")
 import { error, Errors } from "../../utils/error"
+import { posix } from "path"
+import axios from 'axios'
+import querystring = require('querystring')
+import { window } from "vscode"
+import { Crawl } from "../inter"
 
-async function search(searchKey: string) {
-    let base = new URL('https://www.caimoge.net/search')
-    let url = new URL(base.href)
-    url.searchParams.append('searchkey', searchKey)
-    url.searchParams.sort()
+export const caimoge: Crawl =  {
+    source: 'https://www.caimoge.net/',
 
-    let response = await fetch(url.href)
+    async search(searchKey: string): Promise<SearchBook[] | null> {
+        let searchPath = posix.join(this.source, 'search')
+        console.log(searchPath)
+        // let url = new URL(searchPath)
+        // url.searchParams.append('searchkey', searchKey)
+        // url.searchParams.sort()
+/*
+        let res: string
+        try {
+            let response = await axios.post(searchPath, querystring.stringify({searchKey}))
 
-    if (_.isNull(response)) {
-        return null
+            res = Buffer.from(response.data).toString('utf8')
+        } catch (err: any) {
+            window.showErrorMessage(err.message)
+            throw err
+        }
+        // console.log(res)
+
+        let searchBooks: SearchBook[] = []
+
+        const $ = cheerio.load(res)
+        // console.log('!!!!----------------------------------------')
+        $('#sitembox dl').each((i, dl) => {
+            searchBooks.push({
+                书名: $(dl).find("dd:nth-child(2) > h3:nth-child(1) > a:nth-child(1)").text(),
+                作者: $(dl).find("dd:nth-child(3) > span:nth-child(1) > a:nth-child(1)").text(),
+                状态: $(dl).find("dd:nth-child(3) > span:nth-child(2)").text(),
+                分类: $(dl).find("dd:nth-child(3) > span:nth-child(3)").text(),
+                字数: $(dl).find("dd:nth-child(3) > span:nth-child(4)").text(),
+                简介: $(dl).find("dd:nth-child(4)").text(),
+                最新章节: $(dl).find("dd:nth-child(5) > a:nth-child(1)").text(),
+                最近更新: $(dl).find("dd:nth-child(5) > span:nth-child(2)").text(),
+                目录链接: posix.join(searchPath, $(dl).find('dd:nth-child(2) > h3:nth-child(1) > a:nth-child(1)').attr('href') ?? 'nothing'),
+                书源: this.source
+            })
+        })*/
+        // console.log('++++++++++++++++++++++++++++++++++++++++++++++')
+        return []
+    },
+
+    async download(menuURL: string): Promise<Buffer | null> {
+        let id = _.first(_.split(_.last(_.split(_.trim(menuURL), '/')), '.'))
+
+        if (_.isUndefined(id)) {
+            console.error(menuURL)
+            error(Errors.getNovelIdFailed)
+            return null
+        }
+
+        let novelUrl = 'https://down.caimoge.net/modules/article/txtarticle.php?id=' + id
+
+        let response = await axios.get(novelUrl)
+
+        if (_.isNull(response)) {
+            console.error(novelUrl)
+            error(Errors.getNovelFileFailed)
+            return null
+        }
+
+        return Buffer.from(response.data)
     }
-
-    let res = Buffer.from(response.data).toString('utf8')
-    // console.log(res)
-
-    let searchBooks: SearchBook[] = []
-
-    const $ = cheerio.load(res)
-    // console.log('!!!!----------------------------------------')
-    $('#sitembox dl').each((i, dl) => {
-        // console.log(dl)
-        let lnk = path.posix.join(base.href, $(dl).find('dd:nth-child(2) > h3:nth-child(1) > a:nth-child(1)').attr('href') ?? 'nothing')
-        // console.log(lnk)
-        searchBooks.push({
-            书名: $(dl)
-                .find("dd:nth-child(2) > h3:nth-child(1) > a:nth-child(1)")
-                .text(),
-            作者: $(dl)
-                .find("dd:nth-child(3) > span:nth-child(1) > a:nth-child(1)")
-                .text(),
-            状态: $(dl)
-                .find("dd:nth-child(3) > span:nth-child(2)")
-                .text(),
-            分类: $(dl)
-                .find("dd:nth-child(3) > span:nth-child(3)")
-                .text(),
-            字数: $(dl)
-                .find("dd:nth-child(3) > span:nth-child(4)")
-                .text(),
-            简介: $(dl).find("dd:nth-child(4)").text(),
-            最新章节: $(dl)
-                .find("dd:nth-child(5) > a:nth-child(1)")
-                .text(),
-            最近更新: $(dl)
-                .find("dd:nth-child(5) > span:nth-child(2)")
-                .text(),
-            目录链接: lnk,
-        })
-    })
-    // console.log('++++++++++++++++++++++++++++++++++++++++++++++')
-    return searchBooks
-}
-
-async function download(url: string) {
-    let id = _.first(_.split(_.last(_.split(_.trim(url), '/')), '.'))
-
-    if (_.isUndefined(id)) {
-        console.error(url)
-        error(Errors.getNovelIdFailed)
-        return null
-    }
-
-    let novelUrl = 'https://down.caimoge.net/modules/article/txtarticle.php?id=' + id
-
-    let response = await fetch(novelUrl)
-
-    if (_.isNull(response)) {
-        console.error(novelUrl)
-        error(Errors.getNovelFileFailed)
-        return null
-    }
-
-    return Buffer.from(response.data)
-}
-
-export const caimoge = {
-    search,
-    download,
 }

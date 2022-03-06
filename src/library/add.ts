@@ -51,7 +51,7 @@ async function getAdBook() {
             }
             let strlist: string[] = []
             for (const iter of list) {
-                strlist.push(`${iter.书名} - 作者: ${iter.作者} - 分类: ${iter.分类}`)
+                strlist.push(`${iter.书名} - 作者: ${iter.作者} - 分类: ${iter.分类} - 书源: ${iter.书源}`)
             }
             let res = await window.showQuickPick(strlist)
             if (_.isUndefined(res)) {
@@ -77,7 +77,7 @@ async function getAdBook() {
                 one.书名 += '.txt'
             }
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
-            return download(one.目录链接, getConfig().downloadPath, one.书名).then(() => {
+            return download(one.书源, one.目录链接, getConfig().downloadPath, one.书名).then(() => {
                 // window.showInformationMessage('ok?')
                 if (_.isUndefined(one)) {
                     error(Errors.chooseFaild)

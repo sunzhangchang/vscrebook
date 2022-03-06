@@ -109,7 +109,8 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run package",
+    "clear": "gulp clear",
+    "vscode:prepublish": "gulp clear && npm run package",
     "compile": "gulp dev",
     "watch": "gulp watch",
     "package": "gulp prod",
@@ -136,7 +137,6 @@
     "eslint": "^7.32.0",
     "gulp": "^4.0.2",
     "gulp-util": "^3.0.8",
-    "node-loader": "^2.0.0",
     "regenerator-runtime": "^0.13.9",
     "swc-loader": "^0.1.15",
     "typescript": "4.4.4",

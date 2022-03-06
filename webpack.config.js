@@ -37,20 +37,6 @@ const extensionConfig = {
                 loader: "swc-loader",
                 options: swcrc(isDev),
             },
-            {
-                test: /\.node$/,
-                exclude: /node_modules/,
-                loader: "node-loader",
-                options: {
-                    name: "[name].[ext]",
-                    // name(resourcePath, resourceQuery) {
-                    //     if (process.env.NODE_ENV === "development") {
-                    //         return "[name].[ext]";
-                    //     }
-                    //     return "[contenthash].[ext]";
-                    // },
-                },
-            },
         ],
     },
 }
