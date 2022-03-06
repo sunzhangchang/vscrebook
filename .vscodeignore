@@ -15,5 +15,7 @@ vsc-extension-quickstart.md
 **/*.cmd
 **/target/**
 **/pkg/**
-swcrc.js
+.swcrc.js
 .swc/**
+gulpfile.js
+script/**
