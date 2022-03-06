@@ -2,11 +2,10 @@ import { accessSync, constants, mkdirSync } from "fs"
 import _ = require("lodash")
 import { basename, join } from "path"
 import { window } from "vscode"
-import { SearchBook } from "../../pkg/crawl"
+import { download, search } from "../crawl"
 import { copyFileToUTF8Sync } from "../utils"
 import { getBookList, updateBook } from "../utils/bookList"
 import { getConfig } from "../utils/config"
-import { download, search } from "../utils/crawl"
 import { error, Errors } from "../utils/error"
 import { changeName } from "./utils"
 
@@ -71,17 +70,17 @@ async function getAdBook() {
                 one = undefined
             }
             if (_.isUndefined(one)) {
-                error(Errors.chooesFaild)
+                error(Errors.chooseFaild)
                 return
             }
             if (!_.endsWith(one.书名, '.txt')) {
                 one.书名 += '.txt'
             }
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
-            return download(one.目录链接, one.书名).then(() => {
-                window.showInformationMessage('ok?')
+            return download(one.目录链接, getConfig().downloadPath, one.书名).then(() => {
+                // window.showInformationMessage('ok?')
                 if (_.isUndefined(one)) {
-                    error(Errors.chooesFaild)
+                    error(Errors.chooseFaild)
                     return
                 }
                 return join(getConfig().downloadPath, one.书名)

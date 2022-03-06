@@ -33,19 +33,20 @@ export function newBook(path?: string) {
     book.totPage = Math.ceil(book.text.length / getConfig().pageSize)
 }
 
-export function getPageNumber(jumpPage?: number): number | string | undefined {
+export function getPageNumber(jumpPage?: number) {
     if (_.isNull(book)) {
-        return
+        return null
     }
 
     if (_.isUndefined(jumpPage)) {
-        return getBook(book.name).curPage
+        let page = getBook(book.name).curPage
+        return page === 0 ? 1 : page
     }
-    if (jumpPage < 0) {
-        return 'head'
+    if (jumpPage <= 0) {
+        return 0
     }
     if (jumpPage > book.totPage) {
-        return 'tail'
+        return book.totPage + 1
     }
     return jumpPage
 }
@@ -67,20 +68,23 @@ export function getPageText(jumpPage?: number): string {
 
     let page = getPageNumber(jumpPage)
 
-    if (_.isEqual(page, 'head')) {
-        return '已经是第一页了!'
+    if (_.isNull(page)) {
+        return ''
     }
-    if (_.isEqual(page, 'tail')) {
-        return '已经到最后一页了!'
-    }
-
-    let oPage = page as number
 
     updateBook(book.name, {
         bookName: book.name,
         pageSize: getConfig().pageSize,
-        curPage: oPage
+        curPage: page
     })
+
+    if (page === 0) {
+        return '您阅读到第一页了!'
+    }
+
+    if (page === book.totPage + 1) {
+        return '您阅读到最后一页了!'
+    }
 
     let tmp = getStartEnd()
 

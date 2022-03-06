@@ -100,7 +100,7 @@ export function showJump() {
     }
     window.showInputBox({
         prompt: '请输入跳转页数: ',
-        placeHolder: `跳转页数(默认跳转到当前页: ${getBook(book.name).curPage})`
+        placeHolder: `跳转页数(默认跳转到当前页: ${getBook(book.name).curPage}, 总页数: ${book.totPage})`
     }).then(val => {
         if (_.isNull(book)) {
             error(Errors.bookUndefined)

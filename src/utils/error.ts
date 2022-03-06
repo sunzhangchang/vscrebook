@@ -4,9 +4,13 @@ export const enum Errors {
     bookUndefined,
     searchKeyEmpty,
     searchedNothing,
-    chooesFaild,
+    chooseFaild,
     unknowError,
     bookNameEmpty,
+    fetchError,
+    getNovelIdFailed,
+    getNovelFileFailed,
+    downloadNovelFailed,
 }
 
 export function error(err: Errors) {
@@ -27,13 +31,29 @@ export function error(err: Errors) {
             break
         }
 
-        case Errors.chooesFaild: {
+        case Errors.chooseFaild: {
             msg = '选择书籍时遇到错误! 请尝试重试!'
             break
         }
 
         case Errors.bookNameEmpty: {
             msg = '书名不能为空!'
+        }
+
+        case Errors.fetchError: {
+            msg = '拉取链接失败!'
+        }
+
+        case Errors.getNovelIdFailed: {
+            msg = '获取书籍id失败!'
+        }
+
+        case Errors.getNovelFileFailed: {
+            msg = '获取书籍文件失败!'
+        }
+
+        case Errors.downloadNovelFailed: {
+            msg = '下载小说失败!'
         }
 
         case Errors.unknowError: default: {
