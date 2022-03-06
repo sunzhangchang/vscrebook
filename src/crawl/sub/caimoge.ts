@@ -3,25 +3,30 @@ import * as cheerio from 'cheerio'
 import { error, Errors } from "../../utils/error"
 import { posix } from "path"
 import axios from 'axios'
-import querystring = require('querystring')
+// import querystring = require('querystring')
 import { window } from "vscode"
 import { Crawl } from "../inter"
 
 export const caimoge: Crawl =  {
+    sourceName: '采墨阁',
     source: 'https://www.caimoge.net/',
 
     async search(searchKey: string): Promise<SearchBook[] | null> {
-        let searchPath = posix.join(this.source, 'search')
-        console.log(searchPath)
-        // let url = new URL(searchPath)
-        // url.searchParams.append('searchkey', searchKey)
-        // url.searchParams.sort()
-/*
+        let searchPath = this.source + 'search/'
+        // console.log(searchPath)
+        let url = new URL(searchPath)
+        url.searchParams.append('searchkey', searchKey)
+        url.searchParams.sort()
+
         let res: string
         try {
-            let response = await axios.post(searchPath, querystring.stringify({searchKey}))
+            let response = await axios({
+                url: url.href,
+                // querystring.stringify({searchKey})
+            })
 
             res = Buffer.from(response.data).toString('utf8')
+            console.log(res)
         } catch (err: any) {
             window.showErrorMessage(err.message)
             throw err
@@ -43,11 +48,11 @@ export const caimoge: Crawl =  {
                 最新章节: $(dl).find("dd:nth-child(5) > a:nth-child(1)").text(),
                 最近更新: $(dl).find("dd:nth-child(5) > span:nth-child(2)").text(),
                 目录链接: posix.join(searchPath, $(dl).find('dd:nth-child(2) > h3:nth-child(1) > a:nth-child(1)').attr('href') ?? 'nothing'),
-                书源: this.source
+                书源: this.sourceName
             })
-        })*/
+        })
         // console.log('++++++++++++++++++++++++++++++++++++++++++++++')
-        return []
+        return searchBooks
     },
 
     async download(menuURL: string): Promise<Buffer | null> {

@@ -17,9 +17,9 @@ export async function search(searchKey: string) {
     if (_.isEmpty(crawlers)) {
         return []
     }
-    // console.log('123123123')
     let list: SearchBook[] = []
-    list = _.concat(list, await crawlers[0].search(searchKey) ?? [])
+    list = _.concat(list, (await caimoge.search(searchKey)) ?? [])
+    // list = _.concat(list, await crawlers[0].search(searchKey) ?? [])
     // return (() => {
     //     crawlers.forEach((crawl) => {
     //         crawl.search(searchKey).then(res => {

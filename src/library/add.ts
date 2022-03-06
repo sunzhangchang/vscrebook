@@ -44,6 +44,7 @@ async function getAdBook() {
                     break
                 }
             }
+            window.showInformationMessage("!@#!@#!@3")
             let list = await search(searchKey)
             if (_.isNil(list)) {
                 error(Errors.searchedNothing)
