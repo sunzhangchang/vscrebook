@@ -3,7 +3,7 @@
 "use strict"
 
 const path = require("path")
-const swcrc = require("./swcrc")
+const swcrc = require("./.swcrc")
 
 const env = process.env.NODE_ENV
 
