@@ -1,14 +1,8 @@
 const gulp = require('gulp')
+const fs = require('fs')
 
-const { build } = require('./scripts/build.js')
-
-function devCrawl(cb) {
-    build('debug')
-    cb()
-}
-
-function prodCrawl(cb) {
-    build()
+function clear(cb) {
+    fs.rmdirSync('dist')
     cb()
 }
 
@@ -53,9 +47,8 @@ function watch(cb) {
 }
 
 module.exports = {
-    devCrawl,
-    prodCrawl,
-    dev: gulp.series(devCrawl, dev),
-    watch: gulp.series(devCrawl, watch),
-    prod: gulp.series(prodCrawl, prod),
+    clear,
+    dev: gulp.series(clear, dev),
+    watch: gulp.series(clear, watch),
+    prod: gulp.series(clear, prod),
 }
