@@ -7,9 +7,9 @@ import axios from 'axios'
 import { window } from "vscode"
 import { Crawl } from "../inter"
 
-export const caimoge: Crawl =  {
-    sourceName: '采墨阁',
-    source: 'https://www.caimoge.net/',
+export class Caimoge implements Crawl {
+    sourceName = '采墨阁'
+    source = 'https://www.caimoge.net/'
 
     async search(searchKey: string): Promise<SearchBook[] | null> {
         let searchPath = this.source + 'search/'
@@ -53,7 +53,7 @@ export const caimoge: Crawl =  {
         })
         // console.log('++++++++++++++++++++++++++++++++++++++++++++++')
         return searchBooks
-    },
+    }
 
     async download(menuURL: string): Promise<Buffer | null> {
         let id = _.first(_.split(_.last(_.split(_.trim(menuURL), '/')), '.'))
@@ -64,9 +64,13 @@ export const caimoge: Crawl =  {
             return null
         }
 
-        let novelUrl = 'https://down.caimoge.net/modules/article/txtarticle.php?id=' + id
+        let novelUrl = `https://www.caimoge.net/api/txt_down.php?articleid=${id}`
 
-        let response = await axios.get(novelUrl)
+        console.log(novelUrl)
+
+        let response = await axios({
+            url: novelUrl
+        })
 
         if (_.isNull(response)) {
             console.error(novelUrl)

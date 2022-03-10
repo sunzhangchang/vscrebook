@@ -5,43 +5,50 @@ import { window } from "vscode"
 import { error, Errors } from "../utils/error"
 import axios from 'axios'
 import { USER_AGENT } from "./utils"
-import { caimoge } from "./sub/caimoge"
+import { Caimoge } from "./sub/caimoge"
 import { Crawl } from "./inter"
 
 axios.defaults.headers.common['User-Agent'] = USER_AGENT
 axios.defaults.responseType = 'arraybuffer'
 
-let crawlers: Crawl[] = [caimoge]
+let crawlers: Crawl[] = [
+    new Caimoge()
+]
 
 export async function search(searchKey: string) {
     if (_.isEmpty(crawlers)) {
         return []
     }
     let list: SearchBook[] = []
-    list = _.concat(list, (await caimoge.search(searchKey)) ?? [])
-    // list = _.concat(list, await crawlers[0].search(searchKey) ?? [])
-    // return (() => {
-    //     crawlers.forEach((crawl) => {
-    //         crawl.search(searchKey).then(res => {
-    //             list = _.concat(list, res ?? [])
-    //             // console.log(list)
-    //         })
-    //     })
-    //     // console.log(123, list)
-    //     return list
-    // })()
+    for (const iter of crawlers) {
+        list = _.concat(list, (await iter.search(searchKey)) ?? [])
+    }
+    // console.log(123, list)
     return list
 }
 
 export async function download(source: string, menuURL: string, dir: string, name: string) {
-    let data = await crawlers.filter((cra: Crawl) => {
-        return _.isEqual(cra.source, source)
-    })[0].download(menuURL)
+    console.log(source)
+    let spider = (() => {
+        for (const iter of crawlers) {
+            if (_.isEqual(iter.sourceName, source)) {
+                return iter
+            }
+        }
+        return null
+    })()
+    if (_.isNull(spider)) {
+        console.error(source, 'cannot find crawl!')
+        error(Errors.downloadNovelFailed)
+        return null
+    }
+    console.log(spider)
+    let data = await spider.download(menuURL)
 
     if (_.isNull(data)) {
         console.error(menuURL, 'cannot fetch anything!')
         error(Errors.downloadNovelFailed)
-        return false
+        return null
     }
 
     return (() => {
@@ -50,6 +57,6 @@ export async function download(source: string, menuURL: string, dir: string, nam
             encoding: "utf8"
         })
         window.showInformationMessage('下载完成!')
-        return true
+        return pth
     })()
 }

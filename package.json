@@ -129,7 +129,6 @@
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "@vscode/test-electron": "^1.6.2",
-    "axios": "^0.26.0",
     "cheerio": "^1.0.0-rc.10",
     "core-js": "^3.20.2",
     "esbuild": "^0.14.14",
@@ -152,6 +151,7 @@
   },
   "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md",
   "dependencies": {
+    "axios": "^0.26.1",
     "chardet": "^1.4.0",
     "iconv-lite": "^0.6.3",
     "lodash": "^4.17.21"
