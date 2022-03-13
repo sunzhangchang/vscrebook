@@ -5,10 +5,15 @@ declare type ConfigType = {
 	sync: Object,
 }
 
+declare type Source = 
+| '本地'
+| '采墨阁'
+
 declare type BookInfo = {
 	bookName: string,
 	pageSize: number,
 	curPage: number,
+	source: Source,
 }
 
 declare type SearchBook = {
@@ -21,5 +26,5 @@ declare type SearchBook = {
 	最新章节: string
 	最近更新: string
 	目录链接: string
-	书源: string
+	书源: Source
 }

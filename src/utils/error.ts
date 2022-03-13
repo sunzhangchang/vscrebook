@@ -11,6 +11,7 @@ export const enum Errors {
     getNovelIdFailed,
     getNovelFileFailed,
     downloadNovelFailed,
+    syncSearchError,
 }
 
 export function error(err: Errors) {
@@ -54,6 +55,10 @@ export function error(err: Errors) {
 
         case Errors.downloadNovelFailed: {
             msg = '下载小说失败!'
+        }
+
+        case Errors.syncSearchError: {
+            msg = '同步书籍失败! 该书籍可能是您手动添加的。'
         }
 
         case Errors.unknowError: default: {

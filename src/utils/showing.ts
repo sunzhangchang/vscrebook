@@ -1,6 +1,7 @@
 import _ = require("lodash")
 import { join } from "path"
 import { ExtensionContext, window } from "vscode"
+import { setExtTo } from "."
 import { book, getPageText, newBook } from "../book"
 import { showMainMenu } from "../library"
 import { getBook, updateBook } from "./bookList"
@@ -82,13 +83,18 @@ export function showBossText() {
 
 export function startt(context: ExtensionContext) {
     showMainMenu(context).then(res => {
+        // console.log('111-- ', res)
         if (_.isUndefined(res)) {
             newBook()
             return
         }
-        res.curPage = Math.ceil((res.curPage - 1) * res.pageSize / getConfig().pageSize)
+        res.curPage = Math.max(1, Math.ceil((res.curPage - 1) * res.pageSize / getConfig().pageSize))
+
+        // console.log(44, res)
+
         updateBook(res.bookName, res)
-        newBook(join(context.globalStorageUri.fsPath, res.bookName))
+        // console.log(setExtTo(res.bookName, 'txt'))
+        newBook(join(context.globalStorageUri.fsPath, setExtTo(res.bookName, 'txt')), res.source)
         showNovelText()
     })
 }

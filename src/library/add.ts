@@ -1,20 +1,23 @@
-import { accessSync, constants, mkdirSync } from "fs"
+// import { accessSync, constants, mkdirSync } from "fs"
+import { debug } from "console"
 import _ = require("lodash")
-import { basename, join } from "path"
+import { join, parse } from "path"
 import { window } from "vscode"
 import { download, search } from "../crawl"
-import { copyFileToUTF8Sync } from "../utils"
-import { getBookList, updateBook } from "../utils/bookList"
+import { copyFileToUTF8Sync, setExtTo } from "../utils"
+import { updateBook } from "../utils/bookList"
 import { getConfig } from "../utils/config"
 import { error, Errors } from "../utils/error"
-import { changeName } from "./utils"
 
 const enum Chooses {
     local = '本地书籍',
     online = '网络书籍',
 }
 
-async function getAdBook() {
+async function getAdBook(): Promise<{
+    bookPath: string,
+    source: Source,
+} | undefined> {
     let chos = await window.showQuickPick([Chooses.local, Chooses.online], {
         matchOnDescription: true
     })
@@ -24,7 +27,10 @@ async function getAdBook() {
                 if (_.isUndefined(res)) {
                     return
                 }
-                return res[0].fsPath
+                return {
+                    bookPath: res[0].fsPath,
+                    source: '本地'
+                }
             })
         }
 
@@ -55,7 +61,6 @@ async function getAdBook() {
                 strlist.push(`${iter.书名} - 作者: ${iter.作者} - 分类: ${iter.分类} - 书源: ${iter.书源}`)
             }
             let bookName = await window.showQuickPick(strlist)
-            console.log(bookName)
 
             if (_.isUndefined(bookName)) {
                 return
@@ -75,70 +80,72 @@ async function getAdBook() {
                 return
             }
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
-            return download(one.书源, one.目录链接, getConfig().downloadPath, one.书名).then(downloadPath => {
-                // window.showInformationMessage('ok?')
-                if (_.isUndefined(one)) {
-                    error(Errors.chooseFaild)
-                    return
-                }
-                return downloadPath
-            })
+            let downloadPath = await download(one.书源, one.目录链接, getConfig().downloadPath, one.书名)
+
+            return {
+                bookPath: downloadPath,
+                source: one.书源,
+            }
         }
     }
 }
 
-export async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
-    let oldPath = await getAdBook()
+export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: BookInfo) {
+    debug('Done here!')
+    let oldPath: string | undefined
+    let source: Source | undefined
+    let curPage: number | undefined
+    let pageSize: number | undefined
 
-    if (_.isUndefined(oldPath) || _.isNull(oldPath)) {
+    if(!_.isUndefined(bookInfo)) {
+        source = bookInfo.source
+        curPage = bookInfo.curPage
+        pageSize = bookInfo.pageSize
+    }
+    if (_.isUndefined(bookPath)) {
+        let tmp = await getAdBook()
+        if (!_.isUndefined(tmp)) {
+            source = tmp.source ?? source
+            oldPath = tmp.bookPath ?? oldPath
+        }
+    } else {
+        oldPath = oldPath ?? bookPath
+    }
+
+    debug(oldPath)
+
+    if (_.isUndefined(source)) {
+        source = '本地'
+    }
+    if (_.isUndefined(oldPath)) {
         return
     }
 
-    try {
-        accessSync(gStoPath, constants.F_OK)
-    } catch (err) {
-        mkdirSync(gStoPath)
-    }
+    // try {
+    //     accessSync(gStoPath, constants.F_OK)
+    // } catch (err) {
+    //     mkdirSync(gStoPath)
+    // }
 
-    let _oldName = basename(oldPath)
-    let newName: string = _oldName
+    let bookName = parse(oldPath).name
+    let newPath = join(gStoPath, setExtTo(bookName, 'txt'))
 
-    if (_.includes(getBookList(), _oldName)) {
-        changeName(_oldName).then(res => {
-            if (_.isUndefined(res)) {
-                newName = _oldName
-            } else {
-                newName = res
-            }
-        })
-    } else {
-        newName = _oldName
-    }
-
-    if (!_.endsWith(newName, '.txt')) {
-        newName += '.txt'
-    }
-
-    let newPath = join(gStoPath, newName)
-
-    try {
-        accessSync(gStoPath, constants.F_OK)
-    } catch (err) {
-        mkdirSync(gStoPath)
-    }
-
-    console.log(newPath)
+    debug(bookName)
+    debug(newPath)
+    debug(source)
+    debug(curPage)
 
     copyFileToUTF8Sync(oldPath, newPath,
         (data: string) => data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, ' '))
 
     const newBook: BookInfo = {
-        bookName: newName,
-        pageSize: getConfig().pageSize,
-        curPage: 1
+        bookName,
+        pageSize: pageSize ?? getConfig().pageSize,
+        curPage: curPage ?? 1,
+        source,
     }
 
-    updateBook(newName, newBook)
+    updateBook(bookName, newBook)
 
     window.showInformationMessage('添加成功')
     return newBook

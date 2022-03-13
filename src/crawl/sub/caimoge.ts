@@ -8,7 +8,7 @@ import { window } from "vscode"
 import { Crawl } from "../inter"
 
 export class Caimoge implements Crawl {
-    sourceName = '采墨阁'
+    sourceName: Source = '采墨阁'
     source = 'https://www.caimoge.net/'
 
     async search(searchKey: string): Promise<SearchBook[] | null> {
