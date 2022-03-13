@@ -1,7 +1,9 @@
+import { accessSync, constants } from "fs"
 import _ = require("lodash")
-import { basename } from "path"
+import { basename, join } from "path"
 import { ExtensionContext } from "vscode"
-import { getConfig } from "./config"
+import { search } from "../crawl"
+import { getConfig, updateSyncBookList } from "./config"
 
 let context: ExtensionContext
 
@@ -13,6 +15,16 @@ export function bookListInit(contex: ExtensionContext) {
         if (Object.prototype.hasOwnProperty.call(t, key)) {
             const ele = t[key]
             if (!_.isUndefined(ele['bookName'])) {
+                let bookName = ele['bookName'] as string
+                if (_.endsWith(bookName, '.txt')) {
+                    delBookFromList(bookName)
+                    let newBookName = bookName.substring(0, bookName.)
+                    updateBook(bookName, {
+                        bookName,
+                        pageSize: getConfig().pageSize,
+                        curPage: e.curPage,
+                    })
+                }
                 continue
             }
             const e = ele as {
@@ -20,13 +32,28 @@ export function bookListInit(contex: ExtensionContext) {
                 curPage: number,
             }
             // console.log(e)
-            let bookName = basename(e.bookPath)
+            let bookName = basename(e.bookPath, 'txt')
             delBookFromList(bookName)
             updateBook(bookName, {
                 bookName,
                 pageSize: getConfig().pageSize,
                 curPage: e.curPage,
             })
+        }
+    }
+
+    let sync = Object.create(getConfig().sync)
+    for (const key in sync) {
+        if (Object.prototype.hasOwnProperty.call(sync, key)) {
+            const ele = sync[key]
+            let bookName = ele['bookName']
+            if (_.endsWith(bookName, '.txt')) {
+            }
+            try {
+                accessSync(join(context.globalStorageUri.fsPath, bookName), constants.F_OK)
+            } catch (err) {
+                search(bookName)
+            }
         }
     }
 }
@@ -54,4 +81,5 @@ export function updateBook(bookName: string, bookInfo: BookInfo) {
 
 export function updateBookList(value: any) {
     context.globalState.update('bookList', JSON.stringify(value))
+    updateSyncBookList(value)
 }

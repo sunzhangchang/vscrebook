@@ -43,6 +43,11 @@
           "type": "number",
           "default": "3000",
           "description": "自动翻页的速度(每页的时间/ms)"
+        },
+        "vscrebook.sync": {
+          "type": "object",
+          "default": "{}",
+          "description": "或许这可以用来同步？"
         }
       }
     },
