@@ -44,7 +44,7 @@ async function getAdBook() {
                     break
                 }
             }
-            window.showInformationMessage("!@#!@#!@3")
+            // window.showInformationMessage("!@#!@#!@3")
             let list = await search(searchKey)
             if (_.isNil(list)) {
                 error(Errors.searchedNothing)
@@ -54,12 +54,12 @@ async function getAdBook() {
             for (const iter of list) {
                 strlist.push(`${iter.书名} - 作者: ${iter.作者} - 分类: ${iter.分类} - 书源: ${iter.书源}`)
             }
-            let res = await window.showQuickPick(strlist)
-            if (_.isUndefined(res)) {
+            let bookName = await window.showQuickPick(strlist)
+            console.log(bookName)
+
+            if (_.isUndefined(bookName)) {
                 return
             }
-
-            let bookName = res.slice()
 
             let one: SearchBook | undefined
             bookName = bookName.split(' - ')[0]
@@ -74,75 +74,72 @@ async function getAdBook() {
                 error(Errors.chooseFaild)
                 return
             }
-            if (!_.endsWith(one.书名, '.txt')) {
-                one.书名 += '.txt'
-            }
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
-            return download(one.书源, one.目录链接, getConfig().downloadPath, one.书名).then(() => {
+            return download(one.书源, one.目录链接, getConfig().downloadPath, one.书名).then(downloadPath => {
                 // window.showInformationMessage('ok?')
                 if (_.isUndefined(one)) {
                     error(Errors.chooseFaild)
                     return
                 }
-                return join(getConfig().downloadPath, one.书名)
+                return downloadPath
             })
         }
     }
 }
 
 export async function addBook(gStoPath: string): Promise<BookInfo | undefined> {
-    return await (getAdBook().then(oldPath => {
-        if (_.isUndefined(oldPath)) {
-            return
-        }
+    let oldPath = await getAdBook()
 
-        try {
-            accessSync(gStoPath, constants.F_OK)
-        } catch (err) {
-            mkdirSync(gStoPath)
-        }
+    if (_.isUndefined(oldPath) || _.isNull(oldPath)) {
+        return
+    }
 
-        let _oldName = basename(oldPath)
-        let newName: string = _oldName
+    try {
+        accessSync(gStoPath, constants.F_OK)
+    } catch (err) {
+        mkdirSync(gStoPath)
+    }
 
-        if (_.includes(getBookList(), _oldName)) {
-            changeName(_oldName).then(res => {
-                if (_.isUndefined(res)) {
-                    newName = _oldName
-                } else {
-                    newName = res
-                }
-            })
-        } else {
-            newName = _oldName
-        }
+    let _oldName = basename(oldPath)
+    let newName: string = _oldName
 
-        if (!_.endsWith(newName, '.txt')) {
-            newName += '.txt'
-        }
+    if (_.includes(getBookList(), _oldName)) {
+        changeName(_oldName).then(res => {
+            if (_.isUndefined(res)) {
+                newName = _oldName
+            } else {
+                newName = res
+            }
+        })
+    } else {
+        newName = _oldName
+    }
 
-        let newPath = join(gStoPath, newName)
+    if (!_.endsWith(newName, '.txt')) {
+        newName += '.txt'
+    }
 
-        try {
-            accessSync(gStoPath, constants.F_OK)
-        } catch (err) {
-            mkdirSync(gStoPath)
-        }
+    let newPath = join(gStoPath, newName)
 
-        console.log(newPath)
+    try {
+        accessSync(gStoPath, constants.F_OK)
+    } catch (err) {
+        mkdirSync(gStoPath)
+    }
 
-        copyFileToUTF8Sync(oldPath, newPath,
-            (data: string) => data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, ' '))
+    console.log(newPath)
 
-        const newBook: BookInfo = {
-            bookName: newName,
-            pageSize: getConfig().pageSize,
-            curPage: 1
-        }
+    copyFileToUTF8Sync(oldPath, newPath,
+        (data: string) => data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, ' '))
 
-        updateBook(newName, newBook)
+    const newBook: BookInfo = {
+        bookName: newName,
+        pageSize: getConfig().pageSize,
+        curPage: 1
+    }
 
-        window.showInformationMessage('添加成功')
-        return newBook
-    }))
+    updateBook(newName, newBook)
+
+    window.showInformationMessage('添加成功')
+    return newBook
 }
