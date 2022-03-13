@@ -14,6 +14,7 @@
 - 支持本地文本阅读
 - 其他编码格式自动转码为 **UTF-8**
 - 网络下载书籍(目前书源: [采墨阁](https://www.caimoge.net/))
+- 同步阅读的书籍列表(借用 vscode 同步设置)
 
 ## 安装
 
@@ -53,6 +54,7 @@ vscode 插件市场，搜索 `vscrebook`，安装
 - `vscrebook.pageSize`：每次最多显示字数(默认 25)
 - `vscrebook.downloadPath`: 下载小说的目录(默认 D:/Downloads/)
 - `vscrebook.autoFlipTime`: 每次自动翻页的时长(默认 3000 (ms))
+- `vscrebook.sync`: 同步的书籍列表 
 - 修改快捷键：首选项 -- 键盘快捷方式(`Ctrl + K Ctrl + S`)
 
 ## 未来功能
@@ -76,4 +78,4 @@ vscode 插件市场，搜索 `vscrebook`，安装
 |  在线书籍  |      不支持       | 支持([笔趣阁](https://www.biqugee.com/), [采墨阁](https://www.caimoge.net/)) | 支持([采墨阁](https://www.caimoge.net/)) |
 | 自动老板键 |      不支持       |                                     支持                                     |                   支持                   |
 |  自动翻页  |      不支持       |                                    不支持                                    |                   支持                   |
-|  更新时间  |     2019.8.7      |                                  2022.2.28                                   |                 2022.3.6                 |
+|  更新时间  |     2019.8.7      |                                  2022.2.28                                   |                 2022.3.13                 |

@@ -7,6 +7,7 @@ import axios from 'axios'
 import { USER_AGENT } from "./utils"
 import { Caimoge } from "./sub/caimoge"
 import { Crawl } from "./inter"
+import { setExtTo } from "../utils"
 
 axios.defaults.headers.common['User-Agent'] = USER_AGENT
 axios.defaults.responseType = 'arraybuffer'
@@ -28,7 +29,7 @@ export async function search(searchKey: string) {
 }
 
 export async function download(source: string, menuURL: string, dir: string, name: string) {
-    console.log(source)
+    // console.log(source)
     let spider = (() => {
         for (const iter of crawlers) {
             if (_.isEqual(iter.sourceName, source)) {
@@ -37,25 +38,26 @@ export async function download(source: string, menuURL: string, dir: string, nam
         }
         return null
     })()
+
     if (_.isNull(spider)) {
-        console.error(source, 'cannot find crawl!')
         error(Errors.downloadNovelFailed)
-        return null
+        throw new Error(`${source} cannot find crawl!`)
     }
-    console.log(spider)
+
+    // console.log(spider)
     let data = await spider.download(menuURL)
 
     if (_.isNull(data)) {
-        console.error(menuURL, 'cannot fetch anything!')
         error(Errors.downloadNovelFailed)
-        return null
+        throw new Error(`${menuURL} cannot fetch anything!`)
     }
 
     return (() => {
-        let pth = join(dir, parse(name).name + '.txt')
+        let pth = join(dir, setExtTo(parse(name).name, 'txt'))
         writeFileSync(pth, data, {
             encoding: "utf8"
         })
+        // console.log(pth)
         window.showInformationMessage('下载完成!')
         return pth
     })()

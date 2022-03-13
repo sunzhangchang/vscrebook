@@ -1,6 +1,6 @@
 import { readFileSync } from "fs"
 import _ = require("lodash")
-import { basename } from "path"
+import { parse } from "path"
 import { getBook, updateBook } from "./utils/bookList"
 import { getConfig } from "./utils/config"
 
@@ -8,6 +8,7 @@ export let book: {
     text: string,
     totPage: number,
     name: string,
+    source: Source,
 } | null = null
 
 function readBookFile(path: string) {
@@ -20,15 +21,22 @@ function readBookFile(path: string) {
 
 }
 
-export function newBook(path?: string) {
+export function newBook(path?: string, source?: Source) {
+    // console.log(path)
     if (_.isUndefined(path)) {
         book = null
         return
     }
+
+    let src = source ?? '本地'
+
+    // console.log(src)
+
     book = {
         text: readBookFile(path),
         totPage: 0,
-        name: basename(path),
+        name: parse(path).name,
+        source: src,
     }
     book.totPage = Math.ceil(book.text.length / getConfig().pageSize)
 }
@@ -68,14 +76,25 @@ export function getPageText(jumpPage?: number): string {
 
     let page = getPageNumber(jumpPage)
 
+    // console.log(page)
+
     if (_.isNull(page)) {
         return ''
+    }
+
+    if (page < 0) {
+        page = 0
+    }
+
+    if (page > book.totPage + 1) {
+        page = book.totPage + 1
     }
 
     updateBook(book.name, {
         bookName: book.name,
         pageSize: getConfig().pageSize,
-        curPage: page
+        curPage: page,
+        source: book.source,
     })
 
     if (page === 0) {

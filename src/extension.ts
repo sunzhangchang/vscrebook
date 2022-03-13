@@ -2,7 +2,7 @@ import { accessSync, constants, mkdirSync } from "fs"
 import { commands, ExtensionContext } from "vscode"
 import { bookListInit } from "./utils/bookList"
 import { extName, getConfig } from "./utils/config"
-import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInterval, showJump, showNext, showPrev, startt, toggleBossMsg } from "./utils/showing"
+import { autoFlipp, showJump, showNext, showPrev, startt, toggleBossMsg } from "./utils/showing"
 
 export function activate(context: ExtensionContext) {
     console.log(`Congratulations, your extension "${extName}" is now active!`)
@@ -38,18 +38,12 @@ export function activate(context: ExtensionContext) {
     // 下一页
     let nextPage = commands.registerCommand(`${extName}.nextPage`, () => {
         showNext()
-        clearAutoFlipInterval()
-        clearShowBossInterval()
-        setShowBossInterval()
     })
     context.subscriptions.push(nextPage)
 
     // 上一页
     let prevPage = commands.registerCommand(`${extName}.prevPage`, () => {
         showPrev()
-        clearAutoFlipInterval()
-        clearShowBossInterval()
-        setShowBossInterval()
     })
     context.subscriptions.push(prevPage)
 
