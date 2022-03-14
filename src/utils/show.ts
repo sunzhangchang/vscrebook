@@ -124,9 +124,6 @@ export function showPrev() {
         return
     }
     showNovelText(getBook(book.name).curPage - 1)
-    clearAutoFlipInterval()
-    clearShowBossInterval()
-    setShowBossInterval()
 }
 
 export function showNext() {
@@ -135,9 +132,6 @@ export function showNext() {
         return
     }
     showNovelText(getBook(book.name).curPage + 1)
-    clearAutoFlipInterval()
-    clearShowBossInterval()
-    setShowBossInterval()
 }
 
 export function toggleBossMsg() {

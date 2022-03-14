@@ -4,7 +4,7 @@ import { join } from "path"
 import { window } from "vscode"
 import { setExtTo } from "../utils"
 import { delBookFromList } from "../utils/bookList"
-import { showBossText } from "../utils/showing"
+import { showBossText } from "../utils/show"
 import { showBookList } from "./utils"
 
 export async function deleteBook(gStoPath: string): Promise<undefined> {
