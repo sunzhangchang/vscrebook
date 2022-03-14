@@ -1,4 +1,4 @@
-import { accessSync, constants, mkdirSync } from "fs"
+import { existsSync, mkdirSync } from "fs"
 import { commands, ExtensionContext } from "vscode"
 import { bookListInit } from "./utils/bookList"
 import { extName, getConfig } from "./utils/config"
@@ -10,15 +10,11 @@ export function activate(context: ExtensionContext) {
     // console.log(getConfig().downloadPath)
     // console.error(process.env)
 
-    try {
-        accessSync(context.globalStorageUri.fsPath, constants.F_OK)
-    } catch (err) {
+    if (!existsSync(context.globalStorageUri.fsPath)) {
         mkdirSync(context.globalStorageUri.fsPath)
     }
 
-    try {
-        accessSync(getConfig().downloadPath, constants.F_OK)
-    } catch (err) {
+    if (!existsSync(getConfig().downloadPath)) {
         mkdirSync(getConfig().downloadPath)
     }
 

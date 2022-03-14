@@ -6,6 +6,7 @@ import { book, getPageText, newBook } from "../book"
 import { showMainMenu } from "../library"
 import { getBook, updateBook } from "./bookList"
 import { getConfig } from "./config"
+// import { debug } from "./debug"
 import { error, Errors } from "./error"
 
 const codes: string[] = [
@@ -158,6 +159,7 @@ export function toggleBossMsg() {
 }
 
 export function autoFlipp() {
+    // debug('ajkjlahfasfahhisdjgsjkdja')
     if (_.isNull(book)) {
         error(Errors.bookUndefined)
         return

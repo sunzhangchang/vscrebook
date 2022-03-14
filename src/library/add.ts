@@ -1,5 +1,3 @@
-// import { accessSync, constants, mkdirSync } from "fs"
-import { debug } from "console"
 import _ = require("lodash")
 import { join, parse } from "path"
 import { window } from "vscode"
@@ -91,7 +89,7 @@ async function getAdBook(): Promise<{
 }
 
 export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: BookInfo) {
-    debug('Done here!')
+    // debug('Done here!')
     let oldPath: string | undefined
     let source: Source | undefined
     let curPage: number | undefined
@@ -112,7 +110,7 @@ export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: Bo
         oldPath = oldPath ?? bookPath
     }
 
-    debug(oldPath)
+    // debug(oldPath)
 
     if (_.isUndefined(source)) {
         source = '本地'
@@ -121,19 +119,13 @@ export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: Bo
         return
     }
 
-    // try {
-    //     accessSync(gStoPath, constants.F_OK)
-    // } catch (err) {
-    //     mkdirSync(gStoPath)
-    // }
-
     let bookName = parse(oldPath).name
     let newPath = join(gStoPath, setExtTo(bookName, 'txt'))
 
-    debug(bookName)
-    debug(newPath)
-    debug(source)
-    debug(curPage)
+    // debug(bookName)
+    // debug(newPath)
+    // debug(source)
+    // debug(curPage)
 
     copyFileToUTF8Sync(oldPath, newPath,
         (data: string) => data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, ' '))
