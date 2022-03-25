@@ -115,6 +115,7 @@
     "build": "gulp prod",
     "watch": "gulp watch",
     "package": "vsce package",
+    "vsce-publish": "vsce publish",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p -w . --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
