@@ -1,6 +1,6 @@
-import { existsSync } from "fs"
+import { readFileSync } from "fs"
 import _ = require("lodash")
-import { join, parse } from "path"
+import { parse } from "path"
 import { ExtensionContext, window } from "vscode"
 import { setExtTo } from "."
 import { download, search } from "../crawl"
@@ -11,22 +11,15 @@ import { error, Errors } from "./error"
 
 let context: ExtensionContext
 
-async function sync() {
+export async function importList(listPath: string) {
     // debug(context.globalStorageUri.fsPath)
-    let sync: any = getConfig().sync
+    let list = JSON.parse(readFileSync(listPath, 'utf8'))
 
-    for (const key in sync) {
-        if (Object.prototype.hasOwnProperty.call(sync, key)) {
-            const ele = sync[key] as BookInfo
+    for (const key in list) {
+        if (Object.prototype.hasOwnProperty.call(list, key)) {
+            const ele = list[key] as BookInfo
             // debug(ele)
             const book = parse(ele.bookName)
-
-            if (existsSync(join(context.globalStorageUri.fsPath, book.name))) {
-                const tmp = getBook(book.name)
-                if (!_.isEmpty(tmp) || !_.isEqual(tmp, {})) {
-                    continue
-                }
-            }
 
             // debug('Done here ! ! !')
 
@@ -41,7 +34,7 @@ async function sync() {
                     if (_.isEqual(ele.source, '本地')) {
                         return
                     }
-                    throw new Error(`同步书籍 ${book.name} 失败!`)
+                    throw new Error(`导入书籍 ${book.name} 失败!`)
                 })()
 
                 // debug(searchedBook)
@@ -52,26 +45,21 @@ async function sync() {
 
                 try {
                     const bookPath = await download(searchedBook.书源, searchedBook.目录链接, getConfig().downloadPath, searchedBook.书名)
-                    // debug(bookPath)
-                    // console.log(setExtTo(bookPath, 'txt'))
-                    // debug({
-                    //     ...ele,
-                    //     source: searchedBook.书源,
-                    // })
                     await addBook(context.globalStorageUri.fsPath, setExtTo(bookPath, 'txt'), {
                         ...ele,
                         source: searchedBook.书源,
                     })
+                    window.showInformationMessage(`导入书籍 ${book.name} 成功!`)
                 } catch (err: any) {
                     console.error(err.message)
                 }
             } catch (err: any) {
-                error(Errors.syncSearchError)
+                error(Errors.importSearchError)
                 console.error(err.message)
             }
         }
     }
-    window.showInformationMessage('书籍同步完成!')
+    window.showInformationMessage('书籍导入完成!')
 }
 
 export async function bookListInit(contex: ExtensionContext) {
@@ -110,8 +98,6 @@ export async function bookListInit(contex: ExtensionContext) {
             })
         }
     }
-
-    await sync()
 }
 
 export function delBookFromList(book: string) {
@@ -138,11 +124,11 @@ export function updateBook(bookName: string, bookInfo: BookInfo) {
 }
 
 let cnt = 0
-let lastUpdate
+// let lastUpdate
 
 export function updateBookList(value: any) {
     context.globalState.update('bookList', JSON.stringify(value))
-    lastUpdate = value
+    // lastUpdate = value
     ++ cnt
     if (cnt >= 4) {
         updateSyncBookList(value)

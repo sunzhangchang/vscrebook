@@ -2,15 +2,18 @@ import { selectBook } from "./select"
 import { addBook } from "./add"
 import { deleteBook } from "./delete"
 import { ExtensionContext, window } from "vscode"
+import { imexport } from "./imexport"
+import _ = require("lodash")
 
-const enum LibActions {
+enum LibActions {
     select = '选择书籍',
     add = '添加书籍',
     delete = '删除书籍',
+    imexport = '导入/导出 书籍列表'
 }
 
 export async function showMainMenu(context: ExtensionContext): Promise<BookInfo | undefined> {
-    let act = await window.showQuickPick([LibActions.select, LibActions.add, LibActions.delete], {
+    let act = await window.showQuickPick(_.values(LibActions), {
         matchOnDescription: true
     })
     let res: BookInfo | undefined
@@ -28,6 +31,11 @@ export async function showMainMenu(context: ExtensionContext): Promise<BookInfo 
         case LibActions.delete: {
             res = await deleteBook(context.globalStorageUri.fsPath)
             break
+        }
+
+        case LibActions.imexport: {
+            await imexport()
+            res = undefined
         }
 
         default: {
