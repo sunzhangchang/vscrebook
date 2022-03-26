@@ -17,14 +17,12 @@ const Default: ConfigType = {
         return __dirname
     })(),
     autoFlipTime: 3000,
-    sync: {}
 }
 
 const enum ExtConfig {
     pageSize = 'vscrebook.pageSize',
     downloadPath = 'vscrebook.downloadPath',
     autoFlipTime = 'vscrebook.autoFlipTime',
-    sync = 'vscrebook.sync',
 }
 
 const getWsConfig = workspace.getConfiguration().get
@@ -47,18 +45,9 @@ export function getConfig(): ConfigType {
         updateWsConfig(ExtConfig.autoFlipTime, Default.autoFlipTime, true)
     }
 
-    if (_.isUndefined(getWsConfig(ExtConfig.sync))) {
-        updateWsConfig(ExtConfig.sync, Default.sync, true)
-    }
-
     return {
         pageSize: getWsConfig(ExtConfig.pageSize) as number,
         downloadPath: getWsConfig(ExtConfig.downloadPath) as string,
         autoFlipTime: getWsConfig(ExtConfig.autoFlipTime) as number,
-        sync: getWsConfig(ExtConfig.sync) as Object,
     }
-}
-
-export function updateSyncBookList(sync: Object) {
-    updateWsConfig(ExtConfig.sync, sync, true)
 }

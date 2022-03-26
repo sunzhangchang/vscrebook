@@ -5,7 +5,7 @@ import { ExtensionContext, window } from "vscode"
 import { setExtTo } from "."
 import { download, search } from "../crawl"
 import { addBook } from "../library/add"
-import { getConfig, updateSyncBookList } from "./config"
+import { getConfig } from "./config"
 // import { debug } from "./debug"
 import { error, Errors } from "./error"
 
@@ -123,15 +123,6 @@ export function updateBook(bookName: string, bookInfo: BookInfo) {
     updateBookList(books)
 }
 
-let cnt = 0
-// let lastUpdate
-
 export function updateBookList(value: any) {
     context.globalState.update('bookList', JSON.stringify(value))
-    // lastUpdate = value
-    ++ cnt
-    if (cnt >= 4) {
-        updateSyncBookList(value)
-        cnt = 0
-    }
 }

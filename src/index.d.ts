@@ -2,7 +2,6 @@ declare type ConfigType = {
 	pageSize: number,
 	downloadPath: string,
 	autoFlipTime: number,
-	sync: Object,
 }
 
 declare type Source = 
