@@ -24,12 +24,10 @@ export async function search(searchKey: string) {
     for (const iter of crawlers) {
         list = _.concat(list, (await iter.search(searchKey)) ?? [])
     }
-    // console.log(123, list)
     return list
 }
 
 export async function download(source: string, menuURL: string, dir: string, name: string) {
-    // console.log(source)
     let spider = (() => {
         for (const iter of crawlers) {
             if (_.isEqual(iter.sourceName, source)) {
@@ -44,7 +42,6 @@ export async function download(source: string, menuURL: string, dir: string, nam
         throw new Error(`${source} cannot find crawl!`)
     }
 
-    // console.log(spider)
     let data = await spider.download(menuURL)
 
     if (_.isNull(data)) {
@@ -57,7 +54,6 @@ export async function download(source: string, menuURL: string, dir: string, nam
         writeFileSync(pth, data, {
             encoding: "utf8"
         })
-        // console.log(pth)
         window.showInformationMessage('下载完成!')
         return pth
     })()

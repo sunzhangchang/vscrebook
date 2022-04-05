@@ -42,13 +42,13 @@ async function getAdBook(): Promise<{
                 if (_.isUndefined(searchKey)) {
                     return
                 }
-                if (_.isEmpty(searchKey.trim())) {
+                if (_.isEmpty(_.trim(searchKey))) {
                     error(Errors.searchKeyEmpty)
                 } else {
                     break
                 }
             }
-            // window.showInformationMessage("!@#!@#!@3")
+
             let list = await search(searchKey)
             if (_.isNil(list)) {
                 error(Errors.searchedNothing)
@@ -65,7 +65,7 @@ async function getAdBook(): Promise<{
             }
 
             let one: SearchBook | undefined
-            bookName = bookName.split(' - ')[0]
+            bookName = _.split(bookName, ' - ')[0]
             for (const iter of list) {
                 if (_.isEqual(bookName, iter.书名)) {
                     one = iter
@@ -128,7 +128,14 @@ export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: Bo
     // debug(curPage)
 
     copyFileToUTF8Sync(oldPath, newPath,
-        (data: string) => data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, ' '))
+        (data: string) => _(data)
+            .chain()
+            .trim()
+            .replace(/[\r]+/g, '')
+            .replace(/[\t　 ]+/g, ' ')
+            .replace(/[\n]+/g, ' ')
+            .value()
+    )
 
     const newBook: BookInfo = {
         bookName,

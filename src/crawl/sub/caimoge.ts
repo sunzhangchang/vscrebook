@@ -26,12 +26,10 @@ export class Caimoge implements Crawl {
             })
 
             res = Buffer.from(response.data).toString('utf8')
-            // console.log(res)
         } catch (err: any) {
             window.showErrorMessage(err.message)
             throw err
         }
-        // console.log(res)
 
         let searchBooks: SearchBook[] = []
 
@@ -51,12 +49,11 @@ export class Caimoge implements Crawl {
                 书源: this.sourceName
             })
         })
-        // console.log('++++++++++++++++++++++++++++++++++++++++++++++')
         return searchBooks
     }
 
     async download(menuURL: string): Promise<Buffer | null> {
-        let id = _.first(_.split(_.last(_.split(_.trim(menuURL), '/')), '.'))
+        let id = _(menuURL).chain().trim().split('/').last().split('.').first().value()
 
         if (_.isUndefined(id)) {
             console.error(menuURL)

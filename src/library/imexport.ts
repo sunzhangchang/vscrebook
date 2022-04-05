@@ -10,13 +10,13 @@ enum ImExport {
 }
 
 export async function imexport() {
-    debug(typeof ImExport)
+    // debug(typeof ImExport)
     let act = await window.showQuickPick(_.values(ImExport), {
         matchOnDescription: true
     })
     switch (act) {
         case ImExport.importData: {
-            let res = await window.showOpenDialog({canSelectMany: false})
+            let res = await window.showOpenDialog({ canSelectMany: false })
             if (_.isUndefined(res)) {
                 return
             }

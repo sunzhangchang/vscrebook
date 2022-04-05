@@ -16,7 +16,13 @@ function readBookFile(path: string) {
         return ''
     }
     let data: string = readFileSync(path, 'utf-8')
-    let text = data.trim().replace(/[\r]+/g, '').replace(/[\t　 ]+/g, ' ').replace(/[\n]+/g, ' ')
+    let text = _(data)
+        .chain()
+        .trim()
+        .replace(/[\r]+/g, '')
+        .replace(/[\t　 ]+/g, ' ')
+        .replace(/[\n]+/g, ' ')
+        .value()
     return text
 
 }
