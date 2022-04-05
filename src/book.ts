@@ -52,17 +52,17 @@ export function getPageNumber(jumpPage?: number) {
         return null
     }
 
-    if (_.isUndefined(jumpPage)) {
-        let page = getBook(book.name).curPage
-        return page === 0 ? 1 : page
+    let page = jumpPage ?? getBook(book.name).curPage
+
+    if (page < 0) {
+        page = 0
     }
-    if (jumpPage <= 0) {
-        return 0
+
+    if (page > book.totPage + 1) {
+        page = book.totPage + 1
     }
-    if (jumpPage > book.totPage) {
-        return book.totPage + 1
-    }
-    return jumpPage
+
+    return page
 }
 
 function getStartEnd(): [number, number] | undefined {
@@ -82,18 +82,8 @@ export function getPageText(jumpPage?: number): string {
 
     let page = getPageNumber(jumpPage)
 
-    // console.log(page)
-
     if (_.isNull(page)) {
         return ''
-    }
-
-    if (page < 0) {
-        page = 0
-    }
-
-    if (page > book.totPage + 1) {
-        page = book.totPage + 1
     }
 
     updateBook(book.name, {
