@@ -78,7 +78,7 @@ function showText(msg: string) {
             break
         }
             
-        case 'showInfomation': {
+        case 'showInformation': {
             showInfoMsg(msg)
             break
         }
@@ -111,7 +111,7 @@ export function startt(context: ExtensionContext) {
 
         updateBook(res.bookName, res)
         newBook(join(context.globalStorageUri.fsPath, setExtTo(res.bookName, 'txt')), res.source)
-        showText()
+        showNovelText()
     })
 }
 

@@ -1,6 +1,6 @@
 declare type DisPlayMode =
 	| 'statusBar'
-	| 'showInfomation'
+	| 'showInformation'
 
 declare type ConfigType = {
 	pageSize: number,
