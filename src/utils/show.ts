@@ -63,40 +63,55 @@ export function clearAutoFlipInterval() {
     }
 }
 
+function setStatusBar(msg: string) {
+    window.setStatusBarMessage(msg)
+}
+
+function showInfoMsg(msg: string) {
+    window.showInformationMessage(msg)
+}
+
+function showText(msg: string) {
+    switch (getConfig().displayMode) {
+        case 'statusBar': default: {
+            setStatusBar(msg)
+            break
+        }
+            
+        case 'showInfomation': {
+            showInfoMsg(msg)
+            break
+        }
+    }
+}
+
 export function showNovelText(page?: number) {
     if (_.isNull(book)) {
         error(Errors.bookUndefined)
         return
     }
-    setStatusBar(getPageText(page))
+    let text = getPageText(page)
+    showText(text)
     isBoss = false
-}
-
-export function setStatusBar(msg: string) {
-    window.setStatusBarMessage(msg)
 }
 
 export function showBossText() {
     let index: number = Math.floor(Math.random() * codes.length)
-    setStatusBar(codes[index])
+    showText(codes[index])
     isBoss = true
 }
 
 export function startt(context: ExtensionContext) {
     showMainMenu(context).then(res => {
-        // console.log('111-- ', res)
         if (_.isUndefined(res)) {
             newBook()
             return
         }
         res.curPage = Math.max(1, Math.ceil((res.curPage - 1) * res.pageSize / getConfig().pageSize))
 
-        // console.log(44, res)
-
         updateBook(res.bookName, res)
-        // console.log(setExtTo(res.bookName, 'txt'))
         newBook(join(context.globalStorageUri.fsPath, setExtTo(res.bookName, 'txt')), res.source)
-        showNovelText()
+        showText()
     })
 }
 

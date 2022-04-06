@@ -1,12 +1,15 @@
+//@ts-check
+
 const webpack = require('webpack')
-const gutil = require('gulp-util')
+const log = require('fancy-log')
+const PluginError = require('plugin-error')
 
 function runWebpack(config, msg, cb) {
     webpack(config).run((err, stats) => {
         if (err) {
-            throw new gutil.PluginError(`webpack:${msg}`, err)
+            throw new PluginError(`webpack:${msg}`, err)
         }
-        gutil.log(`[webpack:${msg}]`, stats.toString({
+        log(`[webpack:${msg}]`, stats.toString({
             colors: true
         }))
         cb()

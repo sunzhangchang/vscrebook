@@ -17,37 +17,46 @@ const Default: ConfigType = {
         return __dirname
     })(),
     autoFlipTime: 3000,
+    displayMode: 'statusBar',
 }
 
-const enum ExtConfig {
+enum ExtConfig {
     pageSize = 'vscrebook.pageSize',
     downloadPath = 'vscrebook.downloadPath',
     autoFlipTime = 'vscrebook.autoFlipTime',
+    displayMode = 'vscrebook.displayMode',
+}
+
+export enum ConfigDescriptions {
+    pageSize = '每页显示字数',
+    downloadPath = '下载的小说的储存路径',
+    autoFlipTime = '自动翻页的速度(每页的时间/ms)',
+    displayMode = '显示小说文字的方式',
 }
 
 const getWsConfig = workspace.getConfiguration().get
 const updateWsConfig = workspace.getConfiguration().update
 
+let config: ConfigType = {
+    pageSize: Default.pageSize,
+    downloadPath: Default.downloadPath,
+    autoFlipTime: Default.autoFlipTime,
+    displayMode: Default.displayMode,
+}
+
+export function setConfig(key: string, value: any) {
+    config = _(config).set(key, value).value()
+}
+
 export function getConfig(): ConfigType {
-    if (_.isUndefined(getWsConfig(ExtConfig.pageSize))) {
-        updateWsConfig(ExtConfig.pageSize, Default.pageSize, true)
-    }
-
-    // if (_.isUndefined(getWsConfig(ExtConfig.downloadPath)) || _.isEmpty(getWsConfig(ExtConfig.downloadPath))) {
-    //     updateWsConfig(ExtConfig.downloadPath, Default.downloadPath, true)
-    // }
-    const tmp = getWsConfig(ExtConfig.downloadPath)
-    if (_.isEqual(tmp, 'D:/Downloads/') || _.isEmpty(tmp)) {
-        updateWsConfig(ExtConfig.downloadPath, Default.downloadPath, true)
-    }
-
-    if (_.isUndefined(getWsConfig(ExtConfig.autoFlipTime))) {
-        updateWsConfig(ExtConfig.autoFlipTime, Default.autoFlipTime, true)
-    }
+    _(config).forEach((key, value) => {
+        updateWsConfig(key as string, value)
+    })
 
     return {
         pageSize: getWsConfig(ExtConfig.pageSize) as number,
         downloadPath: getWsConfig(ExtConfig.downloadPath) as string,
         autoFlipTime: getWsConfig(ExtConfig.autoFlipTime) as number,
+        displayMode: getWsConfig(ExtConfig.displayMode) as DisPlayMode,
     }
 }

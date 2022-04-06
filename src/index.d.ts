@@ -1,12 +1,17 @@
+declare type DisPlayMode =
+	| 'statusBar'
+	| 'showInfomation'
+
 declare type ConfigType = {
 	pageSize: number,
 	downloadPath: string,
 	autoFlipTime: number,
+	displayMode: DisPlayMode,
 }
 
-declare type Source = 
-| '本地'
-| '采墨阁'
+declare type Source =
+	| '本地'
+	| '采墨阁'
 
 declare type BookInfo = {
 	bookName: string,

@@ -32,17 +32,22 @@
         "vscrebook.pageSize": {
           "type": "number",
           "default": 25,
-          "description": "每页文字数量 & Number of text per page"
+          "description": "每页显示字数 ! 请从插件内设置, 在此处设置将会被覆盖"
         },
         "vscrebook.downloadPath": {
           "type": "string",
           "default": "",
-          "description": "下载的小说的储存路径"
+          "description": "下载的小说的储存路径 ! 请从插件内设置, 在此处设置将会被覆盖"
         },
         "vscrebook.autoFlipTime": {
           "type": "number",
           "default": "3000",
-          "description": "自动翻页的速度(每页的时间/ms)"
+          "description": "自动翻页的速度(每页的时间/ms) ! 请从插件内设置, 在此处设置将会被覆盖"
+        },
+        "vscrebook.displayMode": {
+          "type": "string",
+          "default": "statusBar",
+          "description": "显示小说文字的方式 ! 请从插件内设置, 在此处设置将会被覆盖"
         }
       }
     },
@@ -135,8 +140,9 @@
     "esbuild": "^0.14.14",
     "esbuild-loader": "^2.18.0",
     "eslint": "^7.32.0",
+    "fancy-log": "^2.0.0",
     "gulp": "^4.0.2",
-    "gulp-util": "^3.0.8",
+    "plugin-error": "^1.0.1",
     "regenerator-runtime": "^0.13.9",
     "swc-loader": "^0.1.15",
     "typescript": "4.4.4",

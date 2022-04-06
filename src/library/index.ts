@@ -4,12 +4,14 @@ import { deleteBook } from "./delete"
 import { ExtensionContext, window } from "vscode"
 import { imexport } from "./imexport"
 import _ = require("lodash")
+import { settings } from "./settings"
 
 enum LibActions {
     select = '选择书籍',
     add = '添加书籍',
     delete = '删除书籍',
-    imexport = '导入/导出 书籍列表'
+    imexport = '导入/导出 书籍列表',
+    settings = '设置',
 }
 
 export async function showMainMenu(context: ExtensionContext): Promise<BookInfo | undefined> {
@@ -35,6 +37,11 @@ export async function showMainMenu(context: ExtensionContext): Promise<BookInfo 
 
         case LibActions.imexport: {
             await imexport()
+            res = undefined
+        }
+
+        case LibActions.settings: {
+            await settings()
             res = undefined
         }
 
