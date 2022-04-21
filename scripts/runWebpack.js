@@ -2,8 +2,16 @@
 
 const webpack = require('webpack')
 const log = require('fancy-log')
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const PluginError = require('plugin-error')
 
+/** @typedef {import('webpack').Configuration} WebpackConfig **/
+
+/**
+ * @param { WebpackConfig } config
+ * @param {*} msg
+ * @param {*} cb
+ */
 function runWebpack(config, msg, cb) {
     webpack(config).run((err, stats) => {
         if (err) {
