@@ -32,22 +32,22 @@
         "vscrebook.pageSize": {
           "type": "number",
           "default": 25,
-          "description": "每页显示字数 ! 请从插件内设置, 在此处设置将会被覆盖"
+          "description": "每页显示字数"
         },
         "vscrebook.downloadPath": {
           "type": "string",
           "default": "",
-          "description": "下载的小说的储存路径 ! 请从插件内设置, 在此处设置将会被覆盖"
+          "description": "下载的小说的储存路径"
         },
         "vscrebook.autoFlipTime": {
           "type": "number",
           "default": "3000",
-          "description": "自动翻页的速度(每页的时间/ms) ! 请从插件内设置, 在此处设置将会被覆盖"
+          "description": "自动翻页的速度(每页的时间/ms)"
         },
         "vscrebook.displayMode": {
           "type": "string",
           "default": "statusBar",
-          "description": "显示小说文字的方式 ! 请从插件内设置, 在此处设置将会被覆盖"
+          "description": "显示小说文字的方式"
         }
       }
     },

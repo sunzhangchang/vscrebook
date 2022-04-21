@@ -58,19 +58,29 @@ vscode 插件市场，搜索 `vscrebook`，安装
 
 ## 扩展设置
 
+1. 打开扩展的菜单
+2. 选择设置
+3. 选择想要设置的项
+4. 进行修改
+
 - `vscrebook.pageSize`：每次最多显示字数(默认 25)
-- `vscrebook.downloadPath`: 下载小说的目录(默认 D:/Downloads/)
+- `vscrebook.downloadPath`: 下载小说的目录(默认 (linux) ~\downloads\\ (windows) %USER_PROFILE%/Downloads/ )
 - `vscrebook.autoFlipTime`: 每次自动翻页的时长(默认 3000 (ms))
+- `vscrebook.displayMode`: 显示小说文字的方式
 - 修改快捷键：首选项 -- 键盘快捷方式(`Ctrl + K Ctrl + S`)
+
+## Tips
+
+按下 `Esc` 键(标准键盘左上角 **退出** 键) 可以清楚弹出的 信息、警告、错误 等右下角的弹窗
 
 ## 未来功能
 
-- 优化显示(针对代码)
 - 书籍部分加载
 - 搜索
 - 更多在线书籍书源
 - 其他格式支持(比如.epub)
-- 其他隐藏显示手段
+- 其他阅读方式
+- 更加个性化的设置
 
 ## 功能对比
 
@@ -84,4 +94,5 @@ vscode 插件市场，搜索 `vscrebook`，安装
 |  在线书籍  |      不支持       | 支持([笔趣阁](https://www.biqugee.com/), [采墨阁](https://www.caimoge.net/)) | 支持([采墨阁](https://www.caimoge.net/)) |
 | 自动老板键 |      不支持       |                                     支持                                     |                   支持                   |
 |  自动翻页  |      不支持       |                                    不支持                                    |                   支持                   |
-|  更新时间  |     2019.8.7      |                                  2022.2.28                                   |                 2022.3.25                 |
+|  阅读方式  |      状态栏       |                                    状态栏                                    |             状态栏, 弹出信息             |
+|  更新时间  |     2019.8.7      |                                  2022.2.28                                   |                2022.4.21                 |
