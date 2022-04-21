@@ -2,7 +2,6 @@ import { writeFileSync } from "fs"
 import _ = require("lodash")
 import { window } from "vscode"
 import { getBookList, importList } from "../utils/bookList"
-import { debug } from "../utils/debug"
 
 enum ImExport {
     importData = '导入书籍列表',

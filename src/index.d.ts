@@ -32,3 +32,10 @@ declare type SearchBook = {
 	目录链接: string
 	书源: Source
 }
+
+declare type ConfigSetObj = Record<string, {
+	name: string
+	default: | number | string | object
+	type: | 'input' | 'choose'
+	choices?: string[]
+}>

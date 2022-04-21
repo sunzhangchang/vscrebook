@@ -1,14 +1,14 @@
 import { existsSync, mkdirSync } from "fs"
 import { commands, ExtensionContext } from "vscode"
 import { bookListInit } from "./utils/bookList"
-import { extName, getConfig } from "./utils/config"
+import { extName, getConfig, updateConfig } from "./utils/config"
+import { debug } from "./utils/debug"
 import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInterval, showJump, showNext, showPrev, startt, toggleBossMsg } from "./utils/show"
 
 export function activate(context: ExtensionContext) {
-    console.log(`Congratulations, your extension "${extName}" is now active!`)
+    debug(`Congratulations, your extension "${extName}" is now active!`)
 
-    // console.log(getConfig().downloadPath)
-    // console.error(process.env)
+    debug(getConfig())
 
     if (!existsSync(context.globalStorageUri.fsPath)) {
         mkdirSync(context.globalStorageUri.fsPath)
@@ -61,4 +61,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(autoFlip)
 }
 
-export function deactivate() { }
+export function deactivate() {
+    debug('~~~ deactivate')
+    updateConfig()
+}

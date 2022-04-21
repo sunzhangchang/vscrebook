@@ -1,6 +1,29 @@
 import _ = require("lodash")
 import { window } from "vscode"
-import { ConfigDescriptions, setConfig } from "../utils/config"
+import { ConfigDescriptions, ExtConfig, setConfig } from "../utils/config"
+
+async function setType(key: string) {
+    let res: string | undefined
+    let tmp = _.get(ExtConfig, key)
+    switch (tmp.type) {
+        case 'input': {
+            res = await window.showInputBox({
+                placeHolder: _.get(ConfigDescriptions, key)
+            })
+            break
+        }
+
+        case 'choose': {
+            res = await window.showQuickPick(tmp.choices ?? [])
+            break
+        }
+
+        default:
+            res = undefined
+            break
+    }
+    return res
+}
 
 export async function settings() {
     let key = await window.showQuickPick(_.keys(ConfigDescriptions), {
@@ -11,9 +34,7 @@ export async function settings() {
         return
     }
 
-    let newValue = await window.showInputBox({
-        placeHolder: _.get(ConfigDescriptions, key)
-    })
+    let newValue = await setType(key)
     if (_.isUndefined(newValue)) {
         return
     }

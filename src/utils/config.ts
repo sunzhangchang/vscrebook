@@ -4,29 +4,6 @@ import { join } from "path"
 
 export const extName = 'vscrebook'
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const Default: ConfigType = {
-    pageSize: 25,
-    downloadPath: (() => {
-        if (!_.isUndefined(process.env.HOME)) {
-            return join(process.env.HOME, 'downloads')
-        }
-        if (!_.isUndefined(process.env.USERPROFILE)) {
-            return join(process.env.USERPROFILE, 'Downloads')
-        }
-        return __dirname
-    })(),
-    autoFlipTime: 3000,
-    displayMode: 'statusBar',
-}
-
-enum ExtConfig {
-    pageSize = 'vscrebook.pageSize',
-    downloadPath = 'vscrebook.downloadPath',
-    autoFlipTime = 'vscrebook.autoFlipTime',
-    displayMode = 'vscrebook.displayMode',
-}
-
 export enum ConfigDescriptions {
     pageSize = '每页显示字数',
     downloadPath = '下载的小说的储存路径',
@@ -34,29 +11,76 @@ export enum ConfigDescriptions {
     displayMode = '显示小说文字的方式',
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const ExtConfig: ConfigSetObj = {
+    pageSize: {
+        name: 'vscrebook.pageSize',
+        default: 25,
+        type: 'input'
+    },
+    downloadPath: {
+        name: 'vscrebook.downloadPath',
+        default: (() => {
+            if (!_.isUndefined(process.env.HOME)) {
+                return join(process.env.HOME, 'downloads')
+            }
+            if (!_.isUndefined(process.env.USERPROFILE)) {
+                return join(process.env.USERPROFILE, 'Downloads')
+            }
+            return __dirname
+        })(),
+        type: 'input'
+    },
+    autoFlipTime: {
+        name: 'vscrebook.autoFlipTime',
+        default: 3000,
+        type: 'input'
+    },
+    displayMode: {
+        name: 'vscrebook.displayMode',
+        default: 'statusBar',
+        type: 'choose',
+        choices: ['statusBar', 'showInformation'],
+    },
+}
+
 const getWsConfig = workspace.getConfiguration().get
 const updateWsConfig = workspace.getConfiguration().update
 
+_(ExtConfig).forEach((value) => {
+    if (getWsConfig(value.name, true)) {
+        updateWsConfig(value.name, value.default, true)
+    }
+})
+
 let config: ConfigType = {
-    pageSize: Default.pageSize,
-    downloadPath: Default.downloadPath,
-    autoFlipTime: Default.autoFlipTime,
-    displayMode: Default.displayMode,
+    pageSize: getWsConfig(ExtConfig.pageSize.name) as number,
+    downloadPath: getWsConfig(ExtConfig.downloadPath.name) as string,
+    autoFlipTime: getWsConfig(ExtConfig.autoFlipTime.name) as number,
+    displayMode: getWsConfig(ExtConfig.displayMode.name) as DisPlayMode,
 }
 
 export function setConfig(key: string, value: any) {
     config = _(config).set(key, value).value()
+    updateWsConfig(`vscrebook.${key}`, value, true)
+}
+
+function getInnerConfig(key: string) {
+    return _(config).get(_(key).chain().split('.').last().value())
+}
+
+export function updateConfig() {
+    _(config).forEach((value, key) => {
+        // debug(`vscrebook.${key}`, value)
+        updateWsConfig(`vscrebook.${key}`, value, true)
+    })
 }
 
 export function getConfig(): ConfigType {
-    _(config).forEach((key, value) => {
-        updateWsConfig(key as string, value)
-    })
-
     return {
-        pageSize: getWsConfig(ExtConfig.pageSize) as number,
-        downloadPath: getWsConfig(ExtConfig.downloadPath) as string,
-        autoFlipTime: getWsConfig(ExtConfig.autoFlipTime) as number,
-        displayMode: getWsConfig(ExtConfig.displayMode) as DisPlayMode,
+        pageSize: getInnerConfig(ExtConfig.pageSize.name) as number,
+        downloadPath: getInnerConfig(ExtConfig.downloadPath.name) as string,
+        autoFlipTime: getInnerConfig(ExtConfig.autoFlipTime.name) as number,
+        displayMode: getInnerConfig(ExtConfig.displayMode.name) as DisPlayMode,
     }
 }

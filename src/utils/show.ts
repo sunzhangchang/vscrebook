@@ -6,7 +6,6 @@ import { book, getPageText, newBook } from "../book"
 import { showMainMenu } from "../library"
 import { getBook, updateBook } from "./bookList"
 import { getConfig } from "./config"
-// import { debug } from "./debug"
 import { error, Errors } from "./error"
 
 const codes: string[] = [
@@ -67,18 +66,21 @@ function setStatusBar(msg: string) {
     window.setStatusBarMessage(msg)
 }
 
-function showInfoMsg(msg: string) {
-    window.showInformationMessage(msg)
+async function showInfoMsg(msg: string) {
+    await window.showInformationMessage(msg)
 }
 
 function showText(msg: string) {
+    // debug(getConfig().displayMode)
+
     switch (getConfig().displayMode) {
         case 'statusBar': default: {
             setStatusBar(msg)
             break
         }
-            
+
         case 'showInformation': {
+            setStatusBar('')
             showInfoMsg(msg)
             break
         }
@@ -96,9 +98,23 @@ export function showNovelText(page?: number) {
 }
 
 export function showBossText() {
-    let index: number = Math.floor(Math.random() * codes.length)
-    showText(codes[index])
-    isBoss = true
+    switch (getConfig().displayMode) {
+        case 'statusBar': default: {
+            let index: number = Math.floor(Math.random() * codes.length)
+            showText(codes[index])
+            isBoss = true
+            break
+        }
+
+        case 'showInformation': {
+            showText(codes[Math.floor(Math.random() * codes.length)])
+            showText(codes[Math.floor(Math.random() * codes.length)])
+            showText(codes[Math.floor(Math.random() * codes.length)])
+            showText(codes[Math.floor(Math.random() * codes.length)])
+            showText(codes[Math.floor(Math.random() * codes.length)])
+            break
+        }
+    }
 }
 
 export function startt(context: ExtensionContext) {

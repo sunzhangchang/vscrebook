@@ -31,6 +31,5 @@ export function setExtTo(path: string, ext: string) {
     if (!_.endsWith(res, '.txt')) {
         res += '.txt'
     }
-    // console.log(pathTmp)
     return res
 }
