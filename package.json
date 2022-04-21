@@ -159,6 +159,7 @@
   },
   "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md",
   "dependencies": {
+    "@types/iconv-lite": "^0.0.1",
     "axios": "^0.26.1",
     "chardet": "^1.4.0",
     "cheerio": "^1.0.0-rc.10",
