@@ -48,7 +48,7 @@ const getWsConfig = workspace.getConfiguration().get
 const updateWsConfig = workspace.getConfiguration().update
 
 _(ExtConfig).forEach((value) => {
-    if (getWsConfig(value.name, true)) {
+    if (_.isUndefined(getWsConfig(value.name))) {
         updateWsConfig(value.name, value.default, true)
     }
 })
