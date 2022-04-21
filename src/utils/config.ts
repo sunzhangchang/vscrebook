@@ -57,7 +57,7 @@ let config: ConfigType = {
     pageSize: getWsConfig(ExtConfig.pageSize.name) as number,
     downloadPath: getWsConfig(ExtConfig.downloadPath.name) as string,
     autoFlipTime: getWsConfig(ExtConfig.autoFlipTime.name) as number,
-    displayMode: getWsConfig(ExtConfig.displayMode.name) as DisPlayMode,
+    displayMode: getWsConfig(ExtConfig.displayMode.name) as DisplayMode,
 }
 
 export function setConfig(key: string, value: any) {
@@ -81,6 +81,6 @@ export function getConfig(): ConfigType {
         pageSize: getInnerConfig(ExtConfig.pageSize.name) as number,
         downloadPath: getInnerConfig(ExtConfig.downloadPath.name) as string,
         autoFlipTime: getInnerConfig(ExtConfig.autoFlipTime.name) as number,
-        displayMode: getInnerConfig(ExtConfig.displayMode.name) as DisPlayMode,
+        displayMode: getInnerConfig(ExtConfig.displayMode.name) as DisplayMode,
     }
 }

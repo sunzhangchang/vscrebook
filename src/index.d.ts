@@ -1,4 +1,4 @@
-declare type DisPlayMode =
+declare type DisplayMode =
 	| 'statusBar'
 	| 'showInformation'
 
@@ -6,7 +6,7 @@ declare type ConfigType = {
 	pageSize: number,
 	downloadPath: string,
 	autoFlipTime: number,
-	displayMode: DisPlayMode,
+	displayMode: DisplayMode,
 }
 
 declare type Source =
