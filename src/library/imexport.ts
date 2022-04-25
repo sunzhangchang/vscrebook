@@ -25,7 +25,11 @@ export async function imexport() {
         }
 
         case ImExport.exportData: {
-            let res = await window.showSaveDialog()
+            let res = await window.showSaveDialog({
+                filters: {
+                    'json': ['json']
+                }
+            })
             if (_.isUndefined(res)) {
                 return
             }
