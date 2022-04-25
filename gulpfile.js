@@ -58,7 +58,7 @@ function watch(cb) {
 
 module.exports = {
     clear,
-    dev: gulp.series(clear, dev),
-    watch: gulp.series(clear, watch),
-    prod: gulp.series(clear, prod),
+    dev: gulp.series(dev),
+    watch: gulp.series(watch),
+    prod: gulp.series(prod),
 }
