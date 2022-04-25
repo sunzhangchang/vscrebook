@@ -3,6 +3,7 @@ import _ = require("lodash")
 import { parse } from "path"
 import { getBook, updateBook } from "./utils/bookList"
 import { getConfig } from "./utils/config"
+import { showBossText } from "./utils/show"
 
 export let book: {
     text: string,
@@ -31,6 +32,7 @@ export function newBook(path?: string, source?: Source) {
     // console.log(path)
     if (_.isUndefined(path)) {
         book = null
+        showBossText()
         return
     }
 

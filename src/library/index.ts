@@ -38,14 +38,17 @@ export async function showMainMenu(context: ExtensionContext): Promise<BookInfo 
         case LibActions.imexport: {
             await imexport()
             res = undefined
+            break
         }
 
         case LibActions.settings: {
             await settings()
             res = undefined
+            break
         }
 
         default: {
+            res = undefined
             break
         }
     }
