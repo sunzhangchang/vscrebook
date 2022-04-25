@@ -36,6 +36,7 @@ declare type SearchBook = {
 declare type ConfigSetObj = Record<string, {
 	name: string
 	default: | number | string | object
-	type: | 'input' | 'choose'
+	type: | 'number' | 'string' | 'object'
+	form: | 'input' | 'choose'
 	choices?: string[]
 }>

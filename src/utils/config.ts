@@ -16,7 +16,8 @@ export const ExtConfig: ConfigSetObj = {
     pageSize: {
         name: 'vscrebook.pageSize',
         default: 25,
-        type: 'input'
+        type: 'number',
+        form: 'input',
     },
     downloadPath: {
         name: 'vscrebook.downloadPath',
@@ -29,17 +30,20 @@ export const ExtConfig: ConfigSetObj = {
             }
             return __dirname
         })(),
-        type: 'input'
+        type: 'string',
+        form: 'input',
     },
     autoFlipTime: {
         name: 'vscrebook.autoFlipTime',
         default: 3000,
-        type: 'input'
+        type: 'number',
+        form: 'input',
     },
     displayMode: {
         name: 'vscrebook.displayMode',
         default: 'statusBar',
-        type: 'choose',
+        type: 'string',
+        form: 'choose',
         choices: ['statusBar', 'showInformation'],
     },
 }
