@@ -62,6 +62,7 @@ let config: ConfigType = {
     downloadPath: getWsConfig(ExtConfig.downloadPath.name) as string,
     autoFlipTime: getWsConfig(ExtConfig.autoFlipTime.name) as number,
     displayMode: getWsConfig(ExtConfig.displayMode.name) as DisplayMode,
+    statusConfig: getWsConfig(ExtConfig.displayMode.name) as StatusConfig,
 }
 
 export function setConfig(key: string, value: any) {

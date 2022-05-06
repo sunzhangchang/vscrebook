@@ -12,6 +12,7 @@ export enum Errors {
     getNovelFileFailed,
     downloadNovelFailed,
     importSearchError,
+    chapterLost,
 }
 
 export function error(err: Errors) {
@@ -39,26 +40,37 @@ export function error(err: Errors) {
 
         case Errors.bookNameEmpty: {
             msg = '书名不能为空!'
+            break
         }
 
         case Errors.fetchError: {
             msg = '拉取链接失败!'
+            break
         }
 
         case Errors.getNovelIdFailed: {
             msg = '获取书籍id失败!'
+            break
         }
 
         case Errors.getNovelFileFailed: {
             msg = '获取书籍文件失败!'
+            break
         }
 
         case Errors.downloadNovelFailed: {
             msg = '下载小说失败!'
+            break
         }
 
         case Errors.importSearchError: {
             msg = '导入书籍失败! 该书籍可能是您手动添加的。'
+            break
+        }
+
+        case Errors.chapterLost: {
+            msg = '章节获取失败!'
+            break
         }
 
         case Errors.unknowError: default: {

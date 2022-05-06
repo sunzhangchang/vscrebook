@@ -64,15 +64,8 @@ async function getAdBook(): Promise<{
                 return
             }
 
-            let one: SearchBook | undefined
             bookName = _.split(bookName, ' - ')[0]
-            for (const iter of list) {
-                if (_.isEqual(bookName, iter.书名)) {
-                    one = iter
-                    break
-                }
-                one = undefined
-            }
+            let one = _(list).filter((iter) => _.isEqual(bookName, iter.书名)).first()
             if (_.isUndefined(one)) {
                 error(Errors.chooseFaild)
                 return
@@ -95,7 +88,7 @@ export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: Bo
     let curPage: number | undefined
     let pageSize: number | undefined
 
-    if(!_.isUndefined(bookInfo)) {
+    if (!_.isUndefined(bookInfo)) {
         source = bookInfo.source
         curPage = bookInfo.curPage
         pageSize = bookInfo.pageSize
@@ -110,8 +103,6 @@ export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: Bo
         oldPath = oldPath ?? bookPath
     }
 
-    // debug(oldPath)
-
     if (_.isUndefined(source)) {
         source = '本地'
     }
@@ -121,11 +112,6 @@ export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: Bo
 
     let bookName = parse(oldPath).name
     let newPath = join(gStoPath, setExtTo(bookName, 'txt'))
-
-    // debug(bookName)
-    // debug(newPath)
-    // debug(source)
-    // debug(curPage)
 
     copyFileToUTF8Sync(oldPath, newPath,
         (data: string) => _(data)

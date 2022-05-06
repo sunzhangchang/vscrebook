@@ -8,12 +8,14 @@ import { USER_AGENT } from "./utils"
 import { Caimoge } from "./sub/caimoge"
 import { Crawl } from "./inter"
 import { setExtTo } from "../utils"
+import { Wbxsw } from "./sub/wbxsw"
 
 axios.defaults.headers.common['User-Agent'] = USER_AGENT
 axios.defaults.responseType = 'arraybuffer'
 
 let crawlers: Crawl[] = [
-    new Caimoge()
+    new Caimoge(),
+    new Wbxsw(),
 ]
 
 export async function search(searchKey: string) {

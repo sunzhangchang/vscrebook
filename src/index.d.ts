@@ -7,11 +7,13 @@ declare type ConfigType = {
 	downloadPath: string,
 	autoFlipTime: number,
 	displayMode: DisplayMode,
+	statusConfig: StatusConfig,
 }
 
 declare type Source =
 	| '本地'
 	| '采墨阁'
+	| '58小说网'
 
 declare type BookInfo = {
 	bookName: string,

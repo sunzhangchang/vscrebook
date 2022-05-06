@@ -12,8 +12,7 @@ export class Caimoge implements Crawl {
     source = 'https://www.caimoge.net/'
 
     async search(searchKey: string): Promise<SearchBook[] | null> {
-        let searchPath = this.source + 'search/'
-        // console.log(searchPath)
+        let searchPath = posix.join(this.source, '/search/')
         let url = new URL(searchPath)
         url.searchParams.append('searchkey', searchKey)
         url.searchParams.sort()

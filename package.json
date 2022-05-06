@@ -46,8 +46,26 @@
         },
         "vscrebook.displayMode": {
           "type": "string",
+          "enum": [
+            "statusBar",
+            "showInformation"
+          ],
           "default": "statusBar",
           "description": "显示小说文字的方式"
+        },
+        "vscrebook.status": {
+          "type": "object",
+          "default": {},
+          "properties": {
+            "caimoge": {
+              "type": "boolean",
+              "default": true
+            },
+            "wbxsw": {
+              "type": "boolean",
+              "default": false
+            }
+          }
         }
       }
     },
