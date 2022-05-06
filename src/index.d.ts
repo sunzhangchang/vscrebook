@@ -2,12 +2,17 @@ declare type DisplayMode =
 	| 'statusBar'
 	| 'showInformation'
 
+declare type StatusConfig = {
+	caimoge: boolean
+	wbxsw: boolean
+}
+
 declare type ConfigType = {
-	pageSize: number,
-	downloadPath: string,
-	autoFlipTime: number,
-	displayMode: DisplayMode,
-	statusConfig: StatusConfig,
+	pageSize: number
+	downloadPath: string
+	autoFlipTime: number
+	displayMode: DisplayMode
+	statusConfig: StatusConfig
 }
 
 declare type Source =
@@ -16,10 +21,10 @@ declare type Source =
 	| '58小说网'
 
 declare type BookInfo = {
-	bookName: string,
-	pageSize: number,
-	curPage: number,
-	source: Source,
+	bookName: string
+	pageSize: number
+	curPage: number
+	source: Source
 }
 
 declare type SearchBook = {

@@ -53,7 +53,7 @@
           "default": "statusBar",
           "description": "显示小说文字的方式"
         },
-        "vscrebook.status": {
+        "vscrebook.statusConfig": {
           "type": "object",
           "default": {},
           "properties": {

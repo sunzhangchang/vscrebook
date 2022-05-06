@@ -45,7 +45,7 @@ export class Wbxsw implements Crawl {
             }
             const menu = new URL(menu_, this.source)
             let status = '未知'
-            if (getConfig().statusWbxsw) {
+            if (getConfig().status.wbxsw) {
                 const res = await axios.get(menu.href)
                 let $$ = cheerio.load(Buffer.from(res.data).toString('utf8'))
                 status = _(_($$('#info > p:nth-child(3)').text()).split('：').last() ?? '未知,').split(',').first() ?? '未知'

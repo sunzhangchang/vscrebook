@@ -46,6 +46,16 @@ export const ExtConfig: ConfigSetObj = {
         form: 'choose',
         choices: ['statusBar', 'showInformation'],
     },
+    statusConfig: {
+        name: 'vscrebook.statusConfig',
+        default: {
+            caimoge: true,
+            wbxsw: false,
+        },
+        type: 'object',
+        form: 'choose',
+        choices: ['123'], // todo
+    }
 }
 
 const getWsConfig = workspace.getConfiguration().get
@@ -87,5 +97,6 @@ export function getConfig(): ConfigType {
         downloadPath: getInnerConfig(ExtConfig.downloadPath.name) as string,
         autoFlipTime: getInnerConfig(ExtConfig.autoFlipTime.name) as number,
         displayMode: getInnerConfig(ExtConfig.displayMode.name) as DisplayMode,
+        statusConfig: getInnerConfig(ExtConfig.)
     }
 }
