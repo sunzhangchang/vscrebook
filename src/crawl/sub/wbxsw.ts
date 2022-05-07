@@ -45,7 +45,7 @@ export class Wbxsw implements Crawl {
             }
             const menu = new URL(menu_, this.source)
             let status = '未知'
-            if (getConfig().status.wbxsw) {
+            if (getConfig().statusConfig.wbxsw) {
                 const res = await axios.get(menu.href)
                 let $$ = cheerio.load(Buffer.from(res.data).toString('utf8'))
                 status = _(_($$('#info > p:nth-child(3)').text()).split('：').last() ?? '未知,').split(',').first() ?? '未知'
@@ -88,7 +88,7 @@ export class Wbxsw implements Crawl {
     async oneChapter(url: string): Promise<string> {
         const response = await axios.get(url)
         let $ = cheerio.load(Buffer.from(response.data).toString('utf8'))
-        return $('#content').text()
+        return  '========' + $('#wrapper > div.content_read > div > div.bookname > h1').text() + '========' + $('#content').text()
     }
 
     async download(menuURL: string): Promise<Buffer | null> {
@@ -96,7 +96,7 @@ export class Wbxsw implements Crawl {
         let chapterList = await this.getChapters(menuURL, '#list > dl > dd > a')
         let novel = ''
         for (const iter of chapterList) {
-            novel += iter + "========================="
+            novel += iter
         }
 
         return Buffer.from(novel)

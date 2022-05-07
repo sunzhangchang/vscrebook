@@ -3,7 +3,7 @@ import _ = require("lodash")
 import { parse } from "path"
 import { getBook, updateBook } from "./utils/bookList"
 import { getConfig } from "./utils/config"
-import { showBossText } from "./utils/show"
+import { showBossText } from "./core/show"
 
 export let book: {
     text: string,

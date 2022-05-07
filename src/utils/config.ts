@@ -4,23 +4,18 @@ import { join } from "path"
 
 export const extName = 'vscrebook'
 
-export enum ConfigDescriptions {
-    pageSize = '每页显示字数',
-    downloadPath = '下载的小说的储存路径',
-    autoFlipTime = '自动翻页的速度(每页的时间/ms)',
-    displayMode = '显示小说文字的方式',
-}
-
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const ExtConfig: ConfigSetObj = {
     pageSize: {
         name: 'vscrebook.pageSize',
+        desc: '每页显示字数',
         default: 25,
         type: 'number',
         form: 'input',
     },
     downloadPath: {
         name: 'vscrebook.downloadPath',
+        desc: '下载的小说的储存路径',
         default: (() => {
             if (!_.isUndefined(process.env.HOME)) {
                 return join(process.env.HOME, 'downloads')
@@ -35,12 +30,14 @@ export const ExtConfig: ConfigSetObj = {
     },
     autoFlipTime: {
         name: 'vscrebook.autoFlipTime',
+        desc: '自动翻页的速度(每页的时间/ms)',
         default: 3000,
         type: 'number',
         form: 'input',
     },
     displayMode: {
         name: 'vscrebook.displayMode',
+        desc: '显示小说文字的方式',
         default: 'statusBar',
         type: 'string',
         form: 'choose',
@@ -48,13 +45,14 @@ export const ExtConfig: ConfigSetObj = {
     },
     statusConfig: {
         name: 'vscrebook.statusConfig',
+        desc: '设置网络书籍中是否显示书籍更新状态',
         default: {
             caimoge: true,
             wbxsw: false,
         },
         type: 'object',
         form: 'choose',
-        choices: ['123'], // todo
+        choices: ['caimoge', 'wbxsw'],
     }
 }
 
@@ -62,7 +60,8 @@ const getWsConfig = workspace.getConfiguration().get
 const updateWsConfig = workspace.getConfiguration().update
 
 _(ExtConfig).forEach((value) => {
-    if (_.isUndefined(getWsConfig(value.name))) {
+    const c = getWsConfig(value.name)
+    if (_.isUndefined(c) || _.isEmpty(c)) {
         updateWsConfig(value.name, value.default, true)
     }
 })
@@ -97,6 +96,6 @@ export function getConfig(): ConfigType {
         downloadPath: getInnerConfig(ExtConfig.downloadPath.name) as string,
         autoFlipTime: getInnerConfig(ExtConfig.autoFlipTime.name) as number,
         displayMode: getInnerConfig(ExtConfig.displayMode.name) as DisplayMode,
-        statusConfig: getInnerConfig(ExtConfig.)
+        statusConfig: getInnerConfig(ExtConfig.statusConfig.name) as StatusConfig,
     }
 }

@@ -3,7 +3,7 @@ import { commands, ExtensionContext } from "vscode"
 import { bookListInit } from "./utils/bookList"
 import { extName, getConfig, updateConfig } from "./utils/config"
 import { debug } from "./utils/debug"
-import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInterval, showJump, showNext, showPrev, startt, toggleBossMsg } from "./utils/show"
+import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInterval, showJump, showNext, showPrev, startt, toggleBossMsg } from "./core/show"
 
 export function activate(context: ExtensionContext) {
     debug(`Congratulations, your extension "${extName}" is now active!`)
@@ -14,16 +14,16 @@ export function activate(context: ExtensionContext) {
         mkdirSync(context.globalStorageUri.fsPath)
     }
 
-    if (!existsSync(getConfig().downloadPath)) {
-        mkdirSync(getConfig().downloadPath)
-    }
+    // if (!existsSync(getConfig().downloadPath)) {
+    //     mkdirSync(getConfig().downloadPath)
+    // }
 
     bookListInit(context)
 
-    let start = commands.registerCommand(`${extName}.start`, () => {
+    let showMenu = commands.registerCommand(`${extName}.showMenu`, () => {
         startt(context)
     })
-    context.subscriptions.push(start)
+    context.subscriptions.push(showMenu)
 
     // 老板键，将小说替换成 Hello, World 代码
     let bossKey = commands.registerCommand(`${extName}.bossKey`, () => {

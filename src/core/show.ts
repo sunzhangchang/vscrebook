@@ -1,12 +1,12 @@
 import _ = require("lodash")
 import { join } from "path"
 import { ExtensionContext, window } from "vscode"
-import { setExtTo } from "."
+import { setExtTo } from "../utils"
 import { book, getPageText, newBook } from "../book"
-import { showMainMenu } from "../library"
-import { getBook, updateBook } from "./bookList"
-import { getConfig } from "./config"
-import { error, Errors } from "./error"
+import { showMainMenu } from "."
+import { getBook, updateBook } from "../utils/bookList"
+import { getConfig } from "../utils/config"
+import { error, Errors } from "../utils/error"
 
 const codes: string[] = [
     'Java - System.out.println("Hello World");',

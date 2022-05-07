@@ -36,7 +36,7 @@
         },
         "vscrebook.downloadPath": {
           "type": "string",
-          "default": "",
+          "default": "~/downloads",
           "description": "下载的小说的储存路径"
         },
         "vscrebook.autoFlipTime": {
@@ -65,11 +65,16 @@
               "type": "boolean",
               "default": false
             }
-          }
+          },
+          "description": "设置网络书籍中是否显示书籍更新状态"
         }
       }
     },
     "commands": [
+      {
+        "command": "vscrebook.showMenu",
+        "title": "menu 打开 vscrebook 菜单"
+      },
       {
         "command": "vscrebook.bossKey",
         "title": "bossKey"
@@ -87,15 +92,16 @@
         "title": "jumpPage"
       },
       {
-        "command": "vscrebook.start",
-        "title": "start 开始阅读(摸鱼)"
-      },
-      {
         "command": "vscrebook.autoFlip",
         "title": "autoFlip"
       }
     ],
     "keybindings": [
+      {
+        "command": "vscrebook.showMenu",
+        "key": "ctrl+alt+;",
+        "mac": "cmd+;"
+      },
       {
         "command": "vscrebook.bossKey",
         "key": "ctrl+alt+/",
@@ -104,25 +110,17 @@
       {
         "command": "vscrebook.prevPage",
         "key": "ctrl+alt+,",
-        "mac": "cmd+,",
-        "when": "editorTextFocus"
+        "mac": "cmd+,"
       },
       {
         "command": "vscrebook.nextPage",
         "key": "ctrl+alt+.",
-        "mac": "cmd+.",
-        "when": "editorTextFocus"
+        "mac": "cmd+."
       },
       {
         "command": "vscrebook.jumpPage",
         "key": "ctrl+alt+'",
-        "mac": "cmd+'",
-        "when": "editorTextFocus"
-      },
-      {
-        "command": "vscrebook.start",
-        "key": "ctrl+alt+;",
-        "mac": "cmd+;"
+        "mac": "cmd+'"
       },
       {
         "command": "vscrebook.autoFlip",

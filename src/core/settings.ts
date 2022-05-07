@@ -1,20 +1,20 @@
 import _ = require("lodash")
 import { window } from "vscode"
-import { ConfigDescriptions, ExtConfig, setConfig } from "../utils/config"
+import { ExtConfig, getConfig, setConfig } from "../utils/config"
 
 async function getNewConfig(key: string) {
     let val: string | undefined
-    let tmp = _.get(ExtConfig, key)
+    let tmp = _.get(ExtConfig, key) as ConfigSet
     switch (tmp.form) {
         case 'input': {
             val = await window.showInputBox({
-                placeHolder: _.get(ConfigDescriptions, key)
+                placeHolder: tmp.desc,
             })
             break
         }
 
         case 'choose': {
-            val = await window.showQuickPick(tmp.choices ?? [])
+            val = await window.showQuickPick(tmp.choices?.map((str) => `${str}: ${_.get(getConfig(), key)}`) ?? [])
             break
         }
 
@@ -46,7 +46,7 @@ async function getNewConfig(key: string) {
 }
 
 export async function settings() {
-    let key = await window.showQuickPick(_.keys(ConfigDescriptions), {
+    let key = await window.showQuickPick(_.keys(ExtConfig), {
         matchOnDescription: true,
         placeHolder: '请选择需要设置的项目',
     })
