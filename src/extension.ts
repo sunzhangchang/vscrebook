@@ -8,15 +8,15 @@ import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInt
 export function activate(context: ExtensionContext) {
     debug(`Congratulations, your extension "${extName}" is now active!`)
 
-    debug(getConfig())
+    // debug(getConfig())
 
     if (!existsSync(context.globalStorageUri.fsPath)) {
         mkdirSync(context.globalStorageUri.fsPath)
     }
 
-    // if (!existsSync(getConfig().downloadPath)) {
-    //     mkdirSync(getConfig().downloadPath)
-    // }
+    if (!existsSync(getConfig().downloadPath)) {
+        mkdirSync(getConfig().downloadPath)
+    }
 
     bookListInit(context)
 

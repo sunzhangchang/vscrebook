@@ -64,6 +64,11 @@ _(ExtConfig).forEach((value) => {
     if (_.isUndefined(c) || _.isEmpty(c)) {
         updateWsConfig(value.name, value.default, true)
     }
+    if (_.isEqual(value.name, 'downloadPath')) {
+        if (_.isEqual(getWsConfig(value.name), '~/downloads')) {
+            updateWsConfig(value.name, value.default, true)
+        }
+    }
 })
 
 let config: ConfigType = {

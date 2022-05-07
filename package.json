@@ -21,7 +21,7 @@
   ],
   "publisher": "Cyanogenaq",
   "activationEvents": [
-    "onCommand:vscrebook.start"
+    "onCommand:vscrebook.showMenu"
   ],
   "main": "./dist/extension.js",
   "contributes": {
