@@ -2,7 +2,7 @@ import { readFileSync } from "fs"
 import _ = require("lodash")
 import { parse } from "path"
 import { getBook, updateBook } from "./utils/bookList"
-import { getConfig } from "./utils/config"
+import { getConfig } from "./core/config"
 import { showBossText } from "./core/show"
 
 export let book: {

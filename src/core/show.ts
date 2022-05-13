@@ -5,7 +5,7 @@ import { setExtTo } from "../utils"
 import { book, getPageText, newBook } from "../book"
 import { showMainMenu } from "."
 import { getBook, updateBook } from "../utils/bookList"
-import { getConfig } from "../utils/config"
+import { getConfig } from "./config"
 import { error, Errors } from "../utils/error"
 
 const codes: string[] = [

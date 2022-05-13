@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync } from "fs"
 import { commands, ExtensionContext } from "vscode"
 import { bookListInit } from "./utils/bookList"
-import { extName, getConfig, updateConfig } from "./utils/config"
+import { extName, getConfig, updateConfig } from "./core/config"
 import { debug } from "./utils/debug"
 import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInterval, showJump, showNext, showPrev, startt, toggleBossMsg } from "./core/show"
 

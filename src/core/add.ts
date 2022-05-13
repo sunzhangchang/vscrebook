@@ -4,7 +4,7 @@ import { window } from "vscode"
 import { download, search } from "../crawl"
 import { copyFileToUTF8Sync, setExtTo } from "../utils"
 import { updateBook } from "../utils/bookList"
-import { getConfig } from "../utils/config"
+import { getConfig } from "./config"
 import { error, Errors } from "../utils/error"
 
 const enum Chooses {

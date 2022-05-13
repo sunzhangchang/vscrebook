@@ -5,7 +5,7 @@ import axios from 'axios'
 // import querystring = require('querystring')
 import { window } from "vscode"
 import { Crawl } from "../inter"
-import { getConfig } from "../../utils/config"
+import { getConfig } from "../../core/config"
 
 export class Wbxsw implements Crawl {
     sourceName: Source = '58小说网'

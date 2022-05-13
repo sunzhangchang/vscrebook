@@ -5,7 +5,7 @@ import { ExtensionContext, window } from "vscode"
 import { setExtTo } from "."
 import { download, search } from "../crawl"
 import { addBook } from "../core/add"
-import { getConfig } from "./config"
+import { getConfig } from "../core/config"
 // import { debug } from "./debug"
 import { error, Errors } from "./error"
 

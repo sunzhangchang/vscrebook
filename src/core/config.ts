@@ -7,14 +7,14 @@ export const extName = 'vscrebook'
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const ExtConfig: ConfigSetObj = {
     pageSize: {
-        name: 'vscrebook.pageSize',
+        name: `${extName}.pageSize`,
         desc: '每页显示字数',
         default: 25,
         type: 'number',
         form: 'input',
     },
     downloadPath: {
-        name: 'vscrebook.downloadPath',
+        name: `${extName}.downloadPath`,
         desc: '下载的小说的储存路径',
         default: (() => {
             if (!_.isUndefined(process.env.HOME)) {
@@ -29,14 +29,14 @@ export const ExtConfig: ConfigSetObj = {
         form: 'input',
     },
     autoFlipTime: {
-        name: 'vscrebook.autoFlipTime',
+        name: `${extName}.autoFlipTime`,
         desc: '自动翻页的速度(每页的时间/ms)',
         default: 3000,
         type: 'number',
         form: 'input',
     },
     displayMode: {
-        name: 'vscrebook.displayMode',
+        name: `${extName}.displayMode`,
         desc: '显示小说文字的方式',
         default: 'statusBar',
         type: 'string',
@@ -44,7 +44,7 @@ export const ExtConfig: ConfigSetObj = {
         choices: ['statusBar', 'showInformation'],
     },
     statusConfig: {
-        name: 'vscrebook.statusConfig',
+        name: `${extName}.statusConfig`,
         desc: '设置网络书籍中是否显示书籍更新状态',
         default: {
             caimoge: true,
@@ -76,12 +76,12 @@ let config: ConfigType = {
     downloadPath: getWsConfig(ExtConfig.downloadPath.name) as string,
     autoFlipTime: getWsConfig(ExtConfig.autoFlipTime.name) as number,
     displayMode: getWsConfig(ExtConfig.displayMode.name) as DisplayMode,
-    statusConfig: getWsConfig(ExtConfig.displayMode.name) as StatusConfig,
+    statusConfig: getWsConfig(ExtConfig.statusConfig.name) as StatusConfig,
 }
 
 export function setConfig(key: string, value: any) {
     config = _(config).set(key, value).value()
-    updateWsConfig(`vscrebook.${key}`, value, true)
+    updateWsConfig(`${extName}.${key}`, value, true)
 }
 
 function getInnerConfig(key: string) {
@@ -91,7 +91,7 @@ function getInnerConfig(key: string) {
 export function updateConfig() {
     _(config).forEach((value, key) => {
         // debug(`vscrebook.${key}`, value)
-        updateWsConfig(`vscrebook.${key}`, value, true)
+        updateWsConfig(`${extName}.${key}`, value, true)
     })
 }
 

@@ -1,6 +1,6 @@
 import _ = require("lodash")
 import { window } from "vscode"
-import { ExtConfig, getConfig, setConfig } from "../utils/config"
+import { ExtConfig, getConfig, setConfig } from "./config"
 
 async function getNewConfig(key: string) {
     let val: string | undefined
