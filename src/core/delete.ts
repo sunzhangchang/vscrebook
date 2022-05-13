@@ -3,7 +3,7 @@ import _ = require("lodash")
 import { join } from "path"
 import { window } from "vscode"
 import { setExtTo } from "../utils"
-import { delBookFromList } from "../utils/bookList"
+import { delBookFromList } from "./bookList"
 import { showBossText } from "./show"
 import { showBookList } from "./utils"
 

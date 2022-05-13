@@ -1,6 +1,7 @@
 import { workspace } from "vscode"
 import _ = require("lodash")
 import { join } from "path"
+import { mydebug } from "../utils/debug"
 
 export const extName = 'vscrebook'
 
@@ -59,12 +60,38 @@ export const ExtConfig: ConfigSetObj = {
 const getWsConfig = workspace.getConfiguration().get
 const updateWsConfig = workspace.getConfiguration().update
 
+export function configAs(cfg: ConfigSet, val: any) {
+    if (_.isUndefined(val)) {
+        return undefined
+    }
+    let res
+    switch (cfg.type) {
+        case 'number':
+            res = parseInt(val)
+            break
+
+        case 'string':
+            res = val as string
+            break
+
+        case 'object':
+            res = JSON.parse(val) as object
+            break
+
+        default:
+            break
+    }
+    return res
+}
+
 _(ExtConfig).forEach((value) => {
     const c = getWsConfig(value.name)
-    if (_.isUndefined(c) || _.isEmpty(c)) {
+    mydebug(c)
+    if (_.isUndefined(c)) {
+        mydebug(c, _.isUndefined(c))
         updateWsConfig(value.name, value.default, true)
     }
-    if (_.isEqual(value.name, 'downloadPath')) {
+    if (_.isEqual(value.name, `${extName}.downloadPath`)) {
         if (_.isEqual(getWsConfig(value.name), '~/downloads')) {
             updateWsConfig(value.name, value.default, true)
         }

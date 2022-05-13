@@ -1,6 +1,6 @@
 import _ = require("lodash")
 import { window } from "vscode"
-import { getBookList } from "../utils/bookList"
+import { getBookList } from "./bookList"
 import { error, Errors } from "../utils/error"
 
 export async function showBookList(): Promise<string | undefined> {

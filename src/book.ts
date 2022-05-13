@@ -1,7 +1,7 @@
 import { readFileSync } from "fs"
 import _ = require("lodash")
 import { parse } from "path"
-import { getBook, updateBook } from "./utils/bookList"
+import { getBook, updateBook } from "./core/bookList"
 import { getConfig } from "./core/config"
 import { showBossText } from "./core/show"
 

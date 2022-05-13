@@ -3,7 +3,7 @@ import { join, parse } from "path"
 import { window } from "vscode"
 import { download, search } from "../crawl"
 import { copyFileToUTF8Sync, setExtTo } from "../utils"
-import { updateBook } from "../utils/bookList"
+import { updateBook } from "./bookList"
 import { getConfig } from "./config"
 import { error, Errors } from "../utils/error"
 

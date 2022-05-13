@@ -1,18 +1,20 @@
 import { existsSync, mkdirSync } from "fs"
 import { commands, ExtensionContext } from "vscode"
-import { bookListInit } from "./utils/bookList"
+import { bookListInit } from "./core/bookList"
 import { extName, getConfig, updateConfig } from "./core/config"
-import { debug } from "./utils/debug"
+import { mydebug } from "./utils/debug"
 import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInterval, showJump, showNext, showPrev, startt, toggleBossMsg } from "./core/show"
 
 export function activate(context: ExtensionContext) {
-    debug(`Congratulations, your extension "${extName}" is now active!`)
+    mydebug(`Congratulations, your extension "${extName}" is now active!`)
 
     // debug(getConfig())
 
     if (!existsSync(context.globalStorageUri.fsPath)) {
         mkdirSync(context.globalStorageUri.fsPath)
     }
+
+    getConfig()
 
     if (!existsSync(getConfig().downloadPath)) {
         mkdirSync(getConfig().downloadPath)
@@ -62,6 +64,6 @@ export function activate(context: ExtensionContext) {
 }
 
 export function deactivate() {
-    debug('~~~ deactivate')
+    mydebug('~~~ deactivate')
     updateConfig()
 }

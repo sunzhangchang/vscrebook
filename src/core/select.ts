@@ -1,5 +1,5 @@
 import _ = require("lodash")
-import { getBookList } from "../utils/bookList"
+import { getBookList } from "./bookList"
 import { showBookList } from "./utils"
 
 export async function selectBook(): Promise<BookInfo | undefined> {

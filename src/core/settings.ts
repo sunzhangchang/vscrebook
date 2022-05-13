@@ -1,6 +1,6 @@
 import _ = require("lodash")
 import { window } from "vscode"
-import { ExtConfig, getConfig, setConfig } from "./config"
+import { configAs, ExtConfig, getConfig, setConfig } from "./config"
 
 async function getNewConfig(key: string) {
     let val: string | undefined
@@ -25,24 +25,7 @@ async function getNewConfig(key: string) {
     if (_.isUndefined(val)) {
         return undefined
     }
-    let res
-    switch (tmp.type) {
-        case 'number':
-            res = parseInt(val)
-            break
-
-        case 'string':
-            res = val
-            break
-
-        case 'object':
-            res = JSON.parse(val) as object
-            break
-
-        default:
-            break
-    }
-    return res
+    return configAs(tmp, val)
 }
 
 export async function settings() {

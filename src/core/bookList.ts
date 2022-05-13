@@ -2,12 +2,11 @@ import { readFileSync } from "fs"
 import _ = require("lodash")
 import { parse } from "path"
 import { ExtensionContext, window } from "vscode"
-import { setExtTo } from "."
+import { setExtTo } from "../utils"
 import { download, search } from "../crawl"
-import { addBook } from "../core/add"
-import { getConfig } from "../core/config"
-// import { debug } from "./debug"
-import { error, Errors } from "./error"
+import { addBook } from "./add"
+import { getConfig } from "./config"
+import { error, Errors } from "../utils/error"
 
 let context: ExtensionContext
 
