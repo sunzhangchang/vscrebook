@@ -13,8 +13,7 @@ export class Wbxsw extends EachChapterCrawl {
     protected readonly contextSelector: string = '#content'
 
     async getSearchPath(searchKey: string): Promise<string> {
-        let searchPath = (new URL('/search.php', this.source)).href
-        let url = new URL(searchPath)
+        let url = new URL('/search.php', this.source)
         url.searchParams.append('q', searchKey)
         url.searchParams.sort()
         return url.href

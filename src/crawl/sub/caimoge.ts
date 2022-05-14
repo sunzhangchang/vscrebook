@@ -8,8 +8,7 @@ export class Caimoge extends DownloadTxtCrawl {
     protected txtURLPrefix: string = 'https://www.caimoge.net/api/txt_down.php?articleid='
 
     async getSearchPath(searchKey: string): Promise<string> {
-        let searchPath = (new URL('/search/', this.source)).href
-        let url = new URL(searchPath)
+        let url = new URL('/search/', this.source)
         url.searchParams.append('searchkey', searchKey)
         url.searchParams.sort()
         return url.href
