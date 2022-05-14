@@ -1,8 +1,6 @@
 import _ = require("lodash")
 import * as cheerio from 'cheerio'
 import axios from 'axios'
-// import querystring = require('querystring')
-import { window } from "vscode"
 import { EachChapterCrawl } from "../Crawl"
 import { getConfig } from "../../core/config"
 
@@ -14,25 +12,18 @@ export class Wbxsw extends EachChapterCrawl {
     protected readonly chapterTitleSelector: string = '#wrapper > div.content_read > div > div.bookname > h1'
     protected readonly contextSelector: string = '#content'
 
-    async search(searchKey: string): Promise<SearchBook[] | null> {
-        let searchPath = new URL('/search.php', this.source).href
+    async getSearchPath(searchKey: string): Promise<string> {
+        let searchPath = (new URL('/search.php', this.source)).href
         let url = new URL(searchPath)
         url.searchParams.append('q', searchKey)
         url.searchParams.sort()
+        return url.href
+    }
 
-        let res: string
-        try {
-            let response = await axios.get(url.href)
-
-            res = Buffer.from(response.data).toString('utf8')
-        } catch (err: any) {
-            window.showErrorMessage(err.message)
-            throw err
-        }
+    async search(searchKey: string): Promise<SearchBook[] | null> {
+        const $ = await this.getSearchPageDOM(searchKey)
 
         let searchBooks: SearchBook[] = []
-
-        const $ = cheerio.load(res)
         // debug('!!!!----------------------------------------')
         const list = $('body > div.result-list > div').toArray()
         for (const dl of list) {

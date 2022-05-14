@@ -1,17 +1,67 @@
 import axios from "axios"
 import * as cheerio from 'cheerio'
 import _ = require("lodash")
+import { window } from "vscode"
 import { error, Errors } from "../utils/error"
 
-export interface Crawl {
-    readonly sourceName: string
-    readonly source: string
-    search(searchKey: string): Promise<SearchBook[] | null>,
-    // getDownloadURL()
-    download(menuURL: string): Promise<Buffer | null>,
+export abstract class Crawl {
+    abstract readonly sourceName: string
+    abstract readonly source: string
+
+    abstract getSearchPath(searchKey: string): Promise<string>
+
+    async getSearchPageDOM(searchKey: string): Promise<cheerio.CheerioAPI> {
+        let res: string
+        try {
+            let response = await axios.get(await this.getSearchPath(searchKey))
+
+            res = Buffer.from(response.data).toString('utf8')
+        } catch (err: any) {
+            window.showErrorMessage(err.message)
+            throw err
+        }
+
+        return cheerio.load(res)
+    }
+
+    abstract search(searchKey: string): Promise<SearchBook[] | null>
+    abstract download(menuURL: string): Promise<Buffer | null>
 }
 
-export abstract class EachChapterCrawl implements Crawl {
+export abstract class DownloadTxtCrawl extends Crawl {
+    abstract readonly sourceName: string
+    abstract readonly source: string
+
+    protected abstract readonly realDownloadURLPrefix: string
+
+    abstract search(searchKey: string): Promise<SearchBook[] | null>
+
+    abstract getId(menuURL: string): Promise<string>
+
+    async download(menuURL: string): Promise<Buffer | null> {
+        let id = this.getId(menuURL)
+
+        if (_.isUndefined(id)) {
+            console.error(menuURL)
+            error(Errors.getNovelIdFailed)
+            return null
+        }
+
+        let novelUrl = `${this.realDownloadURLPrefix}${id}`
+
+        let response = await axios.get(novelUrl)
+
+        if (_.isNull(response)) {
+            console.error(novelUrl)
+            error(Errors.getNovelFileFailed)
+            return null
+        }
+
+        return Buffer.from(response.data)
+    }
+}
+
+export abstract class EachChapterCrawl extends Crawl {
     abstract readonly sourceName: string
     abstract readonly source: string
 
