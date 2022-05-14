@@ -5,7 +5,7 @@ import { posix } from "path"
 import axios from 'axios'
 // import querystring = require('querystring')
 import { window } from "vscode"
-import { Crawl } from "../inter"
+import { Crawl } from "../Crawl"
 
 export class Caimoge implements Crawl {
     sourceName: Source = '采墨阁'
@@ -19,10 +19,7 @@ export class Caimoge implements Crawl {
 
         let res: string
         try {
-            let response = await axios({
-                url: url.href,
-                // querystring.stringify({searchKey})
-            })
+            let response = await axios.get(url.href)
 
             res = Buffer.from(response.data).toString('utf8')
         } catch (err: any) {
@@ -62,11 +59,9 @@ export class Caimoge implements Crawl {
 
         let novelUrl = `https://www.caimoge.net/api/txt_down.php?articleid=${id}`
 
-        console.log(novelUrl)
+        // console.log(novelUrl)
 
-        let response = await axios({
-            url: novelUrl
-        })
+        let response = await axios.get(novelUrl)
 
         if (_.isNull(response)) {
             console.error(novelUrl)

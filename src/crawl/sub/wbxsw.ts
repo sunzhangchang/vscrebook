@@ -4,7 +4,7 @@ import { error, Errors } from "../../utils/error"
 import axios from 'axios'
 // import querystring = require('querystring')
 import { window } from "vscode"
-import { Crawl } from "../inter"
+import { Crawl } from "../Crawl"
 import { getConfig } from "../../core/config"
 
 export class Wbxsw implements Crawl {
@@ -17,14 +17,9 @@ export class Wbxsw implements Crawl {
         url.searchParams.append('q', searchKey)
         url.searchParams.sort()
 
-        // debug(url.href)
-
         let res: string
         try {
-            let response = await axios({
-                url: url.href,
-                // querystring.stringify({searchKey})
-            })
+            let response = await axios.get(url.href)
 
             res = Buffer.from(response.data).toString('utf8')
         } catch (err: any) {

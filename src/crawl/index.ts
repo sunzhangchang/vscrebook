@@ -6,7 +6,7 @@ import { error, Errors } from "../utils/error"
 import axios from 'axios'
 import { USER_AGENT } from "./utils"
 import { Caimoge } from "./sub/caimoge"
-import { Crawl } from "./inter"
+import { Crawl } from "./Crawl"
 import { setExtTo } from "../utils"
 import { Wbxsw } from "./sub/wbxsw"
 
@@ -24,22 +24,15 @@ export async function search(searchKey: string) {
     }
     let list: SearchBook[] = []
     for (const iter of crawlers) {
-        list = _.concat(list, (await iter.search(searchKey)) ?? [])
+        list.concat((await iter.search(searchKey)) ?? [])
     }
     return list
 }
 
 export async function download(source: string, menuURL: string, dir: string, name: string) {
-    let spider = (() => {
-        for (const iter of crawlers) {
-            if (_.isEqual(iter.sourceName, source)) {
-                return iter
-            }
-        }
-        return null
-    })()
+    let spider = crawlers.find(iter => _.isEqual(iter.sourceName, source))
 
-    if (_.isNull(spider)) {
+    if (_.isUndefined(spider)) {
         error(Errors.downloadNovelFailed)
         throw new Error(`${source} cannot find crawl!`)
     }
