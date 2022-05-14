@@ -23,7 +23,7 @@ export class Caimoge extends DownloadTxtCrawl {
             searchBooks.push({
                 书名: $(dl).find("dd:nth-child(2) > h3:nth-child(1) > a:nth-child(1)").text(),
                 作者: $(dl).find("dd:nth-child(3) > span:nth-child(1) > a:nth-child(1)").text(),
-                状态: ((getConfig().statusConfig.caimoge) ? ($(dl).find("dd:nth-child(3) > span:nth-child(2)").text()) : ('未知')),
+                状态: ((getConfig().showMoreInfo.caimoge) ? ($(dl).find("dd:nth-child(3) > span:nth-child(2)").text()) : ('未知')),
                 分类: $(dl).find("dd:nth-child(3) > span:nth-child(3)").text(),
                 字数: $(dl).find("dd:nth-child(3) > span:nth-child(4)").text(),
                 简介: $(dl).find("dd:nth-child(4)").text(),

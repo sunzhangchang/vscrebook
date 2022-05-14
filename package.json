@@ -53,7 +53,7 @@
           "default": "statusBar",
           "description": "显示小说文字的方式"
         },
-        "vscrebook.statusConfig": {
+        "vscrebook.showMoreInfo": {
           "type": "object",
           "default": {},
           "properties": {
@@ -64,9 +64,13 @@
             "wbxsw": {
               "type": "boolean",
               "default": false
+            },
+            "aixiashu": {
+              "type": "boolean",
+              "default": false
             }
           },
-          "description": "设置网络书籍中是否显示书籍更新状态"
+          "description": "设置网络书籍中是否显示书籍更多信息"
         }
       }
     },

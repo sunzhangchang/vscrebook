@@ -2,18 +2,19 @@ declare type DisplayMode =
     | 'statusBar'
     | 'showInformation'
 
-declare type StatusConfig = {
+declare type ShowMoreInfo = {
     caimoge: boolean
     wbxsw: boolean
+    aixiashu: boolean
 }
 
-declare type ConfigType = ConfigBase<number, string, number, DisplayMode, StatusConfig>
+declare type ConfigType = ConfigBase<number, string, number, DisplayMode, ShowMoreInfo>
 // {
 // 	pageSize: number
 // 	downloadPath: string
 // 	autoFlipTime: number
 // 	displayMode: DisplayMode
-// 	statusConfig: StatusConfig
+// 	showMoreInfo: ShowMoreInfo
 // }
 
 declare type Source =
@@ -53,18 +54,12 @@ declare type ConfigSet = {
 
 declare type ConfigSetObj = ConfigBaseOne<ConfigSet>
 
-declare type ConfigBaseOne<T> = {
-    pageSize: T
-    downloadPath: T
-    autoFlipTime: T
-    displayMode: T
-    statusConfig: T
-}
+declare type ConfigBaseOne<T> = ConfigBase<T, T, T, T, T>
 
 declare type ConfigBase<T, U, V, W, X> = {
     pageSize: T
     downloadPath: U
     autoFlipTime: V
     displayMode: W
-    statusConfig: X
+    showMoreInfo: X
 }

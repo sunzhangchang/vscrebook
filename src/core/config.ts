@@ -44,16 +44,17 @@ export const ExtConfig: ConfigSetObj = {
         form: 'choose',
         choices: ['statusBar', 'showInformation'],
     },
-    statusConfig: {
-        name: `${extName}.statusConfig`,
+    showMoreInfo: {
+        name: `${extName}.showMoreInfo`,
         desc: '设置网络书籍中是否显示书籍更新状态',
         default: {
             caimoge: true,
             wbxsw: false,
+            aixiashu: false,
         },
         type: 'object',
         form: 'choose',
-        choices: ['caimoge', 'wbxsw'],
+        choices: ['caimoge', 'wbxsw', 'aixiashu'],
     }
 }
 
@@ -103,7 +104,7 @@ let config: ConfigType = {
     downloadPath: getWsConfig(ExtConfig.downloadPath.name) as string,
     autoFlipTime: getWsConfig(ExtConfig.autoFlipTime.name) as number,
     displayMode: getWsConfig(ExtConfig.displayMode.name) as DisplayMode,
-    statusConfig: getWsConfig(ExtConfig.statusConfig.name) as StatusConfig,
+    showMoreInfo: getWsConfig(ExtConfig.showMoreInfo.name) as ShowMoreInfo,
 }
 
 export function setConfig(key: string, value: any) {
@@ -128,6 +129,6 @@ export function getConfig(): ConfigType {
         downloadPath: getInnerConfig(ExtConfig.downloadPath.name) as string,
         autoFlipTime: getInnerConfig(ExtConfig.autoFlipTime.name) as number,
         displayMode: getInnerConfig(ExtConfig.displayMode.name) as DisplayMode,
-        statusConfig: getInnerConfig(ExtConfig.statusConfig.name) as StatusConfig,
+        showMoreInfo: getInnerConfig(ExtConfig.showMoreInfo.name) as ShowMoreInfo,
     }
 }

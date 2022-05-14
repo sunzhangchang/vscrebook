@@ -31,10 +31,10 @@ export class Wbxsw extends EachChapterCrawl {
             if (_.isUndefined(menu_)) {
                 continue
             }
-            const menu = new URL(menu_, this.source)
+            const menu = new URL(menu_, this.source).href
             let status = '未知'
-            if (getConfig().statusConfig.wbxsw) {
-                const res = await axios.get(menu.href)
+            if (getConfig().showMoreInfo.wbxsw) {
+                const res = await axios.get(menu)
                 let $$ = cheerio.load(Buffer.from(res.data).toString('utf8'))
                 status = _(_($$('#info > p:nth-child(3)').text()).split('：').last() ?? '未知,').split(',').first() ?? '未知'
             }
@@ -47,7 +47,7 @@ export class Wbxsw extends EachChapterCrawl {
                 简介: detail.find("p").text(),
                 最新章节: detail.find("div > p:nth-child(4) > a").text(),
                 最近更新: detail.find("div > p:nth-child(3) > span:nth-child(2)").text(),
-                目录链接: menu.href,
+                目录链接: menu,
                 书源: this.sourceName,
             })
         }
