@@ -1,15 +1,18 @@
 import _ = require("lodash")
 import * as cheerio from 'cheerio'
-import { error, Errors } from "../../utils/error"
 import axios from 'axios'
 // import querystring = require('querystring')
 import { window } from "vscode"
-import { Crawl } from "../Crawl"
+import { EachChapterCrawl } from "../Crawl"
 import { getConfig } from "../../core/config"
 
-export class Wbxsw implements Crawl {
-    sourceName: Source = '58小说网'
-    source = 'http://www.wbxsw.com/'
+export class Wbxsw extends EachChapterCrawl {
+    readonly sourceName: Source = '58小说网'
+    readonly source = 'http://www.wbxsw.com/'
+
+    protected readonly chaptersSelector: string = '#list > dl > dd > a'
+    protected readonly chapterTitleSelector: string = '#wrapper > div.content_read > div > div.bookname > h1'
+    protected readonly contextSelector: string = '#content'
 
     async search(searchKey: string): Promise<SearchBook[] | null> {
         let searchPath = new URL('/search.php', this.source).href
@@ -59,41 +62,5 @@ export class Wbxsw implements Crawl {
             })
         }
         return searchBooks
-    }
-
-    async getChapters(menuURL: string, asSelector: string): Promise<string[]> {
-        let response = await axios.get(menuURL)
-
-        let menu = Buffer.from(response.data).toString('utf8')
-        let $ = cheerio.load(menu)
-        let l = $(asSelector).toArray()
-        let list: string[] = []
-        for (const iter of l) {
-            let url = $(iter).attr('href')
-            if (_.isUndefined(url)) {
-                error(Errors.chapterLost)
-                continue
-            }
-            // debug(url)
-            list.push(await this.oneChapter(new URL(url, this.source).href)) // todo : new URL(menuURL).host
-        }
-        return list
-    }
-
-    async oneChapter(url: string): Promise<string> {
-        const response = await axios.get(url)
-        let $ = cheerio.load(Buffer.from(response.data).toString('utf8'))
-        return  '========' + $('#wrapper > div.content_read > div > div.bookname > h1').text() + '========' + $('#content').text()
-    }
-
-    async download(menuURL: string): Promise<Buffer | null> {
-        // debug(menuURL)
-        let chapterList = await this.getChapters(menuURL, '#list > dl > dd > a')
-        let novel = ''
-        for (const iter of chapterList) {
-            novel += iter
-        }
-
-        return Buffer.from(novel)
     }
 }

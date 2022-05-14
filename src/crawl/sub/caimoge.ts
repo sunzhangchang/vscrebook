@@ -59,8 +59,6 @@ export class Caimoge implements Crawl {
 
         let novelUrl = `https://www.caimoge.net/api/txt_down.php?articleid=${id}`
 
-        // console.log(novelUrl)
-
         let response = await axios.get(novelUrl)
 
         if (_.isNull(response)) {

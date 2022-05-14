@@ -7,7 +7,7 @@ import { updateBook } from "./bookList"
 import { getConfig } from "./config"
 import { error, Errors } from "../utils/error"
 
-const enum Chooses {
+enum Chooses {
     local = '本地书籍',
     online = '网络书籍',
 }
@@ -16,7 +16,7 @@ async function getAdBook(): Promise<{
     bookPath: string,
     source: Source,
 } | undefined> {
-    let chos = await window.showQuickPick([Chooses.local, Chooses.online], {
+    let chos = await window.showQuickPick(_.values(Chooses), {
         matchOnDescription: true
     })
     switch (chos) {
