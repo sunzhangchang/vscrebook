@@ -20,6 +20,7 @@ declare type Source =
     | '本地'
     | '采墨阁'
     | '58小说网'
+    | '爱下书小说网'
 
 declare type BookInfo = {
     bookName: string
