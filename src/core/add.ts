@@ -65,7 +65,7 @@ async function getAdBook(): Promise<{
             }
 
             bookName = _.split(bookName, ' - ')[0]
-            let one = _(list).filter((iter) => _.isEqual(bookName, iter.书名)).first()
+            let one = list.find((iter) => _.isEqual(iter.书名, bookName))
             if (_.isUndefined(one)) {
                 error(Errors.chooseFaild)
                 return
