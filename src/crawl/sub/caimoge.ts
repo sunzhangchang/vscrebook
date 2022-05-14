@@ -5,7 +5,7 @@ export class Caimoge extends DownloadTxtCrawl {
     readonly sourceName: Source = '采墨阁'
     readonly source = 'https://www.caimoge.net/'
 
-    protected realDownloadURLPrefix: string = 'https://www.caimoge.net/api/txt_down.php?articleid='
+    protected txtURLPrefix: string = 'https://www.caimoge.net/api/txt_down.php?articleid='
 
     async getSearchPath(searchKey: string): Promise<string> {
         let searchPath = (new URL('/search/', this.source)).href

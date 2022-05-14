@@ -32,7 +32,7 @@ export abstract class DownloadTxtCrawl extends Crawl {
     abstract readonly sourceName: string
     abstract readonly source: string
 
-    protected abstract readonly realDownloadURLPrefix: string
+    protected abstract readonly txtURLPrefix: string
 
     abstract search(searchKey: string): Promise<SearchBook[] | null>
 
@@ -47,7 +47,7 @@ export abstract class DownloadTxtCrawl extends Crawl {
             return null
         }
 
-        let novelUrl = `${this.realDownloadURLPrefix}${id}`
+        let novelUrl = `${this.txtURLPrefix}${id}`
 
         let response = await axios.get(novelUrl)
 
