@@ -11,7 +11,7 @@
 - 支持状态栏显示
 - 支持本地文本阅读
 - 其他编码格式自动转码为 **UTF-8**
-- 网络下载书籍(目前书源: [采墨阁](https://www.caimoge.net/), [58小说网](http://www.wbxsw.com/))
+- 网络下载书籍(目前书源: [采墨阁](https://www.caimoge.net/), [58小说网](http://www.wbxsw.com/), [爱下书小说网](https://www.aixiawx.com/))
 - 导入导出书籍列表
 
 ## 安装
@@ -63,6 +63,7 @@ vscode 插件市场，搜索 `vscrebook`，安装
 - `vscrebook.downloadPath`: 下载小说的目录(默认 (linux) ~\downloads\\ (windows) %USER_PROFILE%/Downloads/ )
 - `vscrebook.autoFlipTime`: 每次自动翻页的时长(默认 3000 (ms))
 - `vscrebook.displayMode`: 显示小说文字的方式
+- `vscrebook.showMoreInfo`: 设置网络书籍中是否显示书籍更多信息
 - 修改快捷键：首选项 -- 键盘快捷方式(`Ctrl + K Ctrl + S`)
 
 ## Tips
@@ -87,7 +88,7 @@ vscode 插件市场，搜索 `vscrebook`，安装
 |  转换编码  |      不支持       |                                  UTF-32 LE                                   |                  UTF-8                   |
 |  支持书量  |       1 本        |                                     多本                                     |                   多本                   |
 |  全文搜索  |      不支持       |                                     向后                                     |                 暂不支持                 |
-|  在线书籍  |      不支持       | 支持([笔趣阁](https://www.biqugee.com/), [采墨阁](https://www.caimoge.net/)) | 支持([采墨阁](https://www.caimoge.net/), [58小说网](http://www.wbxsw.com/)) |
+|  在线书籍  |      不支持       | 支持([笔趣阁](https://www.biqugee.com/), [采墨阁](https://www.caimoge.net/)) | 支持([采墨阁](https://www.caimoge.net/), [58小说网](http://www.wbxsw.com/), [爱下书小说网](https://www.aixiawx.com/)) |
 | 自动老板键 |      不支持       |                                     支持                                     |                   支持                   |
 |  自动翻页  |      不支持       |                                    不支持                                    |                   支持                   |
 |  阅读方式  |      状态栏       |                                    状态栏                                    |             状态栏, 弹出信息             |

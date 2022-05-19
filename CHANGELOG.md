@@ -3,7 +3,7 @@
 ## [0.11.1]
 
 - 新增
-  - 新增书源 "爱下书小说网"
+  - 新增书源 [爱下书小说网](https://www.aixiawx.com/)
 
 - 改善
   - 修改设置 `vscrebook.statusConfig` 为 `vscrebook.showMoreInfo`, 不止是书籍状态，也可能是其他信息
