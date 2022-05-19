@@ -9,6 +9,7 @@ import { Caimoge } from "./sub/caimoge"
 import { Crawl } from "./Crawl"
 import { setExtTo } from "../utils"
 import { Wbxsw } from "./sub/wbxsw"
+import { Aixiashu } from "./sub/aixiashu"
 
 axios.defaults.headers.common['User-Agent'] = USER_AGENT
 axios.defaults.responseType = 'arraybuffer'
@@ -16,15 +17,13 @@ axios.defaults.responseType = 'arraybuffer'
 let crawlers: Crawl[] = [
     new Caimoge(),
     new Wbxsw(),
+    new Aixiashu(),
 ]
 
 export async function search(searchKey: string) {
-    if (_.isEmpty(crawlers)) {
-        return []
-    }
     let list: SearchBook[] = []
     for (const iter of crawlers) {
-        list.concat((await iter.search(searchKey)) ?? [])
+        list = _.concat(list, (await iter.search(searchKey)) ?? [])
     }
     return list
 }

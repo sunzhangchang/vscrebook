@@ -39,7 +39,7 @@ export abstract class DownloadTxtCrawl extends Crawl {
     abstract getId(menuURL: string): Promise<string>
 
     async download(menuURL: string): Promise<Buffer | null> {
-        let id = this.getId(menuURL)
+        let id = await this.getId(menuURL)
 
         if (_.isUndefined(id)) {
             console.error(menuURL)
@@ -48,6 +48,7 @@ export abstract class DownloadTxtCrawl extends Crawl {
         }
 
         let novelUrl = `${this.txtURLPrefix}${id}`
+        window.showInformationMessage('正在下载...')
 
         let response = await axios.get(novelUrl)
 
@@ -92,7 +93,7 @@ export abstract class EachChapterCrawl extends Crawl {
     async oneChapter(url: string): Promise<string> {
         const response = await axios.get(url)
         let $ = cheerio.load(Buffer.from(response.data).toString('utf8'))
-        return  '========' + $(this.chapterTitleSelector).text() + '========' + $(this.contextSelector).text()
+        return '========' + $(this.chapterTitleSelector).text() + '========' + $(this.contextSelector).text()
     }
 
     async download(menuURL: string): Promise<Buffer | null> {

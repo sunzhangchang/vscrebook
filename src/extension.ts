@@ -2,11 +2,10 @@ import { existsSync, mkdirSync } from "fs"
 import { commands, ExtensionContext } from "vscode"
 import { bookListInit } from "./core/bookList"
 import { extName, getConfig, updateConfig } from "./core/config"
-import { mydebug } from "./utils/debug"
 import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInterval, showJump, showNext, showPrev, startt, toggleBossMsg } from "./core/show"
 
 export function activate(context: ExtensionContext) {
-    mydebug(`Congratulations, your extension "${extName}" is now active!`)
+    console.log(`Extension "${extName}" is now active!`)
 
     // debug(getConfig())
 
@@ -64,6 +63,6 @@ export function activate(context: ExtensionContext) {
 }
 
 export function deactivate() {
-    mydebug('~~~ deactivate')
+    console.log(`Extension "${extName}" is now deactive!`)
     updateConfig()
 }
