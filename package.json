@@ -135,7 +135,7 @@
   },
   "scripts": {
     "clear": "gulp clear",
-    "vscode:prepublish": "gulp clear && npm run build",
+    "vscode:prepublish": "npm run build",
     "build:debug": "gulp dev",
     "build": "gulp prod",
     "watch": "gulp watch",

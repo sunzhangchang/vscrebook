@@ -60,5 +60,5 @@ module.exports = {
     clear,
     dev: gulp.series(dev),
     watch: gulp.series(watch),
-    prod: gulp.series(prod),
+    prod: gulp.series(clear, prod),
 }
