@@ -5,16 +5,19 @@ import { configAs, ExtConfig, getConfig, setConfig } from "./config"
 async function getNewConfig(key: string) {
     let val: string | undefined
     let tmp = _.get(ExtConfig, key) as ConfigSet
+    const placeHolder = `${tmp.desc}: ${_.get(getConfig(), key)}`
     switch (tmp.form) {
         case 'input': {
             val = await window.showInputBox({
-                placeHolder: tmp.desc,
+                placeHolder,
             })
             break
         }
 
         case 'choose': {
-            val = await window.showQuickPick(tmp.choices?.map((str) => `${str}: ${_.get(getConfig(), key)}`) ?? [])
+            val = await window.showQuickPick(tmp.choices ?? [], {
+                placeHolder,
+            })
             break
         }
 
