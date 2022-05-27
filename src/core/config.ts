@@ -1,6 +1,7 @@
 import { workspace } from "vscode"
 import _ = require("lodash")
 import { join } from "path"
+import { homedir } from "os"
 // import { mydebug } from "../utils/debug"
 
 export const extName = 'vscrebook'
@@ -17,15 +18,7 @@ export const ExtConfig: ConfigSetObj = {
     downloadPath: {
         name: `${extName}.downloadPath`,
         desc: '下载的小说的储存路径',
-        default: (() => {
-            if (!_.isUndefined(process.env.HOME)) {
-                return join(process.env.HOME, 'downloads')
-            }
-            if (!_.isUndefined(process.env.USERPROFILE)) {
-                return join(process.env.USERPROFILE, 'Downloads')
-            }
-            return __dirname
-        })(),
+        default: join(homedir(), 'downloads'),
         type: 'string',
         form: 'input',
     },
