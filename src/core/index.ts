@@ -10,7 +10,7 @@ enum LibActions {
     select = '选择书籍',
     add = '添加书籍',
     delete = '删除书籍',
-    imexport = '导入/导出 书籍列表',
+    imexport = '导入/导出',
     settings = '设置',
 }
 
