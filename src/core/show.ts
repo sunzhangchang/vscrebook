@@ -27,7 +27,7 @@ const codes: string[] = [
     'TypeScript - console.log("Hello, World!")',
     'ReScript - Js.log("Hello, World!")',
     'PureScript - log "Hello, World!"',
-    'Scala.js - printl("Hello, World!")',
+    'Scala.js - println("Hello, World!")',
 ]
 
 let autoFlipping: NodeJS.Timeout | null = null
