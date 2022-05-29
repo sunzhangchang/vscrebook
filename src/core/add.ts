@@ -16,7 +16,7 @@ async function getAdBook(): Promise<{
     bookPath: string,
     source: Source,
 } | undefined> {
-    let chos = await window.showQuickPick(_.values(Chooses), {
+    const chos = await window.showQuickPick(_.values(Chooses), {
         matchOnDescription: true
     })
     switch (chos) {
@@ -34,7 +34,8 @@ async function getAdBook(): Promise<{
 
         case Chooses.online: {
             let searchKey
-            while (true) {
+            const true_ = true
+            while (true_) {
                 searchKey = await window.showInputBox({
                     prompt: '请输入搜索关键字: ',
                     placeHolder: '搜索关键字',
@@ -49,12 +50,12 @@ async function getAdBook(): Promise<{
                 }
             }
 
-            let list = await search(searchKey)
+            const list = await search(searchKey ?? '')
             if (_.isNil(list)) {
                 error(Errors.searchedNothing)
                 return
             }
-            let strlist: string[] = []
+            const strlist: string[] = []
             for (const iter of list) {
                 strlist.push(`${iter.书名} - 作者: ${iter.作者} - 分类: ${iter.分类} - 书源: ${iter.书源}`)
             }
@@ -65,13 +66,13 @@ async function getAdBook(): Promise<{
             }
 
             bookName = _.split(bookName, ' - ')[0]
-            let one = list.find((iter) => _.isEqual(iter.书名, bookName))
+            const one = list.find((iter) => _.isEqual(iter.书名, bookName))
             if (_.isUndefined(one)) {
                 error(Errors.chooseFaild)
                 return
             }
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
-            let downloadPath = await download(one.书源, one.目录链接, getConfig().downloadPath, one.书名)
+            const downloadPath = await download(one.书源, one.目录链接, getConfig().downloadPath, one.书名)
 
             return {
                 bookPath: downloadPath,
@@ -81,7 +82,7 @@ async function getAdBook(): Promise<{
     }
 }
 
-export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: BookInfo) {
+export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: BookInfo): Promise<BookInfo | undefined> {
     // debug('Done here!')
     let oldPath: string | undefined
     let source: Source | undefined
@@ -94,7 +95,7 @@ export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: Bo
         pageSize = bookInfo.pageSize
     }
     if (_.isUndefined(bookPath)) {
-        let tmp = await getAdBook()
+        const tmp = await getAdBook()
         if (!_.isUndefined(tmp)) {
             source = tmp.source ?? source
             oldPath = tmp.bookPath ?? oldPath
@@ -110,15 +111,15 @@ export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: Bo
         return
     }
 
-    let bookName = parse(oldPath).name
-    let newPath = join(gStoPath, setExtTo(bookName, 'txt'))
+    const bookName = parse(oldPath).name
+    const newPath = join(gStoPath, setExtTo(bookName, 'txt'))
 
     copyFileToUTF8Sync(oldPath, newPath,
         (data: string) => _(data)
             .chain()
             .trim()
             .replace(/[\r]+/g, '')
-            .replace(/[\t　 ]+/g, ' ')
+            .replace(/[\t\u3000 ]+/g, ' ')
             .replace(/[\n]+/g, ' ')
             .value()
     )

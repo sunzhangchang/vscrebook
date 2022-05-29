@@ -6,10 +6,10 @@ export class Caimoge extends DownloadTxtCrawl {
     readonly sourceName: Source = '采墨阁'
     readonly source = 'https://www.caimoge.net/'
 
-    protected txtURLPrefix: string = 'https://www.caimoge.net/api/txt_down.php?articleid='
+    protected txtURLPrefix = 'https://www.caimoge.net/api/txt_down.php?articleid='
 
     async getSearchPath(searchKey: string): Promise<string> {
-        let url = new URL('/search/', this.source)
+        const url = new URL('/search/', this.source)
         url.searchParams.append('searchkey', searchKey)
         url.searchParams.sort()
         return url.href
@@ -18,7 +18,7 @@ export class Caimoge extends DownloadTxtCrawl {
     async search(searchKey: string): Promise<SearchBook[] | null> {
         const $ = await this.getSearchPageDOM(searchKey)
 
-        let searchBooks: SearchBook[] = []
+        const searchBooks: SearchBook[] = []
         $('#sitembox dl').each((i, dl) => {
             searchBooks.push({
                 书名: $(dl).find("dd:nth-child(2) > h3:nth-child(1) > a:nth-child(1)").text(),

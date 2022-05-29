@@ -54,14 +54,14 @@ export const ExtConfig: ConfigSetObj = {
 const getWsConfig = workspace.getConfiguration().get
 const updateWsConfig = workspace.getConfiguration().update
 
-export function configAs(cfg: ConfigSet, val: any) {
+export function configAs(cfg: ConfigSet, val: unknown): string | number | obj | undefined {
     if (_.isUndefined(val)) {
         return undefined
     }
     let res
     switch (cfg.type) {
         case 'number':
-            res = parseInt(val)
+            res = parseInt(val as string)
             break
 
         case 'string':
@@ -69,7 +69,7 @@ export function configAs(cfg: ConfigSet, val: any) {
             break
 
         case 'object':
-            res = JSON.parse(val) as object
+            res = JSON.parse(val as string) as obj
             break
 
         default:
@@ -100,7 +100,7 @@ let config: ConfigType = {
     showMoreInfo: getWsConfig(ExtConfig.showMoreInfo.name) as ShowMoreInfo,
 }
 
-export function setConfig(key: string, value: any) {
+export function setConfig(key: string, value: unknown): void {
     config = _(config).set(key, value).value()
     updateWsConfig(`${extName}.${key}`, value, true)
 }
@@ -109,7 +109,7 @@ function getInnerConfig(key: string) {
     return _(config).get(_(key).chain().split('.').last().value())
 }
 
-export function updateConfig() {
+export function updateConfig(): void {
     _(config).forEach((value, key) => {
         // debug(`vscrebook.${key}`, value)
         updateWsConfig(`${extName}.${key}`, value, true)

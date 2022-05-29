@@ -15,7 +15,7 @@ enum LibActions {
 }
 
 export async function showMainMenu(context: ExtensionContext): Promise<BookInfo | undefined> {
-    let act = await window.showQuickPick(_.values(LibActions), {
+    const act = await window.showQuickPick(_.values(LibActions), {
         matchOnDescription: true
     })
     let res: BookInfo | undefined

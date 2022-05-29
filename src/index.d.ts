@@ -46,7 +46,7 @@ declare type SearchBook = {
 declare type ConfigSet = {
     name: string
     desc: string
-    default: | number | string | object
+    default: | number | string | obj
     type: | 'number' | 'string' | 'object'
     form: | 'input' | 'choose'
     choices?: string[]
@@ -63,3 +63,5 @@ declare type ConfigBase<T, U, V, W, X> = {
     displayMode: W
     showMoreInfo: X
 }
+
+declare type obj = Record<string, unknown>

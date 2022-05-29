@@ -13,7 +13,7 @@ export class Wbxsw extends EachChapterCrawl {
     protected readonly contextSelector: string = '#content'
 
     async getSearchPath(searchKey: string): Promise<string> {
-        let url = new URL('/search.php', this.source)
+        const url = new URL('/search.php', this.source)
         url.searchParams.append('q', searchKey)
         url.searchParams.sort()
         return url.href
@@ -22,7 +22,7 @@ export class Wbxsw extends EachChapterCrawl {
     async search(searchKey: string): Promise<SearchBook[] | null> {
         const $ = await this.getSearchPageDOM(searchKey)
 
-        let searchBooks: SearchBook[] = []
+        const searchBooks: SearchBook[] = []
         // debug('!!!!----------------------------------------')
         const list = $('body > div.result-list > div').toArray()
         for (const dl of list) {
@@ -35,7 +35,7 @@ export class Wbxsw extends EachChapterCrawl {
             let status = '未知'
             if (getConfig().showMoreInfo.wbxsw) {
                 const res = await axios.get(menu)
-                let $$ = cheerio.load(Buffer.from(res.data).toString('utf8'))
+                const $$ = cheerio.load(Buffer.from(res.data).toString('utf8'))
                 status = _(_($$('#info > p:nth-child(3)').text()).split('：').last() ?? '未知,').split(',').first() ?? '未知'
             }
             searchBooks.push({

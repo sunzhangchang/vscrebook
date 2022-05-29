@@ -33,28 +33,28 @@ const codes: string[] = [
 let autoFlipping: NodeJS.Timeout | null = null
 let showBossInterval: NodeJS.Timeout | null = null
 
-let isBoss: boolean = false
+let isBoss = false
 
-export function setShowBossInterval() {
+export function setShowBossInterval(): void {
     showBossInterval = setInterval(() => {
         showBossText()
         clearShowBossInterval()
     }, 25 * 1000)
 }
 
-export function clearShowBossInterval() {
+export function clearShowBossInterval(): void {
     if (!_.isNull(showBossInterval)) {
         clearInterval(showBossInterval)
         showBossInterval = null
     }
 }
 
-export function setAutoFlipInterval() {
+export function setAutoFlipInterval(): void {
     clearShowBossInterval()
     autoFlipping = setInterval(() => showNext(), getConfig().autoFlipTime)
 }
 
-export function clearAutoFlipInterval() {
+export function clearAutoFlipInterval(): void {
     if (!_.isNull(autoFlipping)) {
         clearInterval(autoFlipping)
         autoFlipping = null
@@ -87,20 +87,20 @@ function showText(msg: string) {
     }
 }
 
-export function showNovelText(page?: number) {
+export function showNovelText(page?: number): void {
     if (_.isNull(book)) {
         error(Errors.bookUndefined)
         return
     }
-    let text = getPageText(page)
+    const text = getPageText(page)
     showText(text)
     isBoss = false
 }
 
-export function showBossText() {
+export function showBossText(): void {
     switch (getConfig().displayMode) {
         case 'statusBar': default: {
-            let index: number = Math.floor(Math.random() * codes.length)
+            const index: number = Math.floor(Math.random() * codes.length)
             showText(codes[index])
             isBoss = true
             break
@@ -117,7 +117,7 @@ export function showBossText() {
     }
 }
 
-export function startt(context: ExtensionContext) {
+export function startt(context: ExtensionContext): void {
     showMainMenu(context).then(res => {
         if (_.isUndefined(res)) {
             newBook()
@@ -131,7 +131,7 @@ export function startt(context: ExtensionContext) {
     })
 }
 
-export function showJump() {
+export function showJump(): void {
     if (_.isNull(book)) {
         error(Errors.bookUndefined)
         return
@@ -150,7 +150,7 @@ export function showJump() {
     })
 }
 
-export function showPrev() {
+export function showPrev(): void {
     if (_.isNull(book)) {
         error(Errors.bookUndefined)
         return
@@ -158,7 +158,7 @@ export function showPrev() {
     showNovelText(getBook(book.name).curPage - 1)
 }
 
-export function showNext() {
+export function showNext(): void {
     if (_.isNull(book)) {
         error(Errors.bookUndefined)
         return
@@ -166,7 +166,7 @@ export function showNext() {
     showNovelText(getBook(book.name).curPage + 1)
 }
 
-export function toggleBossMsg() {
+export function toggleBossMsg(): void {
     if (_.isNull(book)) {
         isBoss = true
         showBossText()
@@ -189,7 +189,7 @@ export function toggleBossMsg() {
     }
 }
 
-export function autoFlipp() {
+export function autoFlipp(): void {
     // debug('ajkjlahfasfahhisdjgsjkdja')
     if (_.isNull(book)) {
         error(Errors.bookUndefined)

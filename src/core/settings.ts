@@ -4,7 +4,7 @@ import { configAs, ExtConfig, getConfig, setConfig } from "./config"
 
 async function getNewConfig(key: string) {
     let val: string | undefined
-    let tmp = _.get(ExtConfig, key) as ConfigSet
+    const tmp = _.get(ExtConfig, key) as ConfigSet
     const placeHolder = `${tmp.desc}: ${_.get(getConfig(), key)}`
     switch (tmp.form) {
         case 'input': {
@@ -31,8 +31,8 @@ async function getNewConfig(key: string) {
     return configAs(tmp, val)
 }
 
-export async function settings() {
-    let key = await window.showQuickPick(_.keys(ExtConfig), {
+export async function settings(): Promise<void> {
+    const key = await window.showQuickPick(_.keys(ExtConfig), {
         matchOnDescription: true,
         placeHolder: '请选择需要设置的项目',
     })
@@ -40,7 +40,7 @@ export async function settings() {
         return
     }
 
-    let newValue = await getNewConfig(key)
+    const newValue = await getNewConfig(key)
     if (_.isUndefined(newValue)) {
         return
     }

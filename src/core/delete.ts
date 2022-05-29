@@ -8,7 +8,7 @@ import { showBossText } from "./show"
 import { showBookList } from "./utils"
 
 export async function deleteBook(gStoPath: string): Promise<undefined> {
-    let book: string | undefined = await showBookList()
+    const book: string | undefined = await showBookList()
 
     if (_.isUndefined(book)) {
         return
@@ -16,7 +16,7 @@ export async function deleteBook(gStoPath: string): Promise<undefined> {
 
     delBookFromList(book)
 
-    let diskFilePath = join(gStoPath, setExtTo(book, 'txt'))
+    const diskFilePath = join(gStoPath, setExtTo(book, 'txt'))
     await unlink(diskFilePath)
     window.showInformationMessage('删除成功')
     showBossText()

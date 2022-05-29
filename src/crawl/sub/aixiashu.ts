@@ -12,7 +12,7 @@ export class Aixiashu extends DownloadTxtCrawl {
 
     async getSearchPath(searchKey: string): Promise<string> {
         // https://www.aixiawx.com/modules/article/search.php
-        let url = new URL('/modules/article/search.php', this.source)
+        const url = new URL('/modules/article/search.php', this.source)
         url.searchParams.append('searchkey', searchKey)
         url.searchParams.sort()
         return url.href
@@ -21,7 +21,7 @@ export class Aixiashu extends DownloadTxtCrawl {
     async search(searchKey: string): Promise<SearchBook[] | null> {
         const $ = await this.getSearchPageDOM(searchKey)
 
-        let searchBooks: SearchBook[] = []
+        const searchBooks: SearchBook[] = []
         const list = $('#content > table > tbody > tr:nth-child(n+2)').toArray()
         for (const dl of list) {
             const detail = $(dl)
@@ -34,7 +34,7 @@ export class Aixiashu extends DownloadTxtCrawl {
             let cate = '未知'
             if (getConfig().showMoreInfo.aixiashu) {
                 const res = await axios.get(menu)
-                let $$ = load(Buffer.from(res.data).toString('utf8'))
+                const $$ = load(Buffer.from(res.data).toString('utf8'))
                 intro = $$('#intro > p').text()
                 cate = $$('#wrapper > div:nth-child(6) > div.con_top > a:nth-child(3)').text()
             }

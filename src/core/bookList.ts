@@ -10,9 +10,9 @@ import { error, Errors } from "../utils/error"
 
 let context: ExtensionContext
 
-export async function importList(listPath: string) {
+export async function importList(listPath: string): Promise<void> {
     // debug(context.globalStorageUri.fsPath)
-    let list = JSON.parse(readFileSync(listPath, 'utf8'))
+    const list = JSON.parse(readFileSync(listPath, 'utf8'))
 
     for (const key in list) {
         if (Object.prototype.hasOwnProperty.call(list, key)) {
@@ -49,21 +49,21 @@ export async function importList(listPath: string) {
                         source: searchedBook.书源,
                     })
                     window.showInformationMessage(`导入书籍 ${book.name} 成功!`)
-                } catch (err: any) {
-                    console.error(err.message)
+                } catch (err) {
+                    console.error((err as Error).message)
                 }
-            } catch (err: any) {
+            } catch (err) {
                 error(Errors.importSearchError)
-                console.error(err.message)
+                console.error((err as Error).message)
             }
         }
     }
     window.showInformationMessage('书籍导入完成!')
 }
 
-export async function bookListInit(contex: ExtensionContext) {
+export async function bookListInit(contex: ExtensionContext): Promise<void> {
     context = contex
-    let t = getBookList()
+    const t = getBookList()
     // console.log(t)
     for (const key in t) {
         if (Object.prototype.hasOwnProperty.call(t, key)) {
@@ -81,7 +81,7 @@ export async function bookListInit(contex: ExtensionContext) {
                 })
                 continue
             }
-            const e = ele as {
+            const e = ele as unknown as {
                 bookPath: string,
                 curPage: number,
             }
@@ -99,29 +99,29 @@ export async function bookListInit(contex: ExtensionContext) {
     }
 }
 
-export function delBookFromList(book: string) {
-    let books = getBookList()
+export function delBookFromList(book: string): void {
+    const books = getBookList()
     delete books[book]
     updateBookList(books)
 }
 
-export function getBookList() {
-    let booksString = context.globalState.get('bookList', '{}')
+export function getBookList(): Record<string, BookInfo> {
+    const booksString = context.globalState.get('bookList', '{}')
     return JSON.parse(booksString)
 }
 
 export function getBook(bookName: string): BookInfo {
-    let book = getBookList()[bookName]
+    const book = getBookList()[bookName]
     // debug('000', book)
     return book ?? {}
 }
 
-export function updateBook(bookName: string, bookInfo: BookInfo) {
-    let books = getBookList()
+export function updateBook(bookName: string, bookInfo: BookInfo): void {
+    const books = getBookList()
     books[bookName] = bookInfo
     updateBookList(books)
 }
 
-export function updateBookList(value: any) {
+export function updateBookList(value: unknown): void {
     context.globalState.update('bookList', JSON.stringify(value))
 }

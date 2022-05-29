@@ -13,11 +13,11 @@ export abstract class Crawl {
     async getSearchPageDOM(searchKey: string): Promise<cheerio.CheerioAPI> {
         let res: string
         try {
-            let response = await axios.get(await this.getSearchPath(searchKey))
+            const response = await axios.get(await this.getSearchPath(searchKey))
 
             res = Buffer.from(response.data).toString('utf8')
-        } catch (err: any) {
-            window.showErrorMessage(err.message)
+        } catch (err) {
+            window.showErrorMessage((err as Error).message)
             throw err
         }
 
@@ -39,7 +39,7 @@ export abstract class DownloadTxtCrawl extends Crawl {
     abstract getId(menuURL: string): Promise<string>
 
     async download(menuURL: string): Promise<Buffer | null> {
-        let id = await this.getId(menuURL)
+        const id = await this.getId(menuURL)
 
         if (_.isUndefined(id)) {
             console.error(menuURL)
@@ -47,10 +47,10 @@ export abstract class DownloadTxtCrawl extends Crawl {
             return null
         }
 
-        let novelUrl = `${this.txtURLPrefix}${id}`
+        const novelUrl = `${this.txtURLPrefix}${id}`
         window.showInformationMessage('正在下载...')
 
-        let response = await axios.get(novelUrl)
+        const response = await axios.get(novelUrl)
 
         if (_.isNull(response)) {
             console.error(novelUrl)
@@ -73,14 +73,14 @@ export abstract class EachChapterCrawl extends Crawl {
     abstract search(searchKey: string): Promise<SearchBook[] | null>
 
     async getChapters(menuURL: string): Promise<string[]> {
-        let response = await axios.get(menuURL)
+        const response = await axios.get(menuURL)
 
-        let menu = Buffer.from(response.data).toString('utf8')
-        let $ = cheerio.load(menu)
-        let l = $(this.chaptersSelector).toArray()
-        let list: string[] = []
+        const menu = Buffer.from(response.data).toString('utf8')
+        const $ = cheerio.load(menu)
+        const l = $(this.chaptersSelector).toArray()
+        const list: string[] = []
         for (const iter of l) {
-            let url = $(iter).attr('href')
+            const url = $(iter).attr('href')
             if (_.isUndefined(url)) {
                 error(Errors.chapterLost)
                 continue
@@ -92,13 +92,13 @@ export abstract class EachChapterCrawl extends Crawl {
 
     async oneChapter(url: string): Promise<string> {
         const response = await axios.get(url)
-        let $ = cheerio.load(Buffer.from(response.data).toString('utf8'))
+        const $ = cheerio.load(Buffer.from(response.data).toString('utf8'))
         return '========' + $(this.chapterTitleSelector).text() + '========' + $(this.contextSelector).text()
     }
 
     async download(menuURL: string): Promise<Buffer | null> {
         // debug(menuURL)
-        let chapterList = await this.getChapters(menuURL)
+        const chapterList = await this.getChapters(menuURL)
         let novel = ''
         for (const iter of chapterList) {
             novel += iter

@@ -4,7 +4,7 @@ import { bookListInit } from "./core/bookList"
 import { extName, getConfig, updateConfig } from "./core/config"
 import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInterval, showJump, showNext, showPrev, startt, toggleBossMsg } from "./core/show"
 
-export function activate(context: ExtensionContext) {
+export function activate(context: ExtensionContext): void {
     console.log(`Extension "${extName}" is now active!`)
 
     // debug(getConfig())
@@ -21,19 +21,19 @@ export function activate(context: ExtensionContext) {
 
     bookListInit(context)
 
-    let showMenu = commands.registerCommand(`${extName}.showMenu`, () => {
+    const showMenu = commands.registerCommand(`${extName}.showMenu`, () => {
         startt(context)
     })
     context.subscriptions.push(showMenu)
 
     // 老板键，将小说替换成 Hello, World 代码
-    let bossKey = commands.registerCommand(`${extName}.bossKey`, () => {
+    const bossKey = commands.registerCommand(`${extName}.bossKey`, () => {
         toggleBossMsg()
     })
     context.subscriptions.push(bossKey)
 
     // 下一页
-    let nextPage = commands.registerCommand(`${extName}.nextPage`, () => {
+    const nextPage = commands.registerCommand(`${extName}.nextPage`, () => {
         showNext()
         clearAutoFlipInterval()
         clearShowBossInterval()
@@ -42,7 +42,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(nextPage)
 
     // 上一页
-    let prevPage = commands.registerCommand(`${extName}.prevPage`, () => {
+    const prevPage = commands.registerCommand(`${extName}.prevPage`, () => {
         showPrev()
         clearAutoFlipInterval()
         clearShowBossInterval()
@@ -51,18 +51,18 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(prevPage)
 
     // 跳转
-    let jumpPage = commands.registerCommand(`${extName}.jumpPage`, () => {
+    const jumpPage = commands.registerCommand(`${extName}.jumpPage`, () => {
         showJump()
     })
     context.subscriptions.push(jumpPage)
 
-    let autoFlip = commands.registerCommand(`${extName}.autoFlip`, () => {
+    const autoFlip = commands.registerCommand(`${extName}.autoFlip`, () => {
         autoFlipp()
     })
     context.subscriptions.push(autoFlip)
 }
 
-export function deactivate() {
+export function deactivate(): void {
     console.log(`Extension "${extName}" is now deactive!`)
     updateConfig()
 }

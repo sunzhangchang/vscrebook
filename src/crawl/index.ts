@@ -14,13 +14,13 @@ import { Aixiashu } from "./sub/aixiashu"
 axios.defaults.headers.common['User-Agent'] = USER_AGENT
 axios.defaults.responseType = 'arraybuffer'
 
-let crawlers: Crawl[] = [
+const crawlers: Crawl[] = [
     new Caimoge(),
     new Wbxsw(),
     new Aixiashu(),
 ]
 
-export async function search(searchKey: string) {
+export async function search(searchKey: string): Promise<SearchBook[]> {
     let list: SearchBook[] = []
     for (const iter of crawlers) {
         list = _.concat(list, (await iter.search(searchKey)) ?? [])
@@ -28,15 +28,15 @@ export async function search(searchKey: string) {
     return list
 }
 
-export async function download(source: string, menuURL: string, dir: string, name: string) {
-    let spider = crawlers.find(iter => _.isEqual(iter.sourceName, source))
+export async function download(source: string, menuURL: string, dir: string, name: string): Promise<string> {
+    const spider = crawlers.find(iter => _.isEqual(iter.sourceName, source))
 
     if (_.isUndefined(spider)) {
         error(Errors.downloadNovelFailed)
         throw new Error(`${source} cannot find crawl!`)
     }
 
-    let data = await spider.download(menuURL)
+    const data = await spider.download(menuURL)
 
     if (_.isNull(data)) {
         error(Errors.downloadNovelFailed)
@@ -44,7 +44,7 @@ export async function download(source: string, menuURL: string, dir: string, nam
     }
 
     return (() => {
-        let pth = join(dir, setExtTo(parse(name).name, 'txt'))
+        const pth = join(dir, setExtTo(parse(name).name, 'txt'))
         writeFileSync(pth, data, {
             encoding: "utf8"
         })
