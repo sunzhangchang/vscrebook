@@ -77,27 +77,31 @@
     "commands": [
       {
         "command": "vscrebook.showMenu",
-        "title": "menu 打开 vscrebook 菜单"
+        "title": "vscrebook: menu 打开 vscrebook 菜单"
       },
       {
         "command": "vscrebook.bossKey",
-        "title": "bossKey"
+        "title": "vscrebook: bossKey"
       },
       {
         "command": "vscrebook.prevPage",
-        "title": "prevPage"
+        "title": "vscrebook: prevPage"
       },
       {
         "command": "vscrebook.nextPage",
-        "title": "nextPage"
+        "title": "vscrebook: nextPage"
       },
       {
         "command": "vscrebook.jumpPage",
-        "title": "jumpPage"
+        "title": "vscrebook: jumpPage"
       },
       {
         "command": "vscrebook.autoFlip",
-        "title": "autoFlip"
+        "title": "vscrebook: autoFlip"
+      },
+      {
+        "command": "vscrebook.search",
+        "title": "vscrebook: search"
       }
     ],
     "keybindings": [
@@ -130,6 +134,11 @@
         "command": "vscrebook.autoFlip",
         "key": "ctrl+alt+m",
         "mac": "cmd+m"
+      },
+      {
+        "command": "vscrebook.search",
+        "key": "ctrl+alt+l",
+        "mac": "cmd+l"
       }
     ]
   },

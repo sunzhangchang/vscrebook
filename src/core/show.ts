@@ -6,7 +6,7 @@ import { book, getPageText, newBook } from "../book"
 import { showMainMenu } from "."
 import { getBook, updateBook } from "./bookList"
 import { getConfig } from "./config"
-import { error, Errors } from "../utils/error"
+import { myerror, Errors } from "../utils/error"
 
 const codes: string[] = [
     'Java - System.out.println("Hello World");',
@@ -89,7 +89,7 @@ function showText(msg: string) {
 
 export function showNovelText(page?: number): void {
     if (_.isNull(book)) {
-        error(Errors.bookUndefined)
+        myerror(Errors.bookUndefined)
         return
     }
     const text = getPageText(page)
@@ -133,7 +133,7 @@ export function startt(context: ExtensionContext): void {
 
 export function showJump(): void {
     if (_.isNull(book)) {
-        error(Errors.bookUndefined)
+        myerror(Errors.bookUndefined)
         return
     }
     window.showInputBox({
@@ -141,7 +141,7 @@ export function showJump(): void {
         placeHolder: `跳转页数(默认跳转到当前页: ${getBook(book.name).curPage}, 总页数: ${book.totPage})`
     }).then(val => {
         if (_.isNull(book)) {
-            error(Errors.bookUndefined)
+            myerror(Errors.bookUndefined)
             return
         }
         showNovelText(_.isUndefined(val) ? undefined : (+val))
@@ -152,7 +152,7 @@ export function showJump(): void {
 
 export function showPrev(): void {
     if (_.isNull(book)) {
-        error(Errors.bookUndefined)
+        myerror(Errors.bookUndefined)
         return
     }
     showNovelText(getBook(book.name).curPage - 1)
@@ -160,7 +160,7 @@ export function showPrev(): void {
 
 export function showNext(): void {
     if (_.isNull(book)) {
-        error(Errors.bookUndefined)
+        myerror(Errors.bookUndefined)
         return
     }
     showNovelText(getBook(book.name).curPage + 1)
@@ -192,7 +192,7 @@ export function toggleBossMsg(): void {
 export function autoFlipp(): void {
     // debug('ajkjlahfasfahhisdjgsjkdja')
     if (_.isNull(book)) {
-        error(Errors.bookUndefined)
+        myerror(Errors.bookUndefined)
         return
     }
     if (isBoss) {

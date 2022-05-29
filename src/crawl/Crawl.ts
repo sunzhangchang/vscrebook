@@ -2,7 +2,7 @@ import axios from "axios"
 import * as cheerio from 'cheerio'
 import _ = require("lodash")
 import { window } from "vscode"
-import { error, Errors } from "../utils/error"
+import { myerror, Errors } from "../utils/error"
 
 export abstract class Crawl {
     abstract readonly sourceName: string
@@ -43,7 +43,7 @@ export abstract class DownloadTxtCrawl extends Crawl {
 
         if (_.isUndefined(id)) {
             console.error(menuURL)
-            error(Errors.getNovelIdFailed)
+            myerror(Errors.getNovelIdFailed)
             return null
         }
 
@@ -54,7 +54,7 @@ export abstract class DownloadTxtCrawl extends Crawl {
 
         if (_.isNull(response)) {
             console.error(novelUrl)
-            error(Errors.getNovelFileFailed)
+            myerror(Errors.getNovelFileFailed)
             return null
         }
 
@@ -82,7 +82,7 @@ export abstract class EachChapterCrawl extends Crawl {
         for (const iter of l) {
             const url = $(iter).attr('href')
             if (_.isUndefined(url)) {
-                error(Errors.chapterLost)
+                myerror(Errors.chapterLost)
                 continue
             }
             list.push(await this.oneChapter(new URL(url, this.source).href)) // todo : new URL(menuURL).host

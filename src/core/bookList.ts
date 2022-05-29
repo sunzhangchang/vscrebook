@@ -6,7 +6,7 @@ import { setExtTo } from "../utils"
 import { download, search } from "../crawl"
 import { addBook } from "./add"
 import { getConfig } from "./config"
-import { error, Errors } from "../utils/error"
+import { myerror, Errors } from "../utils/error"
 
 let context: ExtensionContext
 
@@ -49,7 +49,7 @@ export async function importList(listPath: string): Promise<void> {
                     })
             })
             .catch((err) => {
-                error(Errors.importSearchError)
+                myerror(Errors.importSearchError)
                 console.error((err as Error).message)
             })
     })

@@ -1,7 +1,7 @@
 import _ = require("lodash")
 import { window } from "vscode"
 import { getBookList } from "./bookList"
-import { error, Errors } from "../utils/error"
+import { myerror, Errors } from "../utils/error"
 
 export async function showBookList(): Promise<string | undefined> {
     const books = getBookList()
@@ -24,7 +24,7 @@ export async function changeName(oldName: string): Promise<string | undefined> {
             break
         }
 
-        error(Errors.bookNameEmpty)
+        myerror(Errors.bookNameEmpty)
 
         const cs = await window.showInformationMessage('是否重新输入书名?', '是', '否')
         if (_.isUndefined(cs) || _.isEqual(cs, '否')) {

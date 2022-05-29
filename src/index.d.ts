@@ -65,3 +65,9 @@ declare type ConfigBase<T, U, V, W, X> = {
 }
 
 declare type obj = Record<string, unknown>
+
+declare type searchCtxResult = {
+    index: number
+    page: number
+    txt: string
+}

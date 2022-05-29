@@ -15,7 +15,7 @@ export enum Errors {
     chapterLost,
 }
 
-export function error(err: Errors): void {
+export function myerror(err: Errors): void {
     let msg: string
     switch (err) {
         case Errors.bookUndefined: {

@@ -5,7 +5,7 @@ import { download, search } from "../crawl"
 import { copyFileToUTF8Sync, setExtTo } from "../utils"
 import { updateBook } from "./bookList"
 import { getConfig } from "./config"
-import { error, Errors } from "../utils/error"
+import { myerror, Errors } from "../utils/error"
 
 enum Chooses {
     local = '本地书籍',
@@ -44,7 +44,7 @@ async function getAdBook(): Promise<{
                     return
                 }
                 if (_.isEmpty(_.trim(searchKey))) {
-                    error(Errors.searchKeyEmpty)
+                    myerror(Errors.searchKeyEmpty)
                 } else {
                     break
                 }
@@ -52,7 +52,7 @@ async function getAdBook(): Promise<{
 
             const list = await search(searchKey ?? '')
             if (_.isNil(list)) {
-                error(Errors.searchedNothing)
+                myerror(Errors.searchedNothing)
                 return
             }
             const strlist: string[] = []
@@ -68,7 +68,7 @@ async function getAdBook(): Promise<{
             bookName = _.split(bookName, ' - ')[0]
             const one = list.find((iter) => _.isEqual(iter.书名, bookName))
             if (_.isUndefined(one)) {
-                error(Errors.chooseFaild)
+                myerror(Errors.chooseFaild)
                 return
             }
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)

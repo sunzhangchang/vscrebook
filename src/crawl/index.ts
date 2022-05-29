@@ -2,7 +2,7 @@ import { writeFileSync } from "fs"
 import _ = require("lodash")
 import { join, parse } from "path"
 import { window } from "vscode"
-import { error, Errors } from "../utils/error"
+import { myerror, Errors } from "../utils/error"
 import axios from 'axios'
 import { USER_AGENT } from "./utils"
 import { Caimoge } from "./sub/caimoge"
@@ -32,14 +32,14 @@ export async function download(source: string, menuURL: string, dir: string, nam
     const spider = crawlers.find(iter => _.isEqual(iter.sourceName, source))
 
     if (_.isUndefined(spider)) {
-        error(Errors.downloadNovelFailed)
+        myerror(Errors.downloadNovelFailed)
         throw new Error(`${source} cannot find crawl!`)
     }
 
     const data = await spider.download(menuURL)
 
     if (_.isNull(data)) {
-        error(Errors.downloadNovelFailed)
+        myerror(Errors.downloadNovelFailed)
         throw new Error(`${menuURL} cannot fetch anything!`)
     }
 
