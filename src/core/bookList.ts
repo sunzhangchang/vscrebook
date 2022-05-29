@@ -11,92 +11,65 @@ import { error, Errors } from "../utils/error"
 let context: ExtensionContext
 
 export async function importList(listPath: string): Promise<void> {
-    // debug(context.globalStorageUri.fsPath)
-    const list = JSON.parse(readFileSync(listPath, 'utf8'))
+    const list = JSON.parse(readFileSync(listPath, 'utf8')) as Record<string, BookInfo>
 
-    for (const key in list) {
-        if (Object.prototype.hasOwnProperty.call(list, key)) {
-            const ele = list[key] as BookInfo
-            // debug(ele)
-            const book = parse(ele.bookName)
+    _.forIn(list, async (v) => {
+        const book = parse(v.bookName)
 
-            // debug('Done here ! ! !')
-
-            try {
-                const list = await search(book.name)
+        search(book.name)
+            .then((searchedList) => {
                 const searchedBook = (() => {
-                    for (const iter of list) {
+                    for (const iter of searchedList) {
                         if (_.isEqual(book.name, iter.书名)) {
                             return iter
                         }
                     }
-                    if (_.isEqual(ele.source, '本地')) {
+                    if (v.source === '本地') {
                         return
+                    } else {
+                        throw new Error(`导入书籍 《${book.name}》 失败!`)
                     }
-                    throw new Error(`导入书籍 ${book.name} 失败!`)
                 })()
 
-                // debug(searchedBook)
-
                 if (_.isUndefined(searchedBook)) {
-                    continue
+                    return
                 }
 
-                try {
-                    const bookPath = await download(searchedBook.书源, searchedBook.目录链接, getConfig().downloadPath, searchedBook.书名)
-                    await addBook(context.globalStorageUri.fsPath, setExtTo(bookPath, 'txt'), {
-                        ...ele,
-                        source: searchedBook.书源,
+                download(searchedBook.书源, searchedBook.目录链接, getConfig().downloadPath, searchedBook.书名)
+                    .then((bookPath) => {
+                        addBook(context.globalStorageUri.fsPath, setExtTo(bookPath, 'txt'), {
+                            ...v,
+                            source: searchedBook.书源,
+                        }).then(() => {
+                            window.showInformationMessage(`导入书籍 《${book.name}》 成功!`)
+                        })
                     })
-                    window.showInformationMessage(`导入书籍 ${book.name} 成功!`)
-                } catch (err) {
-                    console.error((err as Error).message)
-                }
-            } catch (err) {
+                    .catch(err => {
+                        console.error((err as Error).message)
+                    })
+            })
+            .catch((err) => {
                 error(Errors.importSearchError)
                 console.error((err as Error).message)
-            }
-        }
-    }
+            })
+    })
     window.showInformationMessage('书籍导入完成!')
 }
 
 export async function bookListInit(contex: ExtensionContext): Promise<void> {
     context = contex
     const t = getBookList()
-    // console.log(t)
-    for (const key in t) {
-        if (Object.prototype.hasOwnProperty.call(t, key)) {
-            const ele = t[key]
-            if (!_.isUndefined(ele['bookName'])) {
-                const e = ele as BookInfo
-                const book = parse(e.bookName)
-                delBookFromList(e.bookName)
+    _.forIn(t, (v) => {
+        const book = parse(v.bookName)
+        delBookFromList(v.bookName)
 
-                updateBook(book.name, {
-                    bookName: book.name,
-                    pageSize: e.pageSize,
-                    curPage: e.curPage,
-                    source: ele['source'] ?? '本地',
-                })
-                continue
-            }
-            const e = ele as unknown as {
-                bookPath: string,
-                curPage: number,
-            }
-            // console.log(e)
-            const book = parse(e.bookPath)
-            delBookFromList(e.bookPath)
-
-            updateBook(book.name, {
-                bookName: book.name,
-                pageSize: getConfig().pageSize,
-                curPage: e.curPage,
-                source: '本地',
-            })
-        }
-    }
+        updateBook(book.name, {
+            bookName: book.name,
+            pageSize: v.pageSize,
+            curPage: v.curPage,
+            source: v.source ?? '本地',
+        })
+    })
 }
 
 export function delBookFromList(book: string): void {
@@ -111,9 +84,7 @@ export function getBookList(): Record<string, BookInfo> {
 }
 
 export function getBook(bookName: string): BookInfo {
-    const book = getBookList()[bookName]
-    // debug('000', book)
-    return book ?? {}
+    return getBookList()[bookName] ?? {}
 }
 
 export function updateBook(bookName: string, bookInfo: BookInfo): void {
