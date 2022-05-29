@@ -12,14 +12,12 @@ export function detect(filePath: string): string {
     return decod.toString()
 }
 
+export function readFileToUTF8Sync(filePath: string): string {
+    return encode(decode(readFileSync(filePath), detect(filePath)), 'utf8').toString('utf8')
+}
+
 export function copyFileToUTF8Sync(oldPath: string, newPath: string, transform: (data: string) => string): void {
-    let buf = readFileSync(oldPath)
-    const decod = detect(oldPath)
-    let data = decode(buf, decod)
-    buf = encode(data, 'utf8')
-    data = buf.toString('utf8')
-    data = transform(data)
-    writeFileSync(newPath, data)
+    writeFileSync(newPath, transform(readFileToUTF8Sync(oldPath)))
 }
 
 export function setExtTo(path: string, ext: string): string {
