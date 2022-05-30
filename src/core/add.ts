@@ -3,9 +3,10 @@ import { join, parse } from "path"
 import { window } from "vscode"
 import { download, search } from "../crawl"
 import { copyFileToUTF8Sync, setExtTo } from "../utils"
-import { updateBook } from "./bookList"
+import { getBook, updateBook } from "./bookList"
 import { getConfig } from "./config"
 import { myerror, Errors } from "../utils/error"
+import { mydebug } from "../utils/debug"
 
 enum Chooses {
     local = '本地书籍',
@@ -111,7 +112,24 @@ export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: Bo
         return
     }
 
-    const bookName = parse(oldPath).name
+    let bookName = parse(oldPath).name
+    mydebug(getBook(bookName), _.isEmpty(getBook(bookName)))
+
+    while (!_.isEmpty(getBook(bookName))) {
+        const newBookName = await window.showInputBox({
+            title: '书名重复! 请输入新书名(留空覆盖, 退出取消添加):',
+            placeHolder: bookName,
+        })
+        if (_.isUndefined(newBookName)) {
+            window.showInformationMessage('取消添加!')
+            return
+        }
+        if (_.isEmpty(newBookName)) {
+            break
+        }
+        bookName = newBookName
+    }
+
     const newPath = join(gStoPath, setExtTo(bookName, 'txt'))
 
     copyFileToUTF8Sync(oldPath, newPath,

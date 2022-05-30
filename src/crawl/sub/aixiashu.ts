@@ -62,8 +62,8 @@ export class Aixiashu extends DownloadTxtCrawl {
         // e.g. https://www.aixiawx.com/91/91966/
         let t = _.trim(menuURL)
         if (_.endsWith(t, '/')) {
-            t = t.substring(0, t.length - 2)
+            t = t.substring(0, t.length - 1)
         }
-        return _(t).chain().split('/').last().split('.').first().value()
+        return _(t).chain().split('/').last().value()
     }
 }

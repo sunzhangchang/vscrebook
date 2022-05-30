@@ -50,15 +50,21 @@ export abstract class DownloadTxtCrawl extends Crawl {
         const novelUrl = `${this.txtURLPrefix}${id}`
         window.showInformationMessage('正在下载...')
 
-        const response = await axios.get(novelUrl)
+        return await axios.get(novelUrl)
+            .then(response => {
+                if (_.isNull(response)) {
+                    console.error(novelUrl)
+                    myerror(Errors.getNovelFileFailed)
+                    return null
+                }
 
-        if (_.isNull(response)) {
-            console.error(novelUrl)
-            myerror(Errors.getNovelFileFailed)
-            return null
-        }
-
-        return Buffer.from(response.data)
+                return Buffer.from(response.data)
+            })
+            .catch(err => {
+                console.error(err)
+                myerror(Errors.getNovelFileFailed)
+                return null
+            })
     }
 }
 
