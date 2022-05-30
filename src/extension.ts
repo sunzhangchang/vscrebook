@@ -3,7 +3,7 @@ import { ExtensionContext } from "vscode"
 import { bookListInit } from "./core/bookList"
 import { searchContext } from "./core/searchCtx"
 import { extName, getConfig, updateConfig } from "./core/config"
-import { autoFlipp, clearAutoFlipInterval, clearShowBossInterval, setShowBossInterval, showJump, showNext, showPrev, startt, toggleBossMsg } from "./core/show"
+import { autoFlipp, refreshAuto, showJump, showNext, showPrev, startt, toggleBossMsg } from "./core/show"
 import { registerCmd, subscribeCmd } from "./utils/ext"
 
 export function activate(context: ExtensionContext): void {
@@ -35,17 +35,13 @@ export function activate(context: ExtensionContext): void {
     // 下一页
     registerCmd('nextPage', () => {
         showNext()
-        clearAutoFlipInterval()
-        clearShowBossInterval()
-        setShowBossInterval()
+        refreshAuto()
     })
 
     // 上一页
     registerCmd('prevPage', () => {
         showPrev()
-        clearAutoFlipInterval()
-        clearShowBossInterval()
-        setShowBossInterval()
+        refreshAuto()
     })
 
     // 跳转

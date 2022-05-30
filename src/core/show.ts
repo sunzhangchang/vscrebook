@@ -1,6 +1,6 @@
 import _ = require("lodash")
 import { join } from "path"
-import { ExtensionContext, window } from "vscode"
+import { commands, ExtensionContext, window } from "vscode"
 import { setExtTo } from "../utils"
 import { book, getPageText, newBook } from "../book"
 import { showMainMenu } from "."
@@ -35,6 +35,8 @@ let showBossInterval: NodeJS.Timeout | null = null
 
 let isBoss = false
 
+const statusbar = window.createStatusBarItem()
+
 export function setShowBossInterval(): void {
     showBossInterval = setInterval(() => {
         showBossText()
@@ -63,11 +65,11 @@ export function clearAutoFlipInterval(): void {
 }
 
 function setStatusBar(msg: string) {
-    window.setStatusBarMessage(msg)
+    statusbar.text = msg
 }
 
-async function showInfoMsg(msg: string) {
-    await window.showInformationMessage(msg)
+function showInfoMsg(msg: string) {
+    window.showInformationMessage(msg)
 }
 
 function showText(msg: string) {
@@ -75,12 +77,13 @@ function showText(msg: string) {
 
     switch (getConfig().displayMode) {
         case 'statusBar': default: {
+            statusbar.show()
             setStatusBar(msg)
             break
         }
 
         case 'showInformation': {
-            setStatusBar('')
+            statusbar.hide()
             showInfoMsg(msg)
             break
         }
@@ -107,11 +110,7 @@ export function showBossText(): void {
         }
 
         case 'showInformation': {
-            showText(codes[Math.floor(Math.random() * codes.length)])
-            showText(codes[Math.floor(Math.random() * codes.length)])
-            showText(codes[Math.floor(Math.random() * codes.length)])
-            showText(codes[Math.floor(Math.random() * codes.length)])
-            showText(codes[Math.floor(Math.random() * codes.length)])
+            commands.executeCommand('notifications.hideToasts')
             break
         }
     }
@@ -207,4 +206,10 @@ export function autoFlipp(): void {
         window.showInformationMessage(`开始自动翻页! 当前设置: 每 ${getConfig().autoFlipTime} 毫秒(ms)翻页!`)
         setAutoFlipInterval()
     }
+}
+
+export function refreshAuto(): void {
+    clearAutoFlipInterval()
+    clearShowBossInterval()
+    setShowBossInterval()
 }
