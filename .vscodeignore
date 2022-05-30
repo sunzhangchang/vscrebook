@@ -18,4 +18,5 @@ vsc-extension-quickstart.md
 .swcrc.js
 .swc/**
 gulpfile.js
-script/**
+scripts/**
+.gitpod.yml
