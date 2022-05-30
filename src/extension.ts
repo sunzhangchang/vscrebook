@@ -32,14 +32,28 @@ export function activate(context: ExtensionContext): void {
         toggleBossMsg()
     })
 
+    let lstNextTime = new Date().getTime()
     // 下一页
     registerCmd('nextPage', () => {
+        const now = new Date().getTime()
+        if (now - lstNextTime <= 50) {
+            lstNextTime = now
+            return
+        }
+        lstNextTime = now
         showNext()
         refreshAuto()
     })
 
+    let lstPrevTime = new Date().getTime()
     // 上一页
     registerCmd('prevPage', () => {
+        const now = new Date().getTime()
+        if (now - lstPrevTime <= 50) {
+            lstPrevTime = now
+            return
+        }
+        lstPrevTime = now
         showPrev()
         refreshAuto()
     })
