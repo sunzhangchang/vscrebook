@@ -15,8 +15,12 @@ export class Caimoge extends DownloadTxtCrawl {
         return url.href
     }
 
-    async search(searchKey: string): Promise<SearchBook[] | null> {
+    async search(searchKey: string): Promise<SearchBook[]> {
         const $ = await this.getSearchPageDOM(searchKey)
+
+        if (_.isNull($)) {
+            return []
+        }
 
         const searchBooks: SearchBook[] = []
         $('#sitembox dl').each((i, dl) => {

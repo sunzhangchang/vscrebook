@@ -10,7 +10,7 @@ export abstract class Crawl {
 
     abstract getSearchPath(searchKey: string): Promise<string>
 
-    async getSearchPageDOM(searchKey: string): Promise<cheerio.CheerioAPI> {
+    async getSearchPageDOM(searchKey: string): Promise<cheerio.CheerioAPI | null> {
         let res: string
         try {
             const response = await axios.get(await this.getSearchPath(searchKey))
@@ -18,13 +18,13 @@ export abstract class Crawl {
             res = Buffer.from(response.data).toString('utf8')
         } catch (err) {
             window.showErrorMessage((err as Error).message)
-            throw err
+            return null
         }
 
         return cheerio.load(res)
     }
 
-    abstract search(searchKey: string): Promise<SearchBook[] | null>
+    abstract search(searchKey: string): Promise<SearchBook[]>
     abstract download(menuURL: string): Promise<Buffer | null>
 }
 
@@ -34,7 +34,7 @@ export abstract class DownloadTxtCrawl extends Crawl {
 
     protected abstract readonly txtURLPrefix: string
 
-    abstract search(searchKey: string): Promise<SearchBook[] | null>
+    abstract search(searchKey: string): Promise<SearchBook[]>
 
     abstract getId(menuURL: string): Promise<string>
 
@@ -70,7 +70,7 @@ export abstract class EachChapterCrawl extends Crawl {
     protected abstract readonly chapterTitleSelector: string
     protected abstract readonly contextSelector: string
 
-    abstract search(searchKey: string): Promise<SearchBook[] | null>
+    abstract search(searchKey: string): Promise<SearchBook[]>
 
     async getChapters(menuURL: string): Promise<string[]> {
         const response = await axios.get(menuURL)
