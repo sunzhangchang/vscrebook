@@ -173,6 +173,7 @@
     "fancy-log": "^2.0.0",
     "gulp": "^4.0.2",
     "plugin-error": "^1.0.1",
+    "regenerator-runtime": "^0.13.9",
     "swc-loader": "^0.1.15",
     "typescript": "4.4.4",
     "vsce": "^2.8.0",
