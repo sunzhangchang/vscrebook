@@ -26,7 +26,7 @@ export async function showMainMenu(context: ExtensionContext): Promise<BookInfo 
         }
 
         case LibActions.add: {
-            res = await addBook(context.globalStorageUri.fsPath)
+            res = await addBook(false, context.globalStorageUri.fsPath)
             break
         }
 

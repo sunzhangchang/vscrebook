@@ -48,7 +48,18 @@ export const ExtConfig: ConfigSetObj = {
         type: 'object',
         form: 'choose',
         choices: ['caimoge', 'wbxsw', 'aixiashu'],
-    }
+    },
+    downloadSettings: {
+        name: `${extName}.downloadSettings`,
+        desc: '网络书籍下载设置',
+        default: {
+            '采墨阁': 'txt & chapters',
+            '58小说网': 'chaptersOnly',
+            '爱下书小说网': 'txt & chapters',
+        },
+        type: 'object',
+        form: 'none',
+    },
 }
 
 const getWsConfig = workspace.getConfiguration().get
@@ -80,9 +91,7 @@ export function configAs(cfg: ConfigSet, val: unknown): string | number | obj | 
 
 _(ExtConfig).forEach((value) => {
     const c = getWsConfig(value.name)
-    // mydebug(c)
     if (_.isUndefined(c)) {
-        // mydebug(c, _.isUndefined(c))
         updateWsConfig(value.name, value.default, true)
     }
     if (_.isEqual(value.name, `${extName}.downloadPath`)) {
@@ -98,6 +107,7 @@ let config: ConfigType = {
     autoFlipTime: getWsConfig(ExtConfig.autoFlipTime.name) as number,
     displayMode: getWsConfig(ExtConfig.displayMode.name) as DisplayMode,
     showMoreInfo: getWsConfig(ExtConfig.showMoreInfo.name) as ShowMoreInfo,
+    downloadSettings: getWsConfig(ExtConfig.downloadSettings.name) as DownloadSettings,
 }
 
 export function setConfig(key: string, value: unknown): void {
@@ -111,7 +121,6 @@ function getInnerConfig(key: string) {
 
 export function updateConfig(): void {
     _(config).forEach((value, key) => {
-        // debug(`vscrebook.${key}`, value)
         updateWsConfig(`${extName}.${key}`, value, true)
     })
 }
@@ -123,5 +132,6 @@ export function getConfig(): ConfigType {
         autoFlipTime: getInnerConfig(ExtConfig.autoFlipTime.name) as number,
         displayMode: getInnerConfig(ExtConfig.displayMode.name) as DisplayMode,
         showMoreInfo: getInnerConfig(ExtConfig.showMoreInfo.name) as ShowMoreInfo,
+        downloadSettings: getInnerConfig(ExtConfig.downloadSettings.name) as DownloadSettings,
     }
 }

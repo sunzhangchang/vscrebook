@@ -6,7 +6,6 @@ import { copyFileToUTF8Sync, setExtTo } from "../utils"
 import { getBook, updateBook } from "./bookList"
 import { getConfig } from "./config"
 import { myerror, Errors } from "../utils/error"
-import { mydebug } from "../utils/debug"
 
 enum Chooses {
     local = '本地书籍',
@@ -83,8 +82,7 @@ async function getAdBook(): Promise<{
     }
 }
 
-export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: BookInfo): Promise<BookInfo | undefined> {
-    // debug('Done here!')
+export async function addBook(isIpt: boolean, gStoPath: string, bookPath?: string, bookInfo?: BookInfo): Promise<BookInfo | undefined> {
     let oldPath: string | undefined
     let source: Source | undefined
     let curPage: number | undefined
@@ -113,23 +111,23 @@ export async function addBook(gStoPath: string, bookPath?: string, bookInfo?: Bo
     }
 
     let bookName = parse(oldPath).name
-    mydebug(getBook(bookName), _.isEmpty(getBook(bookName)))
-
-    while (!_.isEmpty(getBook(bookName))) {
-        const newBookName = await window.showInputBox({
-            title: '书名重复! 请输入新书名(留空覆盖, 退出取消添加):',
-            placeHolder: bookName,
-        })
-        if (_.isUndefined(newBookName)) {
-            window.showInformationMessage('取消添加!')
-            return
+    // mydebug(getBook(bookName), _.isEmpty(getBook(bookName)))
+    if (!isIpt) {
+        while (!_.isEmpty(getBook(bookName))) {
+            const newBookName = await window.showInputBox({
+                title: '书名重复! 请输入新书名(留空覆盖, 退出取消添加):',
+                placeHolder: bookName,
+            })
+            if (_.isUndefined(newBookName)) {
+                window.showInformationMessage('取消添加!')
+                return
+            }
+            if (_.isEmpty(newBookName)) {
+                break
+            }
+            bookName = newBookName
         }
-        if (_.isEmpty(newBookName)) {
-            break
-        }
-        bookName = newBookName
     }
-
     const newPath = join(gStoPath, setExtTo(bookName, 'txt'))
 
     copyFileToUTF8Sync(oldPath, newPath,

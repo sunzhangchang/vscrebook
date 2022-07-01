@@ -9,8 +9,6 @@ import { registerCmd, subscribeCmd } from "./utils/ext"
 export function activate(context: ExtensionContext): void {
     console.log(`Extension "${extName}" is now active!`)
 
-    // debug(getConfig())
-
     if (!existsSync(context.globalStorageUri.fsPath)) {
         mkdirSync(context.globalStorageUri.fsPath)
     }
@@ -32,26 +30,38 @@ export function activate(context: ExtensionContext): void {
         toggleBossMsg()
     })
 
+    let cntNext = 0
     let lstNextTime = new Date().getTime()
     // 下一页
     registerCmd('nextPage', () => {
         const now = new Date().getTime()
         if (now - lstNextTime <= 50) {
             lstNextTime = now
-            return
+            ++cntNext
+            if (cntNext >= 50) {
+                return
+            }
+        } else {
+            cntNext = 0
         }
         lstNextTime = now
         showNext()
         refreshAuto()
     })
 
+    let cntPrev = 0
     let lstPrevTime = new Date().getTime()
     // 上一页
     registerCmd('prevPage', () => {
         const now = new Date().getTime()
         if (now - lstPrevTime <= 50) {
             lstPrevTime = now
-            return
+            ++cntPrev
+            if (cntPrev >= 50) {
+                return
+            }
+        } else {
+            cntPrev = 0
         }
         lstPrevTime = now
         showPrev()

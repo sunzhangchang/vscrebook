@@ -1,8 +1,8 @@
-import { DownloadTxtCrawl } from "../Crawl"
 import _ = require('lodash')
 import { getConfig } from "../../core/config"
+import { Crawl } from '../Crawl'
 
-export class Caimoge extends DownloadTxtCrawl {
+export class Caimoge extends Crawl {
     readonly sourceName: Source = '采墨阁'
     readonly source = 'https://www.caimoge.net/'
 
@@ -15,7 +15,7 @@ export class Caimoge extends DownloadTxtCrawl {
         return url.href
     }
 
-    async search(searchKey: string): Promise<SearchBook[]> {
+    async searchDetail(searchKey: string): Promise<SearchBook[]> {
         const $ = await this.getSearchPageDOM(searchKey)
 
         if (_.isNull($)) {
@@ -43,4 +43,8 @@ export class Caimoge extends DownloadTxtCrawl {
     async getId(menuURL: string): Promise<string> {
         return _(menuURL).chain().trim().split('/').last().split('.').first().value()
     }
+
+    protected readonly chaptersSelector: string = '#readerlist > ul > li > a'
+    protected readonly chapterTitleSelector: string = '#center > div.title > h1 > em'
+    protected readonly contextSelector: string = '#content'
 }

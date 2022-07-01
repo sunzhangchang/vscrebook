@@ -37,7 +37,7 @@ export async function importList(listPath: string): Promise<void> {
 
                 download(searchedBook.书源, searchedBook.目录链接, getConfig().downloadPath, searchedBook.书名)
                     .then((bookPath) => {
-                        addBook(context.globalStorageUri.fsPath, setExtTo(bookPath, 'txt'), {
+                        addBook(true, context.globalStorageUri.fsPath, setExtTo(bookPath, 'txt'), {
                             ...v,
                             source: searchedBook.书源,
                         }).then(() => {

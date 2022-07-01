@@ -8,14 +8,9 @@ declare type ShowMoreInfo = {
     aixiashu: boolean
 }
 
-declare type ConfigType = ConfigBase<number, string, number, DisplayMode, ShowMoreInfo>
-// {
-// 	pageSize: number
-// 	downloadPath: string
-// 	autoFlipTime: number
-// 	displayMode: DisplayMode
-// 	showMoreInfo: ShowMoreInfo
-// }
+declare type DownloadSettings = Record<string, 'disable' | 'txtOnly' | 'chaptersOnly' | 'txt & chapters'>
+
+declare type ConfigType = ConfigBase<number, string, number, DisplayMode, ShowMoreInfo, DownloadSettings>
 
 declare type Source =
     | '本地'
@@ -48,20 +43,21 @@ declare type ConfigSet = {
     desc: string
     default: | number | string | obj
     type: | 'number' | 'string' | 'object'
-    form: | 'input' | 'choose'
+    form: | 'input' | 'choose' | 'none'
     choices?: string[]
 }
 
 declare type ConfigSetObj = ConfigBaseOne<ConfigSet>
 
-declare type ConfigBaseOne<T> = ConfigBase<T, T, T, T, T>
+declare type ConfigBaseOne<T> = ConfigBase<T, T, T, T, T, T>
 
-declare type ConfigBase<T, U, V, W, X> = {
+declare type ConfigBase<T, U, V, W, X, Y> = {
     pageSize: T
     downloadPath: U
     autoFlipTime: V
     displayMode: W
     showMoreInfo: X
+    downloadSettings: Y
 }
 
 declare type obj = Record<string, unknown>

@@ -1,12 +1,18 @@
 import _ = require("lodash")
 import * as cheerio from 'cheerio'
 import axios from 'axios'
-import { EachChapterCrawl } from "../Crawl"
 import { getConfig } from "../../core/config"
+import { Crawl } from "../Crawl"
 
-export class Wbxsw extends EachChapterCrawl {
+export class Wbxsw extends Crawl {
     readonly sourceName: Source = '58小说网'
     readonly source = 'http://www.wbxsw.com/'
+
+    protected readonly txtURLPrefix: string = ''
+
+    getId(): Promise<string> | null {
+        return null
+    }
 
     protected readonly chaptersSelector: string = '#list > dl > dd > a'
     protected readonly chapterTitleSelector: string = '#wrapper > div.content_read > div > div.bookname > h1'
@@ -19,7 +25,7 @@ export class Wbxsw extends EachChapterCrawl {
         return url.href
     }
 
-    async search(searchKey: string): Promise<SearchBook[]> {
+    async searchDetail(searchKey: string): Promise<SearchBook[]> {
         const $ = await this.getSearchPageDOM(searchKey)
 
         if (_.isNull($)) {
@@ -27,7 +33,6 @@ export class Wbxsw extends EachChapterCrawl {
         }
 
         const searchBooks: SearchBook[] = []
-        // debug('!!!!----------------------------------------')
         const list = $('body > div.result-list > div').toArray()
         for (const dl of list) {
             const detail = $(dl).find('div.result-game-item-detail')

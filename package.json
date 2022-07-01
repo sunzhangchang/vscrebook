@@ -71,6 +71,43 @@
             }
           },
           "description": "设置网络书籍中是否显示书籍更多信息"
+        },
+        "vscrebook.downloadSettings": {
+          "type": "object",
+          "default": {},
+          "properties": {
+            "采墨阁": {
+              "type": "string",
+              "enum": [
+                "disable",
+                "txtOnly",
+                "chaptersOnly",
+                "txt & chapters"
+              ],
+              "default": "txt & chapters"
+            },
+            "58小说网": {
+              "type": "string",
+              "enum": [
+                "disable",
+                "txtOnly",
+                "chaptersOnly",
+                "txt & chapters"
+              ],
+              "default": "chaptersOnly"
+            },
+            "爱下书小说网": {
+              "type": "string",
+              "enum": [
+                "disable",
+                "txtOnly",
+                "chaptersOnly",
+                "txt & chapters"
+              ],
+              "default": "txt & chapters"
+            }
+          },
+          "description": "网络书籍下载设置"
         }
       }
     },

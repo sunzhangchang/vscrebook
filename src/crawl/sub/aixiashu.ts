@@ -1,10 +1,10 @@
-import { DownloadTxtCrawl } from "../Crawl"
 import _ = require('lodash')
 import { getConfig } from "../../core/config"
 import axios from "axios"
 import { load } from "cheerio"
+import { Crawl } from '../Crawl'
 
-export class Aixiashu extends DownloadTxtCrawl {
+export class Aixiashu extends Crawl {
     readonly sourceName: Source = '爱下书小说网'
     readonly source = 'https://www.aixiawx.com/'
 
@@ -18,7 +18,7 @@ export class Aixiashu extends DownloadTxtCrawl {
         return url.href
     }
 
-    async search(searchKey: string): Promise<SearchBook[]> {
+    async searchDetail(searchKey: string): Promise<SearchBook[]> {
         const $ = await this.getSearchPageDOM(searchKey)
 
         if (_.isNull($)) {
@@ -66,4 +66,8 @@ export class Aixiashu extends DownloadTxtCrawl {
         }
         return _(t).chain().split('/').last().value()
     }
+
+    protected readonly chaptersSelector: string = '#list > dl > dd > a'
+    protected readonly chapterTitleSelector: string = '#wrapper > div.content_read > div > div.bookname > h1'
+    protected readonly contextSelector: string = '#content'
 }

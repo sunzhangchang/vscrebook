@@ -2,6 +2,7 @@ import axios from "axios"
 import * as cheerio from 'cheerio'
 import _ = require("lodash")
 import { window } from "vscode"
+import { getConfig } from "../core/config"
 import { myerror, Errors } from "../utils/error"
 
 export abstract class Crawl {
@@ -24,22 +25,30 @@ export abstract class Crawl {
         return cheerio.load(res)
     }
 
-    abstract search(searchKey: string): Promise<SearchBook[]>
-    abstract download(menuURL: string): Promise<Buffer | null>
-}
+    abstract searchDetail(searchKey: string): Promise<SearchBook[]>
 
-export abstract class DownloadTxtCrawl extends Crawl {
-    abstract readonly sourceName: string
-    abstract readonly source: string
+    async search(searchKey: string): Promise<SearchBook[]> {
+        if (_.isEqual(getConfig().downloadSettings[this.sourceName], 'disable')) {
+            return []
+        }
+        return this.searchDetail(searchKey)
+    }
+
+    abstract getId(menuURL: string): Promise<string> | null
 
     protected abstract readonly txtURLPrefix: string
 
-    abstract search(searchKey: string): Promise<SearchBook[]>
+    async txt(menuURL: string): Promise<Buffer | null> {
+        const st = getConfig().downloadSettings[this.sourceName]
+        if (_.isEqual(st, 'disable') || _.isEqual(st, 'chaptersOnly')) {
+            throw new Error()
+        }
 
-    abstract getId(menuURL: string): Promise<string>
-
-    async download(menuURL: string): Promise<Buffer | null> {
         const id = await this.getId(menuURL)
+
+        if (_.isNull(id)) {
+            throw new Error('id not found')
+        }
 
         if (_.isUndefined(id)) {
             console.error(menuURL)
@@ -50,33 +59,22 @@ export abstract class DownloadTxtCrawl extends Crawl {
         const novelUrl = `${this.txtURLPrefix}${id}`
         window.showInformationMessage('正在下载...')
 
-        return await axios.get(novelUrl)
+        return axios.get(novelUrl)
             .then(response => {
                 if (_.isNull(response)) {
-                    console.error(novelUrl)
-                    myerror(Errors.getNovelFileFailed)
-                    return null
+                    throw new Error()
                 }
 
                 return Buffer.from(response.data)
             })
-            .catch(err => {
-                console.error(err)
-                myerror(Errors.getNovelFileFailed)
-                return null
+            .catch(() => {
+                throw new Error()
             })
     }
-}
-
-export abstract class EachChapterCrawl extends Crawl {
-    abstract readonly sourceName: string
-    abstract readonly source: string
 
     protected abstract readonly chaptersSelector: string
     protected abstract readonly chapterTitleSelector: string
     protected abstract readonly contextSelector: string
-
-    abstract search(searchKey: string): Promise<SearchBook[]>
 
     async getChapters(menuURL: string): Promise<string[]> {
         const response = await axios.get(menuURL)
@@ -102,8 +100,12 @@ export abstract class EachChapterCrawl extends Crawl {
         return '========' + $(this.chapterTitleSelector).text() + '========' + $(this.contextSelector).text()
     }
 
-    async download(menuURL: string): Promise<Buffer | null> {
-        // debug(menuURL)
+    async chapters(menuURL: string): Promise<Buffer | null> {
+        const st = getConfig().downloadSettings[this.sourceName]
+        if (_.isEqual(st, 'disable') || _.isEqual(st, 'txtOnly')) {
+            throw new Error()
+        }
+
         const chapterList = await this.getChapters(menuURL)
         let novel = ''
         for (const iter of chapterList) {
@@ -111,5 +113,11 @@ export abstract class EachChapterCrawl extends Crawl {
         }
 
         return Buffer.from(novel)
+    }
+
+    async download(menuURL: string): Promise<Buffer | null> {
+        return this.txt(menuURL)
+            .then(res => res)
+            .catch(() => this.chapters(menuURL))
     }
 }
