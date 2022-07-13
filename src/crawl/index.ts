@@ -10,10 +10,16 @@ import { Crawl } from "./Crawl"
 import { setExtTo } from "../utils"
 import { Wbxsw } from "./sub/wbxsw"
 import { Aixiashu } from "./sub/aixiashu"
-import { Cheerio, Element, load } from "cheerio"
+import { CheerioAPI, load } from "cheerio"
+import axiosRetry from "axios-retry"
+import { getConfig } from "../core/config"
 
 axios.defaults.headers.common['User-Agent'] = USER_AGENT
 axios.defaults.responseType = 'arraybuffer'
+
+axiosRetry(axios, {
+    retries: 3,
+})
 
 const crawlers: Crawl[] = [
     new Caimoge(),
@@ -54,7 +60,9 @@ export async function download(source: string, menuURL: string, dir: string, nam
     })()
 }
 
-const indexReg = /PART\b|^Prologue|Chapter\s*[\-_]?\d+|分卷|^序$|^序\s*言|^序\s*章|^前\s*言|^附\s*[录錄]|^引\s*[言子]|^摘\s*要|^[楔契]\s*子|^后\s*记|^後\s*記|^附\s*言|^结\s*语|^結\s*語|^尾\s*[声聲]|^最終話|^最终话|^番\s*外|^\d+\s*\D*[^\d#\.]$|^[第（]?[\d〇零一二三四五六七八九十百千万萬-]+\s*[、）章节節回卷折篇幕集话話]/i;
+// eslint-disable-next-line no-useless-escape
+const indexReg = /PART\b|^Prologue|Chapter\s*[-_]?\d+|分卷|^序$|^序\s*言|^序\s*章|^前\s*言|^附\s*[录錄]|^引\s*[言子]|^摘\s*要|^[楔契]\s*子|^后\s*记|^後\s*記|^附\s*言|^结\s*语|^結\s*語|^尾\s*[声聲]|^最終話|^最终话|^番\s*外|^\d+\s*\D*[^\d#\.]$|^[第（]?[\d〇零一二三四五六七八九十百千万萬-]+\s*[、）章节節回卷折篇幕集话話]/i
+const innerNextPage = /下一[页頁张張]|next\s*page|次のページ/i
 
 type Ele = {
     href: string
@@ -97,116 +105,137 @@ async function fetch(url: string): Promise<void> {
     }
 }
 
+let rCats: (string | null)[] = []
+let curRequests: {
+    curIndex: number;
+    get: Promise<void>;
+    href: string;
+}[] = []
+
+function getNextPage($: CheerioAPI): Ele | null {
+    const list = $('a').toArray()
+    for(const ele of list) {
+        const e = $(ele)
+        const res: Ele = {
+            href: e.attr('href') ?? '',
+            text: e.text(),
+        }
+        if (innerNextPage.test(res.text) && !_.isEmpty(res.href) && res.href.indexOf('javascript') === -1) {
+            return res
+        }
+    }
+    return null
+}
+
 function indexDownload(aeles: Ele[]) {
     if (aeles.length < 1) {
         return
     }
-    rCats = [];
-    var insertSigns = [];
-    // var j=0,rCats=[];
-    var downIndex = 0, downNum = 0, downOnce = function () {
-        if (downNum >= aEles.length) return;
-        let curIndex = downIndex;
-        let aTag = aEles[curIndex];
-        let request = (aTag, curIndex) => {
-            let tryTimes = 0;
-            let requestBody = {
-                method: 'GET',
+    rCats = []
+    const insertSigns: number[][] = []
+    let downIndex = 0, downNum = 0
+
+    const processDoc = (i: number, aTag: Ele, $: CheerioAPI, cause?) => {
+        const func = content => {
+            rCats[i] = (aTag.text.trim() + '\r\n' + content + (cause || ''))
+            curRequests = curRequests.filter(e => e.curIndex !== i)
+            window.showInformationMessage('正在下载:')
+            txtDownContent.style.display = "block"
+            txtDownWords.innerHTML = getI18n("downloading", [downNum, (aEles.length - downNum), aTag.innerText]);
+            if (downNum == aEles.length) {
+                txtDownWords.innerHTML = getI18n("complete", [downNum]);
+                sortInnerPage();
+                var blob = new Blob([i18n.info + "\r\n\r\n" + document.title + "\r\n\r\n" + rCats.join("\r\n\r\n")], { type: "text/plain;charset=utf-8" });
+                saveAs(blob, document.title + ".txt");
+            }
+        };
+
+        let contentRes = getPageContent($, content => {
+            func(content)
+        })
+        if (contentResult !== false) {
+            func(contentResult);
+        }
+    }
+
+    const downOnce = () => {
+        if (downNum >= aeles.length) {
+            return
+        }
+        const curIndex = downIndex
+        let aTag = aeles[curIndex]
+        const request = (aTag: Ele, curIndex: number) => {
+            const get = axios({
+                method: 'get',
                 url: aTag.href,
-                headers: {
-                    referer: aTag.href,
-                    "Content-Type": "text/html;charset=" + document.charset,
-                },
                 timeout: 15000,
-                overrideMimeType: "text/html;charset=" + document.charset,
-                onload: function (result) {
-                    downIndex++;
-                    downNum++;
-                    var doc = getDocEle(result.responseText);
-                    let nextPage = checkNextPage(doc);
-                    if (nextPage) {
-                        var inArr = false;
-                        for (var ai = 0; ai < aEles.length; ai++) {
-                            if (aEles[ai].href == nextPage.href) {
-                                inArr = true;
-                                break;
-                            }
-                        }
-                        if (!inArr) {
-                            nextPage.innerText = aTag.innerText + "\t>>";
-                            aEles.push(nextPage);
-                            let targetIndex = curIndex;
-                            for (let a = 0; a < insertSigns.length; a++) {
-                                let signs = insertSigns[a], breakSign = false;
-                                if (signs) {
-                                    for (let b = 0; b < signs.length; b++) {
-                                        let sign = signs[b];
-                                        if (sign == curIndex) {
-                                            targetIndex = a;
-                                            breakSign = true;
-                                            break;
-                                        }
-                                    }
+                responseEncoding: 'utf8',
+            }).then(res => {
+                const data = Buffer.from(res.data).toString('utf-8')
+                downIndex ++
+                downNum ++
+                const $ = load(data)
+                const nextPage = getNextPage($)
+
+                if (!_.isNull(nextPage)) {
+                    const inArr = aeles.findIndex(e => e.href === nextPage.href) !== -1
+                    if (!inArr) {
+                        nextPage.text = aTag.text + '\t>>'
+                        aeles.push(nextPage)
+                        let targetIndex = curIndex
+                        for (const [i, signs] of insertSigns.entries()) {
+                            let flg = true
+                            for (const sig of signs) {
+                                if (sig === curIndex) {
+                                    targetIndex = i
+                                    flg = true
+                                    break
                                 }
-                                if (breakSign) break;
                             }
-                            let insertSign = insertSigns[targetIndex];
-                            if (!insertSign) insertSigns[targetIndex] = [];
-                            insertSigns[targetIndex].push(aEles.length - 1);
+                            if (flg) {
+                                break
+                            }
                         }
+                        for (let k = insertSigns.length; k <= targetIndex; k++) {
+                            insertSigns.push([])
+                        }
+                        insertSigns[targetIndex].push(aeles.length - 1)
                     }
-                    processDoc(curIndex, aTag, doc);
-                    let request = downOnce();
-                    if (request) curRequests.push(request);
-                },
-                onerror: function (e) {
-                    console.warn("error:");
-                    console.log(e);
-                    downIndex++;
-                    downNum++;
-                    processDoc(curIndex, aTag, null, ' : NETWORK ERROR ' + (e.response || e.responseText));
-                    let request = downOnce();
-                    if (request) curRequests.push(request);
-                },
-                ontimeout: function (e) {
-                    console.warn("timeout: times=" + tryTimes + " url=" + aTag.href);
-                    //console.log(e);
-                    if (++tryTimes < 3) {
-                        return GM_xmlhttpRequest(requestBody);
-                    }
-                    downIndex++;
-                    downNum++;
-                    processDoc(curIndex, aTag, null, ' : TIMEOUT ' + aTag.href);
-                    let request = downOnce();
-                    if (request) curRequests.push(request);
                 }
-            };
-            return [curIndex, GM_xmlhttpRequest(requestBody), aTag.href];
+                processDoc(curIndex, aTag, $)
+                const req = downOnce()
+                if (req) {
+                    curRequests.push(req)
+                }
+            }).catch(e => {
+                console.warn("error:")
+                console.log(e)
+                downIndex++
+                downNum++
+                processDoc(curIndex, aTag, null, ' : NETWORK ERROR ' + (e.response || e.responseText))
+                const req = downOnce()
+                if (req) {
+                    curRequests.push(req)
+                }
+            })
+            return {curIndex, get, href: aTag.href}
         }
         if (!aTag) {
-            let waitAtagReadyInterval = setInterval(function () {
-                if (downNum >= aEles.length) clearInterval(waitAtagReadyInterval);
-                aTag = aEles[curIndex];
-                if (aTag) {
-                    clearInterval(waitAtagReadyInterval);
-                    request(aTag, curIndex);
+            const waitAtagReadyInterval = setInterval(() => {
+                if (downNum > aeles.length) {
+                    clearInterval(waitAtagReadyInterval)
                 }
-            }, 1000);
-            return null;
+                aTag = aeles[curIndex]
+                if (aTag) {
+                    clearInterval(waitAtagReadyInterval)
+                    request(aTag, curIndex)
+                }
+            }, 1000)
+            return null
         }
-        return request(aTag, curIndex);
-    };
-    function getDocEle(str) {
-        var doc = null;
-        try {
-            doc = document.implementation.createHTMLDocument('');
-            doc.documentElement.innerHTML = str;
-        }
-        catch (e) {
-            console.log('parse error');
-        }
-        return doc;
+        return request(aTag, curIndex)
     }
+
     function sortInnerPage() {
         var pageArrs = [], maxIndex = 0, i, j;
         for (i = 0; i < insertSigns.length; i++) {
@@ -231,45 +260,17 @@ function indexDownload(aeles: Ele[]) {
         }
         rCats = rCats.filter(function (e) { return e != null });
     }
-    function processDoc(i, aTag, doc, cause) {
-        let contentResult = getPageContent(doc, content => {
-            cbFunc(content);
-        });
-        let cbFunc = content => {
-            rCats[i] = (aTag.innerText.trim() + "\r\n" + content + (cause || ''));
-            curRequests = curRequests.filter(function (e) { return e[0] != i });
-            txtDownContent.style.display = "block";
-            txtDownWords.innerHTML = getI18n("downloading", [downNum, (aEles.length - downNum), aTag.innerText]);
-            if (downNum == aEles.length) {
-                txtDownWords.innerHTML = getI18n("complete", [downNum]);
-                sortInnerPage();
-                var blob = new Blob([i18n.info + "\r\n\r\n" + document.title + "\r\n\r\n" + rCats.join("\r\n\r\n")], { type: "text/plain;charset=utf-8" });
-                saveAs(blob, document.title + ".txt");
-            }
-        };
-        if (contentResult !== false) {
-            cbFunc(contentResult);
+    let downThreadAmount = getConfig().downThreadAmount
+    downThreadAmount = downThreadAmount > 0 ? downThreadAmount : 20
+    for(let i = 0; i < downThreadAmount; i++) {
+        const req = downOnce()
+        if (req) {
+            curRequests.push(req)
+        }
+        if (downIndex >= aeles.length - 1 || downIndex >= downThreadAmount - 1) {
+            break
+        } else {
+            downIndex++
         }
     }
-    var downThreadNum = parseInt(GM_getValue("downThreadNum"));
-    downThreadNum = downThreadNum > 0 ? downThreadNum : 20;
-    for (var i = 0; i < downThreadNum; i++) {
-        let request = downOnce();
-        if (request) curRequests.push(request);
-        if (downIndex >= aEles.length - 1 || downIndex >= downThreadNum - 1) break;
-        else downIndex++;
-    }
-
-    /*for(let i=0;i<aEles.length;i++){
-        let aTag=aEles[i];
-        GM_xmlhttpRequest({
-            method: 'GET',
-            url: aTag.href,
-            overrideMimeType:"text/html;charset="+document.charset,
-            onload: function(result) {
-                var doc = getDocEle(result.responseText);
-                processDoc(i, aTag, doc);
-            }
-        });
-    }*/
 }

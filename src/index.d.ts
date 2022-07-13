@@ -10,7 +10,9 @@ declare type ShowMoreInfo = {
 
 declare type DownloadSettings = Record<string, 'disable' | 'txtOnly' | 'chaptersOnly' | 'txt & chapters'>
 
-declare type ConfigType = ConfigBase<number, string, number, DisplayMode, ShowMoreInfo, DownloadSettings>
+declare type DownThreadAmount = number
+
+declare type ConfigType = ConfigBase<number, string, number, DisplayMode, ShowMoreInfo, DownloadSettings, DownThreadAmount>
 
 declare type Source =
     | '本地'
@@ -49,15 +51,16 @@ declare type ConfigSet = {
 
 declare type ConfigSetObj = ConfigBaseOne<ConfigSet>
 
-declare type ConfigBaseOne<T> = ConfigBase<T, T, T, T, T, T>
+declare type ConfigBaseOne<T> = ConfigBase<T, T, T, T, T, T, T>
 
-declare type ConfigBase<T, U, V, W, X, Y> = {
+declare type ConfigBase<T, U, V, W, X, Y, Z> = {
     pageSize: T
     downloadPath: U
     autoFlipTime: V
     displayMode: W
     showMoreInfo: X
     downloadSettings: Y
+    downThreadAmount: Z
 }
 
 declare type obj = Record<string, unknown>

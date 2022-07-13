@@ -108,6 +108,11 @@
             }
           },
           "description": "网络书籍下载设置"
+        },
+        "vscrebook.downThreadAmount": {
+          "type": "number",
+          "default": 20,
+          "description": "下载线程数"
         }
       }
     },
@@ -227,6 +232,7 @@
   "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md",
   "dependencies": {
     "axios": "^0.26.1",
+    "axios-retry": "^3.3.1",
     "chardet": "^1.4.0",
     "cheerio": "^1.0.0-rc.10",
     "iconv-lite": "^0.6.3",
