@@ -10,7 +10,7 @@ import { Crawl } from "./Crawl"
 import { setExtTo } from "../utils"
 import { Wbxsw } from "./sub/wbxsw"
 import { Aixiashu } from "./sub/aixiashu"
-import { CheerioAPI, load } from "cheerio"
+import { AnyNode, Cheerio, CheerioAPI, Element, load } from "cheerio"
 import axiosRetry from "axios-retry"
 import { getConfig } from "../core/config"
 
@@ -113,7 +113,7 @@ let curRequests: {
 }[] = []
 
 function getNextPage($: CheerioAPI): Ele | null {
-    const list = $('a').toArray()
+    const list = $('a')
     for(const ele of list) {
         const e = $(ele)
         const res: Ele = {
@@ -127,6 +127,156 @@ function getNextPage($: CheerioAPI): Ele | null {
     return null
 }
 
+function getPageContent(doc: CheerioAPI): string {
+    const $ = load(doc('body').text().replaceAll(/<!--((.|[\n|\r|\r\n])*?)-->/g, ''))
+    $('font.jammer').remove()
+    // todo: remove ads
+    $('script,style,link,img,noscript,iframe').remove()
+    $('span,div,ul').each((i, e) => {
+        const ele = $(e)
+        if (ele.css()) {
+            if (_.isEqual(ele.css('display'), 'none') || (ele.is('span') && _.isEqual(ele.css('font-size'), '0px'))) {
+                ele.remove()
+            }
+        }
+    })
+
+    let maxNum = 0, maxContent: Element | undefined
+    const contents = $('span,div,article,p,td')
+    for (const e of contents) {
+        const ele = $(e)
+        let hasText = false, allSingle = true
+        for (const childe of e.childNodes) {
+            if (childe.nodeType === 3) {
+                if (/^\s*$/.test(childe.data)) {
+                    $(childe).remove()
+                } else {
+                    hasText = true
+                }
+            } else {
+                if ($(childe).is('i,a,string,b,font,p,dl,dd,h')) {
+                    hasText = true
+                }
+            }
+        }
+        // const children = ele.children()
+        // for (const childe of children) {
+        //     const child = $(childe)
+        //     if (childe.nodeType) {
+        //     }
+        // }
+
+        for (const childe of e.childNodes) {
+            if (childe.nodeType === 1 && $(childe).is('i,a,strong,b,font,be') && /^[\s\-_?>|]*$/.test($(childe).text())) {
+                $(childe).remove()
+            }
+        }
+
+        if (e.childNodes.length > 1) {
+            for (const childe of e.childNodes) {
+                if (childe.nodeType === 1) {
+                    for (const ce of $(childe).children()) {
+                        if (!$(ce).is('i,a,strong,b,font,br')) {
+                            allSingle = false
+                            break
+                        }
+                    }
+                    if (!allSingle) {
+                        break
+                    }
+                }
+            }
+        } else {
+            allSingle = false
+        }
+
+        let curNum = 0
+        if (allSingle) {
+            curNum = ele.text().length
+        } else {
+            if (!hasText) {
+                continue
+            }
+            for (const childe of e.childNodes) {
+                if (childe.nodeType === 3) {
+                    curNum += childe.data.length
+                } else if ($(childe).is('i,a,strong,b,font,p,dl,dd,h')) {
+                    curNum += $(childe).text().length
+                }
+            }
+        }
+        if (curNum > maxNum) {
+            maxNum = curNum
+            maxContent = e
+        }
+    }
+    if (_.isUndefined(maxContent)) {
+        return 'error: no text content'
+    }
+
+    function getDepth(e: Cheerio<AnyNode>): number {
+        return getDepth($(e).parent()) + 1
+    }
+
+    const dep = getDepth($(maxContent))
+
+    function getRightStr(e: Element, noTextEnable: boolean): void {
+        let hasText = false
+        let cstr = '\r\n'
+        for (const ce of e.childNodes) {
+            if (ce.nodeType === 3 && ce.data && !/^[\s\-_?>|]*$/.test(ce.data)) {
+                hasText = true
+            }
+            let text = $(ce).text()
+            if (text) {
+                text = text.replaceAll(/<\s*br\s*>/gi, '\r\n').replaceAll(/\n+/gi, '\n').replaceAll(/\r+/gi, '\r')
+            }
+            if ($(ce).con)
+        }
+        let childNodes=ele.childNodes,cStr="\r\n",hasText=false;
+        for(let j=0;j<childNodes.length;j++){
+            let childNode=childNodes[j];
+            if(childNode.nodeType==3 && childNode.data && !/^[\s\-\_\?\>\|]*$/.test(childNode.data))hasText=true;
+            if(childNode.innerHTML){
+                childNode.innerHTML=childNode.innerHTML.replace(/\<\s*br\s*\>/gi,"\r\n").replace(/\n+/gi,"\n").replace(/\r+/gi,"\r");
+            }
+            if(childNode.textContent){
+                cStr+=childNode.textContent.replace(/ +/g,"  ").replace(/([^\r]|^)\n([^\r]|$)/gi,"$1\r\n$2");
+            }
+            if(childNode.nodeType!=3 && !/^(I|A|STRONG|B|FONT)$/.test(childNode.tagName))cStr+="\r\n";
+        }
+        if(hasText || noTextEnable || ele==maxContent)rStr+=cStr+"\r\n";
+    }
+
+    const list = $(maxContent.tagName) as Cheerio<Element>
+    for (const e of list) {
+        const ele = $(e)
+        if (getDepth(ele) === dep) {
+            if ((!maxContent.attribs.class && e.attribs.class) || (maxContent.attribs.class && !e.attribs.class) || (maxContent.attribs.class === e.attribs.class)) {
+                continue
+            }
+            if((maxContent.attribs.class && maxContent.attribs.class === e.attribs.class) || maxContent.parentNode === e.parentNode) {
+                getRightStr(e, true)
+            }else {
+                getRightStr(e, false)
+            }
+        }
+    }
+
+    for(i=0;i<childlist.length;i++){
+        var child=childlist[i];
+        if(getDepth(child)==getDepth(maxContent)){
+            if((!maxContent.attribs.class && child.attribs.class) || (maxContent.attribs.class && !child.attribs.class) || (maxContent.attribs.class && child.attribs.class && maxContent.attribs.class != child.attribs.class))continue;
+            if((maxContent.attribs.class && maxContent.attribs.class==child.attribs.class)||maxContent.parentNode ==child.parentNode){
+                getRightStr(child, true);
+            }else {
+                getRightStr(child, false);
+            }
+        }
+    }
+    return rStr.replace(/[\n\r]+/g,"\n\r");
+}
+
 function indexDownload(aeles: Ele[]) {
     if (aeles.length < 1) {
         return
@@ -135,7 +285,7 @@ function indexDownload(aeles: Ele[]) {
     const insertSigns: number[][] = []
     let downIndex = 0, downNum = 0
 
-    const processDoc = (i: number, aTag: Ele, $: CheerioAPI, cause?) => {
+    const processDoc = (i: number, aTag: Ele, $: CheerioAPI, cause?: string) => {
         const func = content => {
             rCats[i] = (aTag.text.trim() + '\r\n' + content + (cause || ''))
             curRequests = curRequests.filter(e => e.curIndex !== i)
@@ -148,7 +298,7 @@ function indexDownload(aeles: Ele[]) {
                 var blob = new Blob([i18n.info + "\r\n\r\n" + document.title + "\r\n\r\n" + rCats.join("\r\n\r\n")], { type: "text/plain;charset=utf-8" });
                 saveAs(blob, document.title + ".txt");
             }
-        };
+        }
 
         let contentRes = getPageContent($, content => {
             func(content)
