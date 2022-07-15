@@ -1,4 +1,4 @@
-import _ = require('lodash')
+import _ from 'lodash'
 import { getConfig } from "../../core/config"
 import axios from "axios"
 import { load } from "cheerio"
@@ -7,16 +7,8 @@ import { Crawl } from '../Crawl'
 export class Aixiashu extends Crawl {
     readonly sourceName: Source = '爱下书小说网'
     readonly source = 'https://www.aixiawx.com/'
-
-    protected readonly txtURLPrefix: string = 'https://txt.aixiawx.com/modules/article/txtarticle.php?id='
-
-    async getSearchPath(searchKey: string): Promise<string> {
-        // https://www.aixiawx.com/modules/article/search.php
-        const url = new URL('/modules/article/search.php', this.source)
-        url.searchParams.append('searchkey', searchKey)
-        url.searchParams.sort()
-        return url.href
-    }
+    readonly searchPath: string = 'https://www.aixiaxsw.com/modules/article/search.php?searchkey=%s'
+    protected readonly txtURL: string = 'https://txt.aixiawx.com/modules/article/txtarticle.php?id=%s'
 
     async searchDetail(searchKey: string): Promise<SearchBook[]> {
         const $ = await this.getSearchPageDOM(searchKey)
@@ -60,11 +52,7 @@ export class Aixiashu extends Crawl {
 
     async getId(menuURL: string): Promise<string> {
         // e.g. https://www.aixiawx.com/91/91966/
-        let t = _.trim(menuURL)
-        if (_.endsWith(t, '/')) {
-            t = t.substring(0, t.length - 1)
-        }
-        return _(t).chain().split('/').last().value()
+        return (menuURL.match(/.+?\/([0-9]+?)/) ?? [])[1]
     }
 
     protected readonly chaptersSelector: string = '#list > dl > dd > a'

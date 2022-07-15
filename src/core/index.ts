@@ -3,7 +3,7 @@ import { addBook } from "./add"
 import { deleteBook } from "./delete"
 import { ExtensionContext, window } from "vscode"
 import { imexport } from "./imexport"
-import _ = require("lodash")
+import _ from "lodash"
 import { settings } from "./settings"
 
 enum LibActions {

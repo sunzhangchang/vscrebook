@@ -1,4 +1,4 @@
-import _ = require("lodash")
+import _ from "lodash"
 import { join, parse } from "path"
 import { window } from "vscode"
 import { download, search } from "../crawl"
@@ -111,7 +111,6 @@ export async function addBook(isIpt: boolean, gStoPath: string, bookPath?: strin
     }
 
     let bookName = parse(oldPath).name
-    // mydebug(getBook(bookName), _.isEmpty(getBook(bookName)))
     if (!isIpt) {
         while (!_.isEmpty(getBook(bookName))) {
             const newBookName = await window.showInputBox({

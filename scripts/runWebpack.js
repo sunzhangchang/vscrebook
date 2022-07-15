@@ -17,7 +17,7 @@ function runWebpack(config, msg, cb) {
         if (err) {
             throw new PluginError(`webpack:${msg}`, err)
         }
-        log(`[webpack:${msg}]`, stats.toString({
+        log(`[webpack:${msg}]`, stats?.toString({
             colors: true
         }))
         cb()

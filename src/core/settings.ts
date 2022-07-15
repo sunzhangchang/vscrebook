@@ -1,4 +1,4 @@
-import _ = require("lodash")
+import _ from "lodash"
 import { window } from "vscode"
 import { configAs, ExtConfig, getConfig, setConfig } from "./config"
 

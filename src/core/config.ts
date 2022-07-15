@@ -1,8 +1,7 @@
 import { workspace } from "vscode"
-import _ = require("lodash")
+import _ from "lodash"
 import { join } from "path"
 import { homedir } from "os"
-// import { mydebug } from "../utils/debug"
 
 export const extName = 'vscrebook'
 

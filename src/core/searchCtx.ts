@@ -1,4 +1,4 @@
-import _ = require("lodash")
+import _ from "lodash"
 import { window } from "vscode"
 import { book } from "../book"
 import { Errors, myerror } from "../utils/error"

@@ -1,4 +1,4 @@
-import _ = require("lodash")
+import _ from "lodash"
 import { getBookList } from "./bookList"
 import { showBookList } from "./utils"
 

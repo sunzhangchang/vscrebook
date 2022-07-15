@@ -1,5 +1,5 @@
 import { writeFile } from "fs/promises"
-import _ = require("lodash")
+import _ from "lodash"
 import { window } from "vscode"
 import { readFileToUTF8Sync } from "../utils"
 import { getBookList, importList } from "./bookList"

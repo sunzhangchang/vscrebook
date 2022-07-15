@@ -1,5 +1,5 @@
 import { readFileSync } from "fs"
-import _ = require("lodash")
+import _ from "lodash"
 import { parse } from "path"
 import { ExtensionContext, window } from "vscode"
 import { setExtTo } from "../utils"

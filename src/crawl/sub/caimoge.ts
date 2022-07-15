@@ -1,19 +1,12 @@
-import _ = require('lodash')
+import _ from 'lodash'
 import { getConfig } from "../../core/config"
 import { Crawl } from '../Crawl'
 
 export class Caimoge extends Crawl {
     readonly sourceName: Source = '采墨阁'
     readonly source = 'https://www.caimoge.net/'
-
-    protected txtURLPrefix = 'https://www.caimoge.net/api/txt_down.php?articleid='
-
-    async getSearchPath(searchKey: string): Promise<string> {
-        const url = new URL('/search/', this.source)
-        url.searchParams.append('searchkey', searchKey)
-        url.searchParams.sort()
-        return url.href
-    }
+    readonly searchPath: string = 'https://www.caimoge.net/search/?searchkey=%s'
+    protected readonly txtURL = 'https://www.caimoge.net/api/txt_down.php?articleid=%s'
 
     async searchDetail(searchKey: string): Promise<SearchBook[]> {
         const $ = await this.getSearchPageDOM(searchKey)

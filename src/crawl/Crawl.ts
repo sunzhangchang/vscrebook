@@ -1,6 +1,7 @@
 import axios from "axios"
 import * as cheerio from 'cheerio'
-import _ = require("lodash")
+import _ from "lodash"
+import { format } from "util"
 import { window } from "vscode"
 import { getConfig } from "../core/config"
 import { myerror, Errors } from "../utils/error"
@@ -8,13 +9,13 @@ import { myerror, Errors } from "../utils/error"
 export abstract class Crawl {
     abstract readonly sourceName: string
     abstract readonly source: string
-
-    abstract getSearchPath(searchKey: string): Promise<string>
+    abstract readonly searchPath: string
+    protected abstract readonly txtURL: string | null
 
     async getSearchPageDOM(searchKey: string): Promise<cheerio.CheerioAPI | null> {
         let res: string
         try {
-            const response = await axios.get(await this.getSearchPath(searchKey))
+            const response = await axios.get(encodeURI(format(this.searchPath, searchKey)))
 
             res = Buffer.from(response.data).toString('utf8')
         } catch (err) {
@@ -36,11 +37,9 @@ export abstract class Crawl {
 
     abstract getId(menuURL: string): Promise<string> | null
 
-    protected abstract readonly txtURLPrefix: string
-
     async txt(menuURL: string): Promise<Buffer | null> {
         const st = getConfig().downloadSettings[this.sourceName]
-        if (_.isEqual(st, 'disable') || _.isEqual(st, 'chaptersOnly')) {
+        if (_.isEqual(st, 'disable') || _.isEqual(st, 'chaptersOnly') || _.isNull(this.txtURL)) {
             throw new Error()
         }
 
@@ -56,7 +55,7 @@ export abstract class Crawl {
             return null
         }
 
-        const novelUrl = `${this.txtURLPrefix}${id}`
+        const novelUrl = format(this.txtURL, id)
         window.showInformationMessage('正在下载...')
 
         return axios.get(novelUrl)
@@ -82,16 +81,16 @@ export abstract class Crawl {
         const menu = Buffer.from(response.data).toString('utf8')
         const $ = cheerio.load(menu)
         const l = $(this.chaptersSelector).toArray()
-        const list: string[] = []
-        for (const iter of l) {
-            const url = $(iter).attr('href')
+        const list: Promise<string>[] = []
+        for (const e of l) {
+            const url = $(e).attr('href')
             if (_.isUndefined(url)) {
                 myerror(Errors.chapterLost)
                 continue
             }
-            list.push(await this.oneChapter(new URL(url, this.source).href)) // todo : new URL(menuURL).host
+            list.push(this.oneChapter(new URL(url, this.source).href)) // todo : new URL(menuURL).host
         }
-        return list
+        return Promise.all(list)
     }
 
     async oneChapter(url: string): Promise<string> {
@@ -107,10 +106,7 @@ export abstract class Crawl {
         }
 
         const chapterList = await this.getChapters(menuURL)
-        let novel = ''
-        for (const iter of chapterList) {
-            novel += iter
-        }
+        const novel = chapterList.join('    ')
 
         return Buffer.from(novel)
     }

@@ -1,7 +1,7 @@
 import { detectFileSync } from 'chardet'
 import { readFileSync, writeFileSync } from 'fs'
 import { decode, encode } from 'iconv-lite'
-import _ = require('lodash')
+import _ from 'lodash'
 import { format, parse } from 'path'
 
 export function detect(filePath: string): string {

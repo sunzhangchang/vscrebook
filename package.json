@@ -4,7 +4,7 @@
   "description": "VSCode 摸鱼阅读器",
   "version": "0.15.0",
   "engines": {
-    "vscode": "^1.63.1"
+    "vscode": "^1.68.1"
   },
   "icon": "images/icon.png",
   "categories": [
@@ -200,25 +200,24 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@swc/core": "^1.2.207",
-    "@swc/helpers": "^0.3.17",
+    "@swc/core": "^1.2.215",
+    "@swc/helpers": "^0.4.3",
     "@types/lodash": "^4.14.182",
-    "@types/node": "~14.18.5",
+    "@types/node": "^16.11.44",
     "@types/vscode": "^1.68.1",
-    "@typescript-eslint/eslint-plugin": "^4.33.0",
-    "@typescript-eslint/parser": "^4.33.0",
-    "@vscode/test-electron": "^1.6.2",
-    "core-js": "^3.23.3",
-    "esbuild": "^0.14.48",
+    "@typescript-eslint/eslint-plugin": "^5.30.6",
+    "@typescript-eslint/parser": "^5.30.6",
+    "@vscode/test-electron": "^2.1.5",
+    "esbuild": "^0.14.49",
     "esbuild-loader": "^2.19.0",
-    "eslint": "^7.32.0",
+    "eslint": "^8.19.0",
     "fancy-log": "^2.0.0",
     "gulp": "^4.0.2",
-    "plugin-error": "^1.0.1",
+    "plugin-error": "^2.0.0",
     "regenerator-runtime": "^0.13.9",
-    "swc-loader": "^0.1.16",
-    "typescript": "^4.4.4",
-    "vsce": "^2.9.2",
+    "swc-loader": "^0.2.3",
+    "typescript": "^4.7.4",
+    "vsce": "^2.9.3",
     "webpack": "^5.73.0",
     "webpack-cli": "^4.10.0"
   },
@@ -231,10 +230,11 @@
   },
   "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md",
   "dependencies": {
-    "axios": "^0.26.1",
+    "axios": "^0.27.2",
     "axios-retry": "^3.3.1",
     "chardet": "^1.4.0",
-    "cheerio": "^1.0.0-rc.10",
+    "cheerio": "^1.0.0-rc.12",
+    "core-js": "^3.23.4",
     "iconv-lite": "^0.6.3",
     "lodash": "^4.17.21"
   }

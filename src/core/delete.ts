@@ -1,5 +1,5 @@
 import { unlink } from "fs/promises"
-import _ = require("lodash")
+import _ from "lodash"
 import { join } from "path"
 import { window } from "vscode"
 import { setExtTo } from "../utils"

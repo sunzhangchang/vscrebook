@@ -1,4 +1,4 @@
-import _ = require("lodash")
+import _ from "lodash"
 import { join } from "path"
 import { commands, ExtensionContext, window } from "vscode"
 import { setExtTo } from "../utils"
