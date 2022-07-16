@@ -52,7 +52,7 @@ function prod(cb) {
 let watchConfig = Object.create(devConfig)
 watchConfig.watch = true
 
-function watch(cb) {
+async function watch(cb) {
     runWebpack(watchConfig, 'watch', cb)
 }
 

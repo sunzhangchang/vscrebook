@@ -20,6 +20,9 @@
     "划水"
   ],
   "publisher": "Cyanogenaq",
+  "workspaces": [
+    "crawl"
+  ],
   "activationEvents": [
     "onCommand:vscrebook.showMenu"
   ],
@@ -190,6 +193,8 @@
     "build:debug": "gulp dev",
     "build": "gulp prod",
     "watch": "gulp watch",
+    "pack": "wasm-pack",
+    "pack:crawl": "wasm-pack build -t bundler --dev crawl",
     "package": "vsce package",
     "vsce:publish": "vsce publish",
     "vsce:package": "vsce package",
@@ -208,6 +213,7 @@
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
     "@vscode/test-electron": "^2.1.5",
+    "core-js": "^3.23.4",
     "esbuild": "^0.14.49",
     "esbuild-loader": "^2.19.0",
     "eslint": "^8.19.0",
@@ -234,7 +240,6 @@
     "axios-retry": "^3.3.1",
     "chardet": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
-    "core-js": "^3.23.4",
     "iconv-lite": "^0.6.3",
     "lodash": "^4.17.21"
   }

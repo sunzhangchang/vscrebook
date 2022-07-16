@@ -43,7 +43,7 @@ const extensionConfig = {
             },
             {
                 test: /\.wasm$/,
-                type: 'webassembly/sync',
+                type: 'webassembly/async',
             }
         ],
     },
