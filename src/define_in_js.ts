@@ -1,4 +1,4 @@
-export { getConfig } from "./core/config"
+import { getConfig } from "./core/config"
 
 // export class ShowMoreInfo {
 //     public caimoge = false
@@ -36,10 +36,11 @@ export { getConfig } from "./core/config"
 
 // declare type obj = Record<string, unknown>
 
-// export function get_config() {
-//     return {
-//         showMoreInfo: getConfig().showMoreInfo,
-//         downThreadAmount: getConfig().downThreadAmount,
-//         downloadSettings: getConfig().downloadSettings,
-//     }
-// }
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function get_config() {
+    return {
+        showMoreInfo: getConfig().showMoreInfo,
+        downThreadAmount: getConfig().downThreadAmount,
+        downloadSettings: getConfig().downloadSettings,
+    }
+}

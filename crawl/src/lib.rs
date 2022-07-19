@@ -4,27 +4,27 @@ use std::fmt::Debug;
 use js_sys::{Object, Array, Reflect};
 use wasm_bindgen::prelude::*;
 
-// #[derive(Default)]
-// struct ShowMoreInfo {
-//     caimoge: bool,
-//     wbxsw: bool,
-//     aixiashu: bool,
+#[derive(Default)]
+struct ShowMoreInfo {
+    caimoge: bool,
+    wbxsw: bool,
+    aixiashu: bool,
+}
+
+// #[wasm_bindgen(raw_module = "../../src/define_in_js")]
+// extern "C" {
+//     #[wasm_bindgen(extends = Object, typescript_type = "ShowMoreInfo")]
+//     type ShowMoreInfo;
+
+//     #[wasm_bindgen(constructor)]
+//     fn dft() -> ShowMoreInfo;
 // }
 
-#[wasm_bindgen(raw_module = "../../src/define_in_js")]
-extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "ShowMoreInfo")]
-    type ShowMoreInfo;
-
-    #[wasm_bindgen(constructor)]
-    fn dft() -> ShowMoreInfo;
-}
-
-impl Default for ShowMoreInfo {
-    fn default() -> Self {
-        Self::dft()
-    }
-}
+// impl Default for ShowMoreInfo {
+//     fn default() -> Self {
+//         Self::dft()
+//     }
+// }
 
 enum DownSet {
     Disable,
@@ -33,27 +33,27 @@ enum DownSet {
     TxtAndChapters,
 }
 
-// #[derive(Default)]
-// struct DownloadSettings {
-//     caimoge: String,
-//     wbxsw: String,
-//     aixiashu: String,
+#[derive(Default)]
+struct DownloadSettings {
+    caimoge: String,
+    wbxsw: String,
+    aixiashu: String,
+}
+
+// #[wasm_bindgen(raw_module = "../../src/define_in_js")]
+// extern "C" {
+//     #[wasm_bindgen(extends = Object, typescript_type = "DownloadSettings")]
+//     type DownloadSettings;
+
+//     #[wasm_bindgen(constructor)]
+//     fn dft() -> DownloadSettings;
 // }
 
-#[wasm_bindgen(raw_module = "../../src/define_in_js")]
-extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "DownloadSettings")]
-    type DownloadSettings;
-
-    #[wasm_bindgen(constructor)]
-    fn dft() -> DownloadSettings;
-}
-
-impl Default for DownloadSettings {
-    fn default() -> Self {
-        Self::dft()
-    }
-}
+// impl Default for DownloadSettings {
+//     fn default() -> Self {
+//         Self::dft()
+//     }
+// }
 
 // type DownloadSettings = HashMap<String, String>;
 
@@ -71,32 +71,97 @@ extern "C" {
     fn get_config() -> JsValue;
 }
 
-fn g_config() -> Config {
-    let js_configs = unsafe { get_config() };
-    let js_download_settings = unsafe { Reflect::get(&js_configs, &"downloadSettings".into()).unwrap() };
-    let mut config = Config::default();
-    if js_download_settings.is_object() {
-        let t: Object = js_download_settings.into();
-        for i in Array::iter(&Object::entries(&t)) {
-            let a: Array = i.into();
+//Vec<(String, JsValue)>
+fn forin<F>(obj: JsValue, func: &mut F) -> Result<(), String>
+    where F: FnMut(&str, JsValue) -> () {
+    if obj.is_object() {
+        // let mut res = Vec::new();
+        for it in Array::iter(&Object::entries(&obj.into())) {
+            let a: Array = it.into();
             let key: &str = &a.at(0).as_string().unwrap();
             let value: JsValue = a.at(1);
-            match key {
-                "showMoreInfo" => {
-                    config.show_more_info = value.into();
-                }
-                "downThreadAmount" => {
-                    config.down_thread_amount = value.as_f64().unwrap() as u16
-                }
-                "downloadSettings" => {
-                    config.download_settings = value.into();
-                }
-                &_ => {}
-            };
+            func(key, value)
+            // res.push((key.to_string(), value));
         }
+        Ok(())
+        // Ok(res)
+    } else {
+        Err("value is not an object".to_string())
     }
+}
+
+fn g_config() -> Config {
+    let js_configs = unsafe { get_config() };
+    let mut config = Config::default();
+    forin(js_configs, &mut |k, v| {
+        match k {
+            "showMoreInfo" => {
+                forin(v, &mut |k, v| {
+                    match k {
+                        "caimoge" => {
+                            config.show_more_info.caimoge = v.as_bool().unwrap();
+                        }
+                        "wbxsw" => {
+                            config.show_more_info.wbxsw = v.as_bool().unwrap();
+                        }
+                        "aixiashu" => {
+                            config.show_more_info.aixiashu = v.as_bool().unwrap();
+                        }
+                        _ => {}
+                    }
+                }).unwrap_or_default();
+            }
+            "downloadSettings" => {
+                forin(v, &mut |k, v| {
+                    match k {
+                        "caimoge" => {
+                            config.download_settings.caimoge = v.as_string().unwrap();
+                        }
+                        "wbxsw" => {
+                            config.download_settings.wbxsw = v.as_string().unwrap();
+                        }
+                        "aixiashu" => {
+                            config.download_settings.aixiashu = v.as_string().unwrap();
+                        }
+                        _ => {}
+                    }
+                }).unwrap_or_default();
+            }
+            "downThreadAmount" => {
+                config.down_thread_amount = v.as_f64().unwrap() as u16
+            }
+            _ => {}
+        }
+    }).unwrap_or_default();
     config
 }
+
+// fn g_config() -> Config {
+//     let js_configs = unsafe { get_config() };
+//     let js_download_settings = unsafe { Reflect::get(&js_configs, &"downloadSettings".into()).unwrap() };
+//     let mut config = Config::default();
+//     if js_download_settings.is_object() {
+//         let t: Object = js_download_settings.into();
+//         for i in Array::iter(&Object::entries(&t)) {
+//             let a: Array = i.into();
+//             let key: &str = &a.at(0).as_string().unwrap();
+//             let value: JsValue = a.at(1);
+//             match key {
+//                 "showMoreInfo" => {
+//                     config.show_more_info = value.into();
+//                 }
+//                 "downThreadAmount" => {
+//                     config.down_thread_amount = value.as_f64().unwrap() as u16
+//                 }
+//                 "downloadSettings" => {
+//                     config.download_settings = value.into();
+//                 }
+//                 &_ => {}
+//             };
+//         }
+//     }
+//     config
+// }
 
 // declare type SearchBook = {
 //     书名: string
@@ -150,8 +215,13 @@ impl ACrawl {
 impl Crawl for ACrawl {
     fn search(&self, search_key: &str) -> Result<Vec<SearchBook>, String> {
         let configs = g_config();
-        let source_name = &((&self.info).source_name);
-        if unsafe{Reflect::get(&configs.download_settings, &source_name.into())}.unwrap().as_string().unwrap() == "disable" {
+        let source_name = self.info.source_name.as_str();
+        if match source_name {
+            "aixiashu" => &configs.download_settings.aixiashu,
+            "caimoge" => &configs.download_settings.caimoge,
+            "wbxsw" => &configs.download_settings.wbxsw,
+            _ => "",
+        } == "disable" {
             return Ok(vec![]);
         }
         Ok(self.search_detail(search_key))

@@ -8,7 +8,8 @@ import { registerCmd, subscribeCmd } from "./utils/ext"
 import { search } from "../crawl/pkg/crawl"
 
 export function activate(context: ExtensionContext): void {
-    search('198239938')
+    console.log(search('198239938'))
+    console.log(JSON.parse(search('198239938')))
     console.log(`Extension "${extName}" is now active!`)
 
     if (!existsSync(context.globalStorageUri.fsPath)) {
