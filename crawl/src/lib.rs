@@ -1,7 +1,8 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, str::FromStr};
 
 // use async_trait::async_trait;
 use js_sys::{Object, Array, Reflect};
+use reqwest::{Method, Url, header::{HeaderName, USER_AGENT}};
 use wasm_bindgen::prelude::*;
 
 #[derive(Default)]
@@ -191,63 +192,27 @@ pub struct SearchBook {
     // 书源: Source,
 }
 
-// #[async_trait]
-trait Crawl {
-    fn search(&self, search_key: &str) -> Result<Vec<SearchBook>, String>;
-    // async fn search(&self, search_key: &str) -> Result<Vec<SearchBook>, String>;
-}
-
-struct CrawlD {
-    source_name: String,
-}
-
-struct ACrawl {
-    info: CrawlD,
-}
-
-impl ACrawl {
-    fn search_detail(&self, search_key: &str) -> Vec<SearchBook> {
+fn aixiashu_search(search_key: &str) -> reqwest::Result<Vec<SearchBook>> {
+    let configs = g_config();
+    let source_name = "aixiashu";
+    if configs.download_settings.aixiashu == "disable" {
+        return Ok(vec![]);
+    }
+    let search_detail = |sk: &str| -> Vec<SearchBook> {
+        let mut cli = reqwest::blocking::Client::new()
+            .get(Url::from_str("https://www.aixiaxsw.com/modules/article/search.php").unwrap())
+            .header(USER_AGENT, "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36")
+            .query(&[("searchkey", search_key)])
+            .send();
         vec![]
-    }
-}
-
-// #[async_trait]
-impl Crawl for ACrawl {
-    fn search(&self, search_key: &str) -> Result<Vec<SearchBook>, String> {
-        let configs = g_config();
-        let source_name = self.info.source_name.as_str();
-        if match source_name {
-            "aixiashu" => &configs.download_settings.aixiashu,
-            "caimoge" => &configs.download_settings.caimoge,
-            "wbxsw" => &configs.download_settings.wbxsw,
-            _ => "",
-        } == "disable" {
-            return Ok(vec![]);
-        }
-        Ok(self.search_detail(search_key))
-    }
-    // async fn search(&self, search_key: &str) -> Result<Vec<SearchBook>, String> {
-    //     let configs = g_config();
-    //     let source_name = &((&self.info).source_name);
-    //     if unsafe{Reflect::get(&configs.download_settings, &source_name.into())}.unwrap().as_string().unwrap() == "disable" {
-    //         return Ok(vec![]);
-    //     }
-    //     Ok(self.search_detail(search_key))
-    // }
-}
-
-struct Caimoge {
+    };
+    Ok(search_detail(search_key))
 }
 
 #[wasm_bindgen]
 pub fn search(search_key: String) -> String {
     let mut list = Vec::new();
-    let c = ACrawl {
-        info: CrawlD {
-            source_name: "采墨阁".to_string(),
-        }
-    };
-    list.append(&mut c.search(&search_key).unwrap());
+    list.append(&mut aixiashu_search(&search_key));
     format!("{:?}", list)
 }
 // pub async fn search(search_key: String) -> String {
