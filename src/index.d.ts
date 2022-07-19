@@ -70,3 +70,9 @@ declare type searchCtxResult = {
     page: number
     txt: string
 }
+
+declare function get_config(): {
+    showMoreInfo: ShowMoreInfo
+    downThreadAmount: DownThreadAmount
+    downloadSettings: DownloadSettings
+}

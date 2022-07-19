@@ -37,7 +37,7 @@ webpackConfig.optimization = {
     minimize: true,
     minimizer: [
         new ESBuildMinifyPlugin({
-            target: 'es2015',
+            target: 'es2020',
             legalComments: 'none',
             css: true,
             implementation: esbuild,

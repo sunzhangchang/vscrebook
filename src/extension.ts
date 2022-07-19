@@ -5,8 +5,10 @@ import { searchContext } from "./core/searchCtx"
 import { extName, getConfig, updateConfig } from "./core/config"
 import { autoFlipp, refreshAuto, showJump, showNext, showPrev, startt, toggleBossMsg } from "./core/show"
 import { registerCmd, subscribeCmd } from "./utils/ext"
+import { search } from "../crawl/pkg/crawl"
 
 export function activate(context: ExtensionContext): void {
+    search('198239938')
     console.log(`Extension "${extName}" is now active!`)
 
     if (!existsSync(context.globalStorageUri.fsPath)) {

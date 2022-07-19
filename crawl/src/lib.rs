@@ -11,7 +11,7 @@ use wasm_bindgen::prelude::*;
 //     aixiashu: bool,
 // }
 
-#[wasm_bindgen]
+#[wasm_bindgen(raw_module = "../../src/define_in_js")]
 extern "C" {
     #[wasm_bindgen(extends = Object, typescript_type = "ShowMoreInfo")]
     type ShowMoreInfo;
@@ -40,7 +40,7 @@ enum DownSet {
 //     aixiashu: String,
 // }
 
-#[wasm_bindgen]
+#[wasm_bindgen(raw_module = "../../src/define_in_js")]
 extern "C" {
     #[wasm_bindgen(extends = Object, typescript_type = "DownloadSettings")]
     type DownloadSettings;
@@ -66,7 +66,7 @@ struct Config {
     down_thread_amount: DownThreadAmount,
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(raw_module = "../../src/define_in_js")]
 extern "C" {
     fn get_config() -> JsValue;
 }
