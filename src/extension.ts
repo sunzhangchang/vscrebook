@@ -6,14 +6,22 @@ import { extName, getConfig, updateConfig } from "./core/config"
 import { autoFlipp, refreshAuto, showJump, showNext, showPrev, startt, toggleBossMsg } from "./core/show"
 import { registerCmd, subscribeCmd } from "./utils/ext"
 import { search } from "../crawl/pkg/crawl"
+import { mydebug } from "./utils/debug"
 
-export async function activate(context: ExtensionContext): Promise<void> {
-    const res = await search('我的') as {
-        result: string,
-        errors: string,
-    }
-    console.log(JSON.parse(res.result))
-    console.log(JSON.parse(res.errors))
+export function activate(context: ExtensionContext): void {
+    mydebug("12389=--------------")
+    search('我的').then(res => {
+        const r = res as {
+            result: string,
+            errors: string,
+        }
+        mydebug(r)
+        mydebug("oopopopopo")
+        console.log(JSON.parse(r.result.replaceAll(/SearchBook /g, '')))
+        mydebug('done here')
+        console.log(JSON.parse(r.errors))
+        mydebug("129-++++")
+    })
     console.log(`Extension "${extName}" is now active!`)
 
     if (!existsSync(context.globalStorageUri.fsPath)) {
@@ -27,6 +35,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
 
     bookListInit(context)
+
+    mydebug('done here 2')
 
     registerCmd('showMenu', () => {
         startt(context)

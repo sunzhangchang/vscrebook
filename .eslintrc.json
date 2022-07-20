@@ -47,6 +47,7 @@
         "dist",
         "**/*.d.ts",
         "scripts",
-        "gulpfile.js"
+        "gulpfile.js",
+        "crawl/pkg/**"
     ]
 }

@@ -1,14 +1,5 @@
-import _ from "lodash"
-import { ExtConfig, getConfig } from "./core/config"
-import { mydebug } from "./utils/debug"
-
-// export class ShowMoreInfo {
-//     public caimoge = false
-//     public wbxsw = false
-//     public aixiashu = false
-// }
-
-// export type DownloadSettings = Record<string, 'disable' | 'txtOnly' | 'chaptersOnly' | 'txt & chapters'>
+import fetch, { Headers, Request, Response } from "node-fetch"
+import { getConfig } from "./core/config"
 
 // declare type Source =
 //     | '本地'
@@ -16,27 +7,18 @@ import { mydebug } from "./utils/debug"
 //     | '58小说网'
 //     | '爱下书小说网'
 
-// declare type BookInfo = {
-//     bookName: string
-//     pageSize: number
-//     curPage: number
-//     source: Source
-// }
-
-// declare type SearchBook = {
-//     书名: string
-//     作者: string
-//     状态: string
-//     分类: string
-//     字数: string
-//     简介: string
-//     最新章节: string
-//     最近更新: string
-//     目录链接: string
-//     书源: Source
-// }
-
 // declare type obj = Record<string, unknown>
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).Headers = Headers;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).Request = Request;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).Response = Response;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).Window = Object;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).fetch = fetch
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function get_config() {
