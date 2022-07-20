@@ -77,9 +77,13 @@
         },
         "vscrebook.downloadSettings": {
           "type": "object",
-          "default": {},
+          "default": {
+            "caimoge": "txt & chapters",
+            "wbxsw": "chaptersOnly",
+            "aixiashu": "txt & chapters"
+          },
           "properties": {
-            "采墨阁": {
+            "caimoge": {
               "type": "string",
               "enum": [
                 "disable",
@@ -89,7 +93,7 @@
               ],
               "default": "txt & chapters"
             },
-            "58小说网": {
+            "wbxsw": {
               "type": "string",
               "enum": [
                 "disable",
@@ -99,7 +103,7 @@
               ],
               "default": "chaptersOnly"
             },
-            "爱下书小说网": {
+            "aixiashu": {
               "type": "string",
               "enum": [
                 "disable",
@@ -190,11 +194,11 @@
   "scripts": {
     "clear": "gulp clear",
     "vscode:prepublish": "npm run build",
-    "build:debug": "gulp dev",
-    "build": "gulp prod",
-    "watch": "gulp watch",
-    "pack": "wasm-pack",
-    "pack:crawl": "wasm-pack build -t bundler --dev crawl",
+    "build:dev": "npm run pack:dev crawl && gulp dev",
+    "build": "npm run pack crawl && gulp prod",
+    "watch": "npm run pack:dev crawl && gulp watch",
+    "pack": "wasm-pack build -t bundler",
+    "pack:dev": "wasm-pack build -t bundler --dev",
     "package": "vsce package",
     "vsce:publish": "vsce publish",
     "vsce:package": "vsce package",

@@ -1,11 +1,18 @@
 use std::{fmt::Debug, str::FromStr};
 
+use async_trait::async_trait;
 // use async_trait::async_trait;
 use js_sys::{Object, Array, Reflect};
-use reqwest::{Method, Url, header::{HeaderName, USER_AGENT}};
+use reqwest::{Url, header::USER_AGENT, Client};
 use wasm_bindgen::prelude::*;
 
-#[derive(Default)]
+// #[wasm_bindgen]
+// extern "C" {
+//     #[wasm_bindgen(js_namespace = console)]
+//     fn log(s: &str);
+// }
+
+#[derive(Default, Debug)]
 struct ShowMoreInfo {
     caimoge: bool,
     wbxsw: bool,
@@ -27,40 +34,26 @@ struct ShowMoreInfo {
 //     }
 // }
 
+#[derive(Default, Debug)]
 enum DownSet {
+    #[default]
     Disable,
     TxtOnly,
     ChaptersOnly,
     TxtAndChapters,
 }
+// 'disable' | 'txtOnly' | 'chaptersOnly' | 'txt & chapters'
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 struct DownloadSettings {
-    caimoge: String,
-    wbxsw: String,
-    aixiashu: String,
+    caimoge: DownSet,
+    wbxsw: DownSet,
+    aixiashu: DownSet,
 }
-
-// #[wasm_bindgen(raw_module = "../../src/define_in_js")]
-// extern "C" {
-//     #[wasm_bindgen(extends = Object, typescript_type = "DownloadSettings")]
-//     type DownloadSettings;
-
-//     #[wasm_bindgen(constructor)]
-//     fn dft() -> DownloadSettings;
-// }
-
-// impl Default for DownloadSettings {
-//     fn default() -> Self {
-//         Self::dft()
-//     }
-// }
-
-// type DownloadSettings = HashMap<String, String>;
 
 type DownThreadAmount = u16;
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 struct Config {
     show_more_info: ShowMoreInfo,
     download_settings: DownloadSettings,
@@ -92,7 +85,7 @@ fn forin<F>(obj: JsValue, func: &mut F) -> Result<(), String>
 }
 
 fn g_config() -> Config {
-    let js_configs = unsafe { get_config() };
+    let js_configs = get_config();
     let mut config = Config::default();
     forin(js_configs, &mut |k, v| {
         match k {
@@ -114,17 +107,21 @@ fn g_config() -> Config {
             }
             "downloadSettings" => {
                 forin(v, &mut |k, v| {
+                    let match_downset = |s: JsValue| {
+                        match s.as_string().unwrap().as_str() {
+                            "disable" => DownSet::Disable,
+                            "txtOnly" => DownSet::TxtOnly,
+                            "chaptersOnly" => DownSet::ChaptersOnly,
+                            "txt & chapters" => DownSet::TxtAndChapters,
+                            _ => DownSet::default(),
+                        }
+                    };
+                    let downset = &mut config.download_settings;
                     match k {
-                        "caimoge" => {
-                            config.download_settings.caimoge = v.as_string().unwrap();
-                        }
-                        "wbxsw" => {
-                            config.download_settings.wbxsw = v.as_string().unwrap();
-                        }
-                        "aixiashu" => {
-                            config.download_settings.aixiashu = v.as_string().unwrap();
-                        }
-                        _ => {}
+                        "caimoge" => downset.caimoge = match_downset(v),
+                        "wbxsw" => downset.wbxsw = match_downset(v),
+                        "aixiashu" => downset.aixiashu = match_downset(v),
+                        _ => (),
                     }
                 }).unwrap_or_default();
             }
@@ -136,46 +133,6 @@ fn g_config() -> Config {
     }).unwrap_or_default();
     config
 }
-
-// fn g_config() -> Config {
-//     let js_configs = unsafe { get_config() };
-//     let js_download_settings = unsafe { Reflect::get(&js_configs, &"downloadSettings".into()).unwrap() };
-//     let mut config = Config::default();
-//     if js_download_settings.is_object() {
-//         let t: Object = js_download_settings.into();
-//         for i in Array::iter(&Object::entries(&t)) {
-//             let a: Array = i.into();
-//             let key: &str = &a.at(0).as_string().unwrap();
-//             let value: JsValue = a.at(1);
-//             match key {
-//                 "showMoreInfo" => {
-//                     config.show_more_info = value.into();
-//                 }
-//                 "downThreadAmount" => {
-//                     config.down_thread_amount = value.as_f64().unwrap() as u16
-//                 }
-//                 "downloadSettings" => {
-//                     config.download_settings = value.into();
-//                 }
-//                 &_ => {}
-//             };
-//         }
-//     }
-//     config
-// }
-
-// declare type SearchBook = {
-//     书名: string
-//     作者: string
-//     状态: string
-//     分类: string
-//     字数: string
-//     简介: string
-//     最新章节: string
-//     最近更新: string
-//     目录链接: string
-//     书源: Source
-// }
 
 #[wasm_bindgen]
 #[derive(Debug)]
@@ -192,36 +149,67 @@ pub struct SearchBook {
     // 书源: Source,
 }
 
-fn aixiashu_search(search_key: &str) -> reqwest::Result<Vec<SearchBook>> {
-    let configs = g_config();
-    let source_name = "aixiashu";
-    if configs.download_settings.aixiashu == "disable" {
-        return Ok(vec![]);
+struct Aixiashu;
+
+#[async_trait(?Send)]
+trait Crawl {
+    const SOURCE_NAME: &'static str;
+    const SEARCH_URL: &'static str;
+    const SEARCH_QUERY: &'static str;
+
+    async fn search_detail(&self, search_key: &str) -> reqwest::Result<Vec<SearchBook>> {
+        let res = Client::new()
+        // .get(Url::from_str("https://www.aixiaxsw.com/modules/article/search.php").unwrap())
+        .get(Url::from_str(Self::SEARCH_URL).unwrap())
+        .header(USER_AGENT, "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36")
+        .query(&[(Self::SEARCH_QUERY, search_key)])
+        .send()
+        .await?;
+
+        res.bytes().await?;
+
+        Ok(vec![])
     }
-    let search_detail = |sk: &str| -> Vec<SearchBook> {
-        let mut cli = reqwest::blocking::Client::new()
-            .get(Url::from_str("https://www.aixiaxsw.com/modules/article/search.php").unwrap())
-            .header(USER_AGENT, "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36")
-            .query(&[("searchkey", search_key)])
-            .send();
-        vec![]
-    };
-    Ok(search_detail(search_key))
+}
+
+impl Crawl for Aixiashu {
+    const SOURCE_NAME: &'static str = "aixiashu";
+    const SEARCH_URL: &'static str = "https://www.aixiaxsw.com/modules/article/search.php";
+    const SEARCH_QUERY: &'static str = "searchkey";
+}
+
+impl Aixiashu {
+    async fn search(&self, search_key: &str) -> reqwest::Result<Vec<SearchBook>> {
+        let configs = g_config();
+        // unsafe { log(format!("{:?}", configs).as_str()); }
+        if let DownSet::Disable = configs.download_settings.aixiashu {
+            return Ok(vec![]);
+        }
+        Ok(self.search_detail(search_key).await?)
+    }
+}
+
+struct Caimoge;
+
+impl Crawl for Caimoge {
+    const SOURCE_NAME: &'static str = "caimoge";
+    const SEARCH_URL: &'static str = "https://www.caimoge.net/search/";
+    const SEARCH_QUERY: &'static str = "searchkey";
 }
 
 #[wasm_bindgen]
-pub fn search(search_key: String) -> String {
+pub async fn search(search_key: String) -> Object {
     let mut list = Vec::new();
-    list.append(&mut aixiashu_search(&search_key));
-    format!("{:?}", list)
+    let mut errs = Vec::new();
+    {
+        let res = Aixiashu{}.search(&search_key).await;
+        match res {
+            Ok(mut res) => list.append(&mut res),
+            Err(e) => errs.push(e.to_string()),
+        }
+    }
+    let obj = Object::default();
+    Reflect::set(&obj, &"result".into(), &format!("{:?}", list).into()).unwrap();
+    Reflect::set(&obj, &"errors".into(), &format!("{:?}", errs).into()).unwrap();
+    obj
 }
-// pub async fn search(search_key: String) -> String {
-//     let mut list = Vec::new();
-//     let c = ACrawl {
-//         info: CrawlD {
-//             source_name: "采墨阁".to_string(),
-//         }
-//     };
-//     list.append(&mut c.search(&search_key).await.unwrap());
-//     format!("{:?}", list)
-// }

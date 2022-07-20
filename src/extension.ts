@@ -7,9 +7,13 @@ import { autoFlipp, refreshAuto, showJump, showNext, showPrev, startt, toggleBos
 import { registerCmd, subscribeCmd } from "./utils/ext"
 import { search } from "../crawl/pkg/crawl"
 
-export function activate(context: ExtensionContext): void {
-    console.log(search('198239938'))
-    console.log(JSON.parse(search('198239938')))
+export async function activate(context: ExtensionContext): Promise<void> {
+    const res = await search('我的') as {
+        result: string,
+        errors: string,
+    }
+    console.log(JSON.parse(res.result))
+    console.log(JSON.parse(res.errors))
     console.log(`Extension "${extName}" is now active!`)
 
     if (!existsSync(context.globalStorageUri.fsPath)) {

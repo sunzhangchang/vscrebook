@@ -1,4 +1,6 @@
-import { getConfig } from "./core/config"
+import _ from "lodash"
+import { ExtConfig, getConfig } from "./core/config"
+import { mydebug } from "./utils/debug"
 
 // export class ShowMoreInfo {
 //     public caimoge = false

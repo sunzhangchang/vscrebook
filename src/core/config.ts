@@ -52,9 +52,9 @@ export const ExtConfig: ConfigSetObj = {
         name: `${extName}.downloadSettings`,
         desc: '网络书籍下载设置',
         default: {
-            '采墨阁': 'txt & chapters',
-            '58小说网': 'chaptersOnly',
-            '爱下书小说网': 'txt & chapters',
+            'caimoge': 'txt & chapters',
+            'wbxsw': 'chaptersOnly',
+            'aixiashu': 'txt & chapters',
         },
         type: 'object',
         form: 'none',

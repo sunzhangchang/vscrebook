@@ -12,7 +12,7 @@ const PluginError = require('plugin-error')
  * @param {*} msg
  * @param {*} cb
  */
-function runWebpack(config, msg, cb) {
+async function runWebpack(config, msg, cb) {
     webpack(config).run((err, stats) => {
         if (err) {
             throw new PluginError(`webpack:${msg}`, err)
