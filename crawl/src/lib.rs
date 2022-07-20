@@ -166,7 +166,7 @@ trait Crawl {
         .send()
         .await?;
 
-        res.bytes().await?;
+        let bytes = res.bytes().await?;
 
         Ok(vec![])
     }
