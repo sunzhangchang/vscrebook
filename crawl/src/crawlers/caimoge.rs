@@ -15,7 +15,7 @@ impl Crawl for Caimoge {
     const SEARCH_QUERY: &'static str = "searchkey";
 
     async fn search_detail(&self, search_key: &str) -> reqwest::Result<Vec<SearchBook>> {
-        let response = get(Self::SEARCH_URL, Some(("searchkey", search_key))).await?;
+        let response = get(Self::SEARCH_URL, Some((Self::SEARCH_QUERY, search_key))).await?;
 
         let doc = Document::from(&response.text().await?);
         let list = doc.select("#sitembox dl");
