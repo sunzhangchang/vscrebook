@@ -9,20 +9,17 @@ import { search } from "../crawl/pkg/crawl"
 import { mydebug } from "./utils/debug"
 
 export function activate(context: ExtensionContext): void {
-    mydebug("12389=--------------")
+    console.log(`Extension "${extName}" is now active!`)
+
     search('我的').then(res => {
         const r = res as {
             result: string,
             errors: string,
         }
-        mydebug(r)
-        mydebug("oopopopopo")
-        console.log(JSON.parse(r.result.replaceAll(/SearchBook /g, '')))
-        mydebug('done here')
-        console.log(JSON.parse(r.errors))
-        mydebug("129-++++")
+        mydebug(JSON.parse(r.result))
+        mydebug(JSON.parse(r.errors))
+        mydebug('+++++++++++++++++++++++++++')
     })
-    console.log(`Extension "${extName}" is now active!`)
 
     if (!existsSync(context.globalStorageUri.fsPath)) {
         mkdirSync(context.globalStorageUri.fsPath)
@@ -35,8 +32,6 @@ export function activate(context: ExtensionContext): void {
     }
 
     bookListInit(context)
-
-    mydebug('done here 2')
 
     registerCmd('showMenu', () => {
         startt(context)

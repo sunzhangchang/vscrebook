@@ -6,27 +6,43 @@ mod search_book;
 use crawlers::wbxsw::Wbxsw;
 use crawlers::{crawl::Crawl, caimoge::Caimoge};
 use crawlers::aixiashu::Aixiashu;
+use futures::future::join3;
 use js_sys::{Object, Reflect};
 use search_book::SearchBook;
 use wasm_bindgen::prelude::*;
 
-async fn search_one(result: &mut Vec<SearchBook>, errors: &mut Vec<String>, crawler: impl Crawl, search_key: &str) -> () {
-    let res = crawler.search(&search_key).await;
-    match res {
-        Ok(mut res) => result.append(&mut res),
-        Err(e) => errors.push(e.to_string()),
-    }
-}
-
 #[wasm_bindgen]
 pub async fn search(search_key: String) -> Object {
-    let mut result: Vec<SearchBook> = Vec::new();
+    let mut results: Vec<SearchBook> = Vec::new();
     let mut errors: Vec<String> = Vec::new();
-    search_one(&mut result, &mut errors, Aixiashu{}, &search_key).await;
-    search_one(&mut result, &mut errors, Caimoge{}, &search_key).await;
-    search_one(&mut result, &mut errors, Wbxsw{}, &search_key).await;
+
+    macro_rules! s {
+        ($x: expr) => {
+            $x.search(&search_key)
+        }
+    }
+
+    let res = join3(
+        s!(Aixiashu{}),
+        s!(Caimoge{}),
+        s!(Wbxsw{}),
+    ).await;
+
+    macro_rules! push_res {
+        ($($x: expr), *) => {
+            $(
+                match $x {
+                    Ok(mut res) => results.append(&mut res),
+                    Err(e) => errors.push(e.to_string()),
+                }
+            )*
+        };
+    }
+    
+    push_res!(res.0, res.1, res.2);
+
     let obj = Object::default();
-    Reflect::set(&obj, &"result".into(), &serde_json::to_string(&result).unwrap().into()).unwrap();
+    Reflect::set(&obj, &"result".into(), &serde_json::to_string(&results).unwrap().into()).unwrap();
     Reflect::set(&obj, &"errors".into(), &serde_json::to_string(&errors).unwrap().into()).unwrap();
     obj
 }

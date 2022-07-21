@@ -24,5 +24,26 @@ async function runWebpack(config, msg, cb) {
     })
 }
 
-exports.default = runWebpack
-exports.runWebpack = runWebpack
+/**
+ * @param { WebpackConfig } config
+ * @param {*} msg
+ * @param {*} cb
+ */
+async function watchWebpack(config, msg, cb) {
+    const run = (err, stats) => {
+        if (err) {
+            throw new PluginError(`webpack:${msg}`, err)
+        }
+        log(`[webpack:${msg}]`, stats?.toString({
+            colors: true
+        }))
+        cb()
+    }
+    webpack(config, run).watch({}, () => {})
+}
+
+module.exports = {
+    default: runWebpack,
+    runWebpack,
+    watchWebpack,
+}

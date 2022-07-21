@@ -11,6 +11,7 @@ import { setExtTo } from "../utils"
 import { Wbxsw } from "./sub/wbxsw"
 import { Aixiashu } from "./sub/aixiashu"
 import axiosRetry from "axios-retry"
+import { mydebug } from "../utils/debug"
 
 axios.defaults.headers.common['User-Agent'] = USER_AGENT
 axios.defaults.responseType = 'arraybuffer'
@@ -41,6 +42,7 @@ export async function search(searchKey: string): Promise<SearchBook[]> {
     let list: SearchBook[] = []
     for (const iter of crawlers) {
         list = _.concat(list, (await iter.search(searchKey)) ?? [])
+        mydebug("------  ", iter.sourceName, list)
     }
     return list
 }
