@@ -5,21 +5,12 @@ import { searchContext } from "./core/searchCtx"
 import { extName, getConfig, updateConfig } from "./core/config"
 import { autoFlipp, refreshAuto, showJump, showNext, showPrev, startt, toggleBossMsg } from "./core/show"
 import { registerCmd, subscribeCmd } from "./utils/ext"
-import { search } from "../crawl/pkg/crawl"
-import { mydebug } from "./utils/debug"
+import { benchmark } from "./test/test"
 
 export function activate(context: ExtensionContext): void {
     console.log(`Extension "${extName}" is now active!`)
 
-    search('我的').then(res => {
-        const r = res as {
-            result: string,
-            errors: string,
-        }
-        mydebug(JSON.parse(r.result))
-        mydebug(JSON.parse(r.errors))
-        mydebug('+++++++++++++++++++++++++++')
-    })
+    benchmark()
 
     if (!existsSync(context.globalStorageUri.fsPath)) {
         mkdirSync(context.globalStorageUri.fsPath)

@@ -11,14 +11,19 @@ import { setExtTo } from "../utils"
 import { Wbxsw } from "./sub/wbxsw"
 import { Aixiashu } from "./sub/aixiashu"
 import axiosRetry from "axios-retry"
-import { mydebug } from "../utils/debug"
-
-axios.defaults.headers.common['User-Agent'] = USER_AGENT
-axios.defaults.responseType = 'arraybuffer'
 
 axiosRetry(axios, {
     retries: 3,
+    shouldResetTimeout: true,
 })
+
+axios.defaults["axios-retry"] = {
+    retries: 3,
+    shouldResetTimeout: true,
+}
+axios.defaults.timeout = 1000
+axios.defaults.headers.common['User-Agent'] = USER_AGENT
+axios.defaults.responseType = 'arraybuffer'
 
 // export async function search(searchKey: string): Promise<SearchBook[]> {
 //     let list: SearchBook[]
@@ -40,12 +45,25 @@ const crawlers: Crawl[] = [
 
 export async function search(searchKey: string): Promise<SearchBook[]> {
     let list: SearchBook[] = []
-    for (const iter of crawlers) {
-        list = _.concat(list, (await iter.search(searchKey)) ?? [])
-        mydebug("------  ", iter.sourceName, list)
-    }
+    const p = crawlers.map(e => e.search(searchKey));
+    (await Promise.all(p)).forEach(e => {
+        list = _.concat(list, e)
+    })
+    // for (const iter of crawlers) {
+    //     list = _.concat(list, (await iter.search(searchKey)) ?? [])
+    //     mydebug("------  ", iter.sourceName, list)
+    // }
     return list
 }
+
+// export async function search(searchKey: string): Promise<SearchBook[]> {
+//     const res = (await search(searchKey)) as unknown as {
+//         results: string,
+//         errors: string,
+//     }
+//     console.log(JSON.parse(res.errors))
+//     return JSON.parse(res.results)
+// }
 
 export async function download(source: string, menuURL: string, dir: string, name: string): Promise<string> {
     const spider = crawlers.find(iter => _.isEqual(iter.sourceName, source))

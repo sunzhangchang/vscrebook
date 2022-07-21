@@ -3,7 +3,6 @@ import * as cheerio from 'cheerio'
 import axios from 'axios'
 import { getConfig } from "../../core/config"
 import { Crawl } from "../Crawl"
-
 export class Wbxsw extends Crawl {
     readonly sourceName: Source = '58小说网'
     readonly source = 'http://www.wbxsw.com/'
