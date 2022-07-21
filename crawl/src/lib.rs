@@ -3,6 +3,7 @@ mod utils;
 mod crawlers;
 mod search_book;
 
+use crawlers::wbxsw::Wbxsw;
 use crawlers::{crawl::Crawl, caimoge::Caimoge};
 use crawlers::aixiashu::Aixiashu;
 use js_sys::{Object, Reflect};
@@ -23,6 +24,7 @@ pub async fn search(search_key: String) -> Object {
     let mut errors: Vec<String> = Vec::new();
     search_one(&mut result, &mut errors, Aixiashu{}, &search_key).await;
     search_one(&mut result, &mut errors, Caimoge{}, &search_key).await;
+    search_one(&mut result, &mut errors, Wbxsw{}, &search_key).await;
     let obj = Object::default();
     Reflect::set(&obj, &"result".into(), &serde_json::to_string(&result).unwrap().into()).unwrap();
     Reflect::set(&obj, &"errors".into(), &serde_json::to_string(&errors).unwrap().into()).unwrap();
