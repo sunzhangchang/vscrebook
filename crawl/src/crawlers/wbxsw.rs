@@ -27,7 +27,7 @@ impl Crawl for Wbxsw {
                 if let Ok(u) = Url::parse(Self::SEARCH_URL) {
                     if let Ok(menu_url) = u.join(url.to_string().as_str()) {
                         let mut status = "未知".to_string();
-                        if g_config().show_more_info.wbxsw {
+                        if g_config().show_more_info["wbxsw"] {
                             let res = get(menu_url.as_str(), None).await;
                             if let Ok(res) = res {
                                 let doc = Document::from(&res.text().await?);

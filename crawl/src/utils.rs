@@ -1,3 +1,12 @@
+pub mod util {
+    use wasm_bindgen::prelude::*;
+
+    #[wasm_bindgen(raw_module = "../../src/define_in_js")]
+    extern "C" {
+        pub fn mydebug(s: &str);
+    }
+}
+
 pub mod net {
     use reqwest::{Client, header::USER_AGENT};
 

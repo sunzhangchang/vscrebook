@@ -1,15 +1,20 @@
+use std::collections::HashMap;
+
 use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
 
-#[derive(Default, Debug)]
-pub struct ShowMoreInfo {
-    pub caimoge: bool,
-    pub wbxsw: bool,
-    pub aixiashu: bool,
-}
+// #[derive(Default)]
+// pub struct ShowMoreInfo {
+//     pub caimoge: bool,
+//     pub wbxsw: bool,
+//     pub aixiashu: bool,
+//     pub maxreader: bool,
+// }
 
-#[derive(Default, Debug)]
+pub type ShowMoreInfo = HashMap<String, bool>;
+
+#[derive(Default)]
 pub enum DownSet {
     #[default]
     Disable,
@@ -19,7 +24,7 @@ pub enum DownSet {
 }
 // 'disable' | 'txtOnly' | 'chaptersOnly' | 'txt & chapters'
 
-#[derive(Default, Debug)]
+#[derive(Default)]
 pub struct DownloadSettings {
     pub caimoge: DownSet,
     pub wbxsw: DownSet,
@@ -28,7 +33,7 @@ pub struct DownloadSettings {
 
 type DownThreadAmount = u16;
 
-#[derive(Default, Debug)]
+#[derive(Default)]
 pub struct Config {
     pub show_more_info: ShowMoreInfo,
     pub download_settings: DownloadSettings,
@@ -65,18 +70,22 @@ pub fn g_config() -> Config {
         match k {
             "showMoreInfo" => {
                 forin(v, &mut |k, v| {
-                    match k {
-                        "caimoge" => {
-                            config.show_more_info.caimoge = v.as_bool().unwrap();
-                        }
-                        "wbxsw" => {
-                            config.show_more_info.wbxsw = v.as_bool().unwrap();
-                        }
-                        "aixiashu" => {
-                            config.show_more_info.aixiashu = v.as_bool().unwrap();
-                        }
-                        _ => {}
-                    }
+                    config.show_more_info.insert(k.to_string(), v.as_bool().unwrap());
+                    // match k {
+                    //     "caimoge" => {
+                    //         smi.caimoge = v.as_bool().unwrap();
+                    //     }
+                    //     "wbxsw" => {
+                    //         smi.wbxsw = v.as_bool().unwrap();
+                    //     }
+                    //     "aixiashu" => {
+                    //         smi.aixiashu = v.as_bool().unwrap();
+                    //     }
+                    //     "maxreader" => {
+                    //         smi.maxreader = v.as_bool().unwrap();
+                    //     }
+                    //     _ => {}
+                    // }
                 }).unwrap_or_default();
             }
             "downloadSettings" => {

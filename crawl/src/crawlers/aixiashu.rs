@@ -28,7 +28,7 @@ impl Crawl for Aixiashu {
                     if let Ok(menu_url) = u.join(url.to_string().as_str()) {
                         let mut synopsis = "未知".to_string();
                         let mut cate = "未知".to_string();
-                        if g_config().show_more_info.aixiashu {
+                        if g_config().show_more_info["aixiashu"] {
                             let res = get(menu_url.as_str(), None).await;
                             if let Ok(res) = res {
                                 let doc = Document::from(&res.text().await?);
