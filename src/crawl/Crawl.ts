@@ -9,31 +9,7 @@ import { myerror, Errors } from "../utils/error"
 export abstract class Crawl {
     abstract readonly sourceName: string
     abstract readonly source: string
-    abstract readonly searchPath: string
     protected abstract readonly txtURL: string | null
-
-    async getSearchPageDOM(searchKey: string): Promise<cheerio.CheerioAPI | null> {
-        let res: string
-        try {
-            const response = await axios.get(encodeURI(format(this.searchPath, searchKey)))
-
-            res = Buffer.from(response.data).toString('utf8')
-        } catch (err) {
-            window.showErrorMessage((err as Error).message)
-            return null
-        }
-
-        return cheerio.load(res)
-    }
-
-    abstract searchDetail(searchKey: string): Promise<SearchBook[]>
-
-    async search(searchKey: string): Promise<SearchBook[]> {
-        if (_.isEqual(getConfig().downloadSettings[this.sourceName], 'disable')) {
-            return []
-        }
-        return this.searchDetail(searchKey)
-    }
 
     abstract getId(menuURL: string): Promise<string> | null
 

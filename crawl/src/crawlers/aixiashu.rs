@@ -10,7 +10,7 @@ pub struct Aixiashu;
 
 #[async_trait(?Send)]
 impl Crawl for Aixiashu {
-    const SOURCE_NAME: &'static str = "爱下书";
+    const SOURCE_NAME: &'static str = "爱下书小说网";
     const SEARCH_URL: &'static str = "https://www.aixiaxsw.com/modules/article/search.php";
     const SEARCH_QUERY: &'static str = "searchkey";
 

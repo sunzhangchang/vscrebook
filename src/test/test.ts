@@ -7,8 +7,16 @@ export function benchmark() {
     const suite = new Benchmark.Suite()
 
     suite
-        .add('rust wasm', () => { rsSearch('我的') })
-        .add('js', () => { jsSearch('我的') })
+        .add('rust wasm', async () => {
+            await rsSearch('我的')
+        }, {
+            async: true,
+        })
+        .add('js', async () => {
+            await jsSearch('我的')
+        }, {
+            async: true,
+        })
         .on('cycle', (event: unknown) => {
             console.log((event as {target: unknown}).target)
         })

@@ -42,7 +42,7 @@ pub async fn search(search_key: String) -> Object {
     push_res!(res.0, res.1, res.2);
 
     let obj = Object::default();
-    Reflect::set(&obj, &"result".into(), &serde_json::to_string(&results).unwrap().into()).unwrap();
+    Reflect::set(&obj, &"results".into(), &serde_json::to_string(&results).unwrap().into()).unwrap();
     Reflect::set(&obj, &"errors".into(), &serde_json::to_string(&errors).unwrap().into()).unwrap();
     obj
 }

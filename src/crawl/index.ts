@@ -11,6 +11,7 @@ import { setExtTo } from "../utils"
 import { Wbxsw } from "./sub/wbxsw"
 import { Aixiashu } from "./sub/aixiashu"
 import axiosRetry from "axios-retry"
+import { search as rsSearch } from "../../crawl/pkg/crawl"
 
 axiosRetry(axios, {
     retries: 3,
@@ -21,49 +22,26 @@ axios.defaults["axios-retry"] = {
     retries: 3,
     shouldResetTimeout: true,
 }
-axios.defaults.timeout = 1000
+axios.defaults.timeout = 3000
 axios.defaults.headers.common['User-Agent'] = USER_AGENT
 axios.defaults.responseType = 'arraybuffer'
 
-// export async function search(searchKey: string): Promise<SearchBook[]> {
-//     let list: SearchBook[]
-//     _.forIn(configs, (pats, sourceName) => {
-//         axios.get(format(pats.searchURL, searchKey)).then(res => {
-//             const page = Buffer.from(res.data).toString()
-//             const $ = load(page)
-//             const names = $(pats)
-//             const authors = (page.match(pats.作者 ?? 'never') ?? [])
-//         })
-//     })
-// }
-
 const crawlers: Crawl[] = [
-    new Caimoge(),
-    new Wbxsw(),
     new Aixiashu(),
+    new Wbxsw(),
+    new Caimoge(),
 ]
 
 export async function search(searchKey: string): Promise<SearchBook[]> {
-    let list: SearchBook[] = []
-    const p = crawlers.map(e => e.search(searchKey));
-    (await Promise.all(p)).forEach(e => {
-        list = _.concat(list, e)
-    })
-    // for (const iter of crawlers) {
-    //     list = _.concat(list, (await iter.search(searchKey)) ?? [])
-    //     mydebug("------  ", iter.sourceName, list)
-    // }
-    return list
+    const res = (await rsSearch(searchKey)) as {
+        results: string
+        errors: string
+    }
+    const errors = JSON.parse(res.errors) as string[]
+    console.error(errors)
+    errors.forEach(e => window.showErrorMessage(e))
+    return JSON.parse(res.results)
 }
-
-// export async function search(searchKey: string): Promise<SearchBook[]> {
-//     const res = (await search(searchKey)) as unknown as {
-//         results: string,
-//         errors: string,
-//     }
-//     console.log(JSON.parse(res.errors))
-//     return JSON.parse(res.results)
-// }
 
 export async function download(source: string, menuURL: string, dir: string, name: string): Promise<string> {
     const spider = crawlers.find(iter => _.isEqual(iter.sourceName, source))
