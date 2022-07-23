@@ -59,8 +59,8 @@ export const ExtConfig: ConfigSetObj = {
         type: 'object',
         form: 'none',
     },
-    downThreadAmount: {
-        name: `${extName}.downThreadAmount`,
+    threadNum: {
+        name: `${extName}.threadNum`,
         desc: '下载线程数',
         default: 20,
         type: 'number',
@@ -114,7 +114,7 @@ let config: ConfigType = {
     displayMode: getWsConfig(ExtConfig.displayMode.name) as DisplayMode,
     showMoreInfo: getWsConfig(ExtConfig.showMoreInfo.name) as ShowMoreInfo,
     downloadSettings: getWsConfig(ExtConfig.downloadSettings.name) as DownloadSettings,
-    downThreadAmount: getWsConfig(ExtConfig.downThreadAmount.name) as DownThreadAmount,
+    threadNum: getWsConfig(ExtConfig.threadNum.name) as ThreadNum,
 }
 
 export function setConfig(key: string, value: unknown): void {
@@ -140,6 +140,6 @@ export function getConfig(): ConfigType {
         displayMode: getInnerConfig(ExtConfig.displayMode.name) as DisplayMode,
         showMoreInfo: getInnerConfig(ExtConfig.showMoreInfo.name) as ShowMoreInfo,
         downloadSettings: getInnerConfig(ExtConfig.downloadSettings.name) as DownloadSettings,
-        downThreadAmount: getInnerConfig(ExtConfig.downThreadAmount.name) as DownThreadAmount,
+        threadNum: getInnerConfig(ExtConfig.threadNum.name) as ThreadNum,
     }
 }

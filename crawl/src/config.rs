@@ -33,13 +33,13 @@ pub enum DownSet {
 
 pub type DownloadSettings = HashMap<String, DownSet>;
 
-type DownThreadAmount = u16;
+type ThreadNum = u16;
 
 #[derive(Default)]
 pub struct Config {
     pub show_more_info: ShowMoreInfo,
     pub download_settings: DownloadSettings,
-    pub down_thread_amount: DownThreadAmount,
+    pub thread_num: ThreadNum,
 }
 
 #[wasm_bindgen(raw_module = "../../src/define_in_js")]
@@ -111,8 +111,8 @@ pub fn g_config() -> Config {
                     // }
                 }).unwrap_or_default();
             }
-            "downThreadAmount" => {
-                config.down_thread_amount = v.as_f64().unwrap() as u16
+            "threadNum" => {
+                config.thread_num = v.as_f64().unwrap() as u16
             }
             _ => {}
         }

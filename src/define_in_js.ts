@@ -24,7 +24,7 @@ import { getConfig } from "./core/config"
 export function get_config() {
     return {
         showMoreInfo: getConfig().showMoreInfo,
-        downThreadAmount: getConfig().downThreadAmount,
+        threadNum: getConfig().threadNum,
         downloadSettings: getConfig().downloadSettings,
     }
 }

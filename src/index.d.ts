@@ -10,9 +10,9 @@ declare type ShowMoreInfo = {
 
 declare type DownloadSettings = Record<string, 'disable' | 'txtOnly' | 'chaptersOnly' | 'txt & chapters'>
 
-declare type DownThreadAmount = number
+declare type ThreadNum = number
 
-declare type ConfigType = ConfigBase<number, string, number, DisplayMode, ShowMoreInfo, DownloadSettings, DownThreadAmount>
+declare type ConfigType = ConfigBase<number, string, number, DisplayMode, ShowMoreInfo, DownloadSettings, ThreadNum>
 
 declare type Source =
     | '本地'
@@ -60,7 +60,7 @@ declare type ConfigBase<T, U, V, W, X, Y, Z> = {
     displayMode: W
     showMoreInfo: X
     downloadSettings: Y
-    downThreadAmount: Z
+    threadNum: Z
 }
 
 declare type obj = Record<string, unknown>
@@ -73,6 +73,6 @@ declare type searchCtxResult = {
 
 declare function get_config(): {
     showMoreInfo: ShowMoreInfo
-    downThreadAmount: DownThreadAmount
+    threadNum: ThreadNum
     downloadSettings: DownloadSettings
 }

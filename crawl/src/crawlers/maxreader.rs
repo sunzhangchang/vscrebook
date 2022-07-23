@@ -24,25 +24,31 @@ impl Crawl for Maxreader {
 
         let mut result = Vec::new();
         for i in list.iter() {
-            let menu_url = i.select("div.pt-rank-detail:nth-child(3) > a:nth-child(1)").attr("href");
+            let menu_url = i.select("a:nth-child(1)").attr("href");
             if let Some(url) = menu_url {
                 if let Ok(u) = Url::parse(Self::SEARCH_URL) {
                     if let Ok(menu_url) = u.join(url.to_string().as_str()) {
                         let mut status = "未知".to_string();
+                        let mut number = "未知".to_string();
+                        let mut synopsis = "未知".to_string();
+
                         if g_config().show_more_info["maxreader"] {
                             let response = get(menu_url.as_str(), None).await?;
                             let doc = Document::from(&response.text().await?);
                             status = doc.select(".count > ul:nth-child(1) > li:nth-child(5) > span:nth-child(1)").text().to_string();
+                            number = doc.select(".count > ul:nth-child(1) > li:nth-child(11) > span:nth-child(1)").text().to_string();
+                            synopsis = doc.select("#bookintro > p:nth-child(1)").text().to_string();
                         }
+        
                         result.push(SearchBook {
                             书名: i.select("a:nth-child(1)").attr("title").unwrap_or("未知".into()).to_string(),
                             作者: i.select("div:nth-child(2) > div:nth-child(1) > span:nth-child(2) > span:nth-child(1) > a:nth-child(1)").attr("title").unwrap_or("未知".into()).to_string(),
                             状态: status,
-                            分类: i.select("dd:nth-child(3) > span:nth-child(3)").text().to_string(),
-                            字数: i.select("dd:nth-child(3) > span:nth-child(4)").text().to_string(),
-                            简介: i.select("dd:nth-child(4)").text().to_string(),
-                            最新章节: i.select("dd:nth-child(5) > a:nth-child(1)").text().to_string(),
-                            最近更新: i.select("dd:nth-child(5) > span:nth-child(2)").text().to_string(),
+                            分类: i.select("div:nth-child(2) > div:nth-child(1) > span:nth-child(2) > span:nth-child(2) > a:nth-child(1)").text().to_string(),
+                            字数: number,
+                            简介: synopsis,
+                            最新章节: i.select("div:nth-child(2) > div:nth-child(3) > span:nth-child(1) > a:nth-child(1) > span:nth-child(1)").text().to_string(),
+                            最近更新: "未知".to_string(),
                             目录链接: menu_url.to_string(),
                             书源: Self::SOURCE_NAME.to_string(),
                         });
@@ -58,4 +64,8 @@ impl Crawl for Maxreader {
         }
         Ok(result)
     }
+
+    const CHAPTERS_SELECTOR: &'static str = "";
+    const CHAPTERS_TITLE_SELECTOR: &'static str = "";
+    const CONTEXT_SELECTOR: &'static str = "";
 }

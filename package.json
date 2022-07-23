@@ -120,7 +120,7 @@
           },
           "description": "网络书籍下载设置"
         },
-        "vscrebook.downThreadAmount": {
+        "vscrebook.threadNum": {
           "type": "number",
           "default": 20,
           "description": "下载线程数"
