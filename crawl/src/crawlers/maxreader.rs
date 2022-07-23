@@ -3,6 +3,7 @@
 use async_trait::async_trait;
 use nipper::Document;
 use reqwest::Url;
+use std::str::*;
 
 use crate::{utils::net::get, search_book::SearchBook, config::g_config};
 
@@ -26,6 +27,9 @@ impl Crawl for Maxreader {
         for i in list.iter() {
             let menu_url = i.select("a:nth-child(1)").attr("href");
             if let Some(url) = menu_url {
+                let url: String = url.into();
+                // url.replace("");
+                // url.replace_range(range, "read");
                 if let Ok(u) = Url::parse(Self::SEARCH_URL) {
                     if let Ok(menu_url) = u.join(url.to_string().as_str()) {
                         let mut status = "未知".to_string();
@@ -39,7 +43,7 @@ impl Crawl for Maxreader {
                             number = doc.select(".count > ul:nth-child(1) > li:nth-child(11) > span:nth-child(1)").text().to_string();
                             synopsis = doc.select("#bookintro > p:nth-child(1)").text().to_string();
                         }
-        
+
                         result.push(SearchBook {
                             书名: i.select("a:nth-child(1)").attr("title").unwrap_or("未知".into()).to_string(),
                             作者: i.select("div:nth-child(2) > div:nth-child(1) > span:nth-child(2) > span:nth-child(1) > a:nth-child(1)").attr("title").unwrap_or("未知".into()).to_string(),
