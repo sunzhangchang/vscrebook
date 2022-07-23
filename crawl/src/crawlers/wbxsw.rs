@@ -66,4 +66,8 @@ impl Crawl for Wbxsw {
         }
         Ok(result)
     }
+
+    const CHAPTERS_SELECTOR: &'static str = "#list > dl > dd > a";
+    const CHAPTERS_TITLE_SELECTOR: &'static str = "#wrapper > div.content_read > div > div.bookname > h1";
+    const CONTEXT_SELECTOR: &'static str = "#content";
 }

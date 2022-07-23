@@ -24,12 +24,14 @@ pub enum DownSet {
 }
 // 'disable' | 'txtOnly' | 'chaptersOnly' | 'txt & chapters'
 
-#[derive(Default)]
-pub struct DownloadSettings {
-    pub caimoge: DownSet,
-    pub wbxsw: DownSet,
-    pub aixiashu: DownSet,
-}
+// #[derive(Default)]
+// pub struct DownloadSettings {
+//     pub caimoge: DownSet,
+//     pub wbxsw: DownSet,
+//     pub aixiashu: DownSet,
+// }
+
+pub type DownloadSettings = HashMap<String, DownSet>;
 
 type DownThreadAmount = u16;
 
@@ -99,13 +101,14 @@ pub fn g_config() -> Config {
                             _ => DownSet::default(),
                         }
                     };
-                    let downset = &mut config.download_settings;
-                    match k {
-                        "caimoge" => downset.caimoge = match_downset(v),
-                        "wbxsw" => downset.wbxsw = match_downset(v),
-                        "aixiashu" => downset.aixiashu = match_downset(v),
-                        _ => (),
-                    }
+                    config.download_settings.insert(k.to_string(), match_downset(v));
+                    // let downset = &mut config.download_settings;
+                    // match k {
+                    //     "caimoge" => downset.caimoge = match_downset(v),
+                    //     "wbxsw" => downset.wbxsw = match_downset(v),
+                    //     "aixiashu" => downset.aixiashu = match_downset(v),
+                    //     _ => (),
+                    // }
                 }).unwrap_or_default();
             }
             "downThreadAmount" => {

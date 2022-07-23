@@ -50,4 +50,8 @@ impl Crawl for Caimoge {
         }
         Ok(result)
     }
+
+    const CHAPTERS_SELECTOR: &'static str = "#readerlist > ul > li > a";
+    const CHAPTERS_TITLE_SELECTOR: &'static str = "#center > div.title > h1 > em";
+    const CONTEXT_SELECTOR: &'static str = "#content";
 }
