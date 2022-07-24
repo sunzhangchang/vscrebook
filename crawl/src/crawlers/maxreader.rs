@@ -3,7 +3,6 @@
 use async_trait::async_trait;
 use nipper::Document;
 use reqwest::Url;
-use std::str::*;
 
 use crate::{utils::net::get, search_book::SearchBook, config::g_config};
 
@@ -28,10 +27,9 @@ impl Crawl for Maxreader {
             let menu_url = i.select("a:nth-child(1)").attr("href");
             if let Some(url) = menu_url {
                 let url: String = url.into();
-                // url.replace("");
-                // url.replace_range(range, "read");
+                let url = url.replace("read", "book");
                 if let Ok(u) = Url::parse(Self::SEARCH_URL) {
-                    if let Ok(menu_url) = u.join(url.to_string().as_str()) {
+                    if let Ok(menu_url) = u.join(&url) {
                         let mut status = "未知".to_string();
                         let mut number = "未知".to_string();
                         let mut synopsis = "未知".to_string();
@@ -69,7 +67,7 @@ impl Crawl for Maxreader {
         Ok(result)
     }
 
-    const CHAPTERS_SELECTOR: &'static str = "";
-    const CHAPTERS_TITLE_SELECTOR: &'static str = "";
-    const CONTEXT_SELECTOR: &'static str = "";
+    const CHAPTERS_SELECTOR: &'static str = "#readerlists > ul:nth-child(1) > li > a:nth-child(1)";
+    const CHAPTERS_TITLE_SELECTOR: &'static str = "a.color7:nth-child(1)";
+    const CONTEXT_SELECTOR: &'static str = "div.size16";
 }
