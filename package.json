@@ -263,7 +263,6 @@
   "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md",
   "dependencies": {
     "chardet": "^1.4.0",
-    "cheerio": "^1.0.0-rc.12",
     "iconv-lite": "^0.6.3",
     "lodash": "^4.17.21",
     "node-fetch": "^3.2.9"
