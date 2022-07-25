@@ -3,8 +3,6 @@ mod utils;
 mod crawlers;
 mod search_book;
 
-use std::{path::PathBuf, io::Write};
-
 use crawlers::wbxsw::Wbxsw;
 use crawlers::crawl::Crawl;
 use crawlers::aixiashu::Aixiashu;
@@ -14,7 +12,7 @@ use futures::future::join_all;
 use js_sys::{Object, Reflect};
 use search_book::SearchBook;
 use wasm_bindgen::prelude::*;
-use utils::util::{myerror};
+use utils::util::{myerror, mydebug};
 
 
 #[wasm_bindgen(js_name = rsSearch)]
@@ -61,7 +59,9 @@ pub async fn rs_search(search_key: String) -> Object {
 }
 
 #[wasm_bindgen(js_name = rsDownload)]
-pub async fn rs_download(source: String, menu_url: String, dir: String, name: String) -> Result<String, String> {
+pub async fn rs_download(source: String, menu_url: String) -> Option<String> {
+    mydebug(&format!("[rs_download] source: {}; menu_url: {}", source, menu_url));
+
     let result = match source.as_str() {
         Aixiashu::SOURCE_NAME => Aixiashu{}.download(&menu_url),
         Caimoge::SOURCE_NAME => Caimoge{}.download(&menu_url),
@@ -72,23 +72,12 @@ pub async fn rs_download(source: String, menu_url: String, dir: String, name: St
 
     match result {
         Ok(data) => {
-            let mut buffer = PathBuf::from(&dir);
-            buffer.push(&name);
-            buffer.set_extension("txt");
-    
-            let path = buffer.as_path();
-    
-            std::fs::create_dir_all(&dir).unwrap();
-    
-            let mut f = std::fs::File::create(path).unwrap();
-            f.write(data.as_bytes()).unwrap();
-
-            if let Some(path) = path.as_os_str().to_str() {
-                Ok(path.to_string())
-            } else {
-                Err("The download path is not a valid UTF-8 string".to_string())
-            }
+            mydebug("done here!");
+            Some(data)
         }
-        Err(e) => Err(e)
+        Err(e) => {
+            myerror(&e);
+            None
+        }
     }
 }

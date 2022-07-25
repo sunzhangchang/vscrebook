@@ -11,6 +11,7 @@ pub struct Aixiashu;
 #[async_trait(?Send)]
 impl Crawl for Aixiashu {
     const SOURCE_NAME: &'static str = "爱下书小说网";
+    const SOURCE_NAME_ENG: &'static str = "aixiashu";
     const SEARCH_URL: &'static str = "https://www.aixiaxsw.com/modules/article/search.php";
     const SEARCH_QUERY: &'static str = "searchkey";
 
@@ -28,14 +29,19 @@ impl Crawl for Aixiashu {
                     if let Ok(menu_url) = u.join(url.to_string().as_str()) {
                         let mut synopsis = "未知".to_string();
                         let mut cate = "未知".to_string();
-                        if g_config().show_more_info["aixiashu"] {
-                            let res = get(menu_url.as_str(), None).await;
-                            if let Ok(res) = res {
-                                let doc = Document::from(&res.text().await?);
-                                synopsis = doc.select("#intro > p").text().to_string();
-                                cate = doc.select("#wrapper > div:nth-child(6) > div.con_top > a:nth-child(3)").text().to_string();
-                            } else {
-                                continue;
+
+                        let configs = g_config();
+
+                        if let Some(&flg) = configs.show_more_info.get(Self::SOURCE_NAME_ENG) {
+                            if flg {
+                                let res = get(menu_url.as_str(), None).await;
+                                if let Ok(res) = res {
+                                    let doc = Document::from(&res.text().await?);
+                                    synopsis = doc.select("#intro > p").text().to_string();
+                                    cate = doc.select("#wrapper > div:nth-child(6) > div.con_top > a:nth-child(3)").text().to_string();
+                                } else {
+                                    continue;
+                                }
                             }
                         }
                         result.push(SearchBook {

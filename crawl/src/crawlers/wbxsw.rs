@@ -11,6 +11,7 @@ pub struct Wbxsw;
 #[async_trait(?Send)]
 impl Crawl for Wbxsw {
     const SOURCE_NAME: &'static str = "58小说网";
+    const SOURCE_NAME_ENG: &'static str = "wbxsw";
     const SEARCH_URL: &'static str = "https://www.wbxsw.com/search.php";
     const SEARCH_QUERY: &'static str = "keyword";
 
@@ -27,19 +28,22 @@ impl Crawl for Wbxsw {
                 if let Ok(u) = Url::parse(Self::SEARCH_URL) {
                     if let Ok(menu_url) = u.join(url.to_string().as_str()) {
                         let mut status = "未知".to_string();
-                        if g_config().show_more_info["wbxsw"] {
-                            let res = get(menu_url.as_str(), None).await;
-                            if let Ok(res) = res {
-                                let doc = Document::from(&res.text().await?);
-                                status = doc.select("#info > p:nth-child(3)").text().to_string();
-                                if status.contains("：") {
-                                    status = status.split("：").last().unwrap().to_string();
+
+                        if let Some(&flg) = g_config().show_more_info.get(Self::SOURCE_NAME_ENG) {
+                            if flg {
+                                let res = get(menu_url.as_str(), None).await;
+                                if let Ok(res) = res {
+                                    let doc = Document::from(&res.text().await?);
+                                    status = doc.select("#info > p:nth-child(3)").text().to_string();
+                                    if status.contains("：") {
+                                        status = status.split("：").last().unwrap().to_string();
+                                    }
+                                    if status.contains(",") {
+                                        status = status.split(",").next().unwrap().to_string();
+                                    }
+                                } else {
+                                    continue;
                                 }
-                                if status.contains(",") {
-                                    status = status.split(",").next().unwrap().to_string();
-                                }
-                            } else {
-                                continue;
                             }
                         }
                         result.push(SearchBook {

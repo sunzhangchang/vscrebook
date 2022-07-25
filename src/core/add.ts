@@ -67,12 +67,19 @@ async function getAdBook(): Promise<{
 
             bookName = _.split(bookName, ' - ')[0]
             const one = list.find((iter) => _.isEqual(iter.书名, bookName))
+
             if (_.isUndefined(one)) {
                 myerror(Errors.chooseFaild)
                 return
             }
+
             window.showInformationMessage(`字数: ${one.字数}  -  状态: ${one.状态}\n最新章节: ${one.最新章节}  -  最近更新: ${one.最近更新}\n${one.简介}`)
+
             const downloadPath = await download(one.书源, one.目录链接, getConfig().downloadPath, one.书名)
+
+            if (_.isUndefined(downloadPath)) {
+                return undefined
+            }
 
             return {
                 bookPath: downloadPath,

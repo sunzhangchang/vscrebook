@@ -11,6 +11,7 @@ pub struct Caimoge;
 #[async_trait(?Send)]
 impl Crawl for Caimoge {
     const SOURCE_NAME: &'static str = "采墨阁";
+    const SOURCE_NAME_ENG: &'static str = "caimoge";
     const SEARCH_URL: &'static str = "https://www.caimoge.net/search/";
     const SEARCH_QUERY: &'static str = "searchkey";
 

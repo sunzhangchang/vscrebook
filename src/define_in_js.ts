@@ -1,3 +1,4 @@
+import _ from "lodash"
 import fetch, { Headers, Request, Response } from "node-fetch"
 import { getConfig } from "./core/config"
 
@@ -24,8 +25,12 @@ export { mydebug } from './utils/debug'
 import { myerror as mye, Errors } from './utils/error'
 
 export function myerror(s: string) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mye((Errors as any)[s])
+    const m = _.get(Errors, s)
+    if (_.isUndefined(m)) {
+        mye(s)
+    } else {
+        mye(m)
+    }
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

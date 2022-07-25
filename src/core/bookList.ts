@@ -37,6 +37,9 @@ export async function importList(listPath: string): Promise<void> {
 
                 download(searchedBook.书源, searchedBook.目录链接, getConfig().downloadPath, searchedBook.书名)
                     .then((bookPath) => {
+                        if (_.isUndefined(bookPath)) {
+                            throw new Error("下载出现错误!")
+                        }
                         addBook(true, context.globalStorageUri.fsPath, setExtTo(bookPath, 'txt'), {
                             ...v,
                             source: searchedBook.书源,
