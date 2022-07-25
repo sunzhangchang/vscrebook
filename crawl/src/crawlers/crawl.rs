@@ -16,9 +16,8 @@ pub trait Crawl {
 
     async fn search(&self, search_key: &str) -> reqwest::Result<Vec<SearchBook>> {
         let configs = g_config();
-        // unsafe { log(format!("{:?}", configs).as_str()); }
-        
-        if let DownSet::Disable = configs.download_settings[Self::SOURCE_NAME] {
+
+        if let Some(DownSet::Disable) = configs.download_settings.get(Self::SOURCE_NAME) {
             return Ok(vec![]);
         }
 
@@ -61,8 +60,9 @@ pub trait Crawl {
     }
 
     async fn download(&self, menu_url: &str) -> Result<String, String> {
-        let st = &g_config().download_settings[Self::SOURCE_NAME];
-        if matches!(st, DownSet::Disable | DownSet::TxtOnly) {
+        let configs = g_config();
+        let st = configs.download_settings.get(Self::SOURCE_NAME);
+        if matches!(st, Some(DownSet::Disable | DownSet::TxtOnly)) {
             return Err("".to_string());
         }
         let res = self.get_chapters(menu_url).await;

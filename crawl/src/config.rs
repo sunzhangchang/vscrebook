@@ -3,8 +3,6 @@ use std::collections::HashMap;
 use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
-use crate::utils::util::mydebug;
-
 
 // #[derive(Default)]
 // pub struct ShowMoreInfo {
@@ -16,7 +14,7 @@ use crate::utils::util::mydebug;
 
 pub type ShowMoreInfo = HashMap<String, bool>;
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub enum DownSet {
     #[default]
     Disable,
@@ -37,7 +35,7 @@ pub type DownloadSettings = HashMap<String, DownSet>;
 
 type ThreadNum = u16;
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct Config {
     pub show_more_info: ShowMoreInfo,
     pub download_settings: DownloadSettings,
@@ -78,21 +76,6 @@ pub fn g_config() -> Config {
                     if let Some(v) = v.as_bool() {
                         config.show_more_info.insert(k.to_string(), v);
                     }
-                    // match k {
-                    //     "caimoge" => {
-                    //         smi.caimoge = v.as_bool().unwrap();
-                    //     }
-                    //     "wbxsw" => {
-                    //         smi.wbxsw = v.as_bool().unwrap();
-                    //     }
-                    //     "aixiashu" => {
-                    //         smi.aixiashu = v.as_bool().unwrap();
-                    //     }
-                    //     "maxreader" => {
-                    //         smi.maxreader = v.as_bool().unwrap();
-                    //     }
-                    //     _ => {}
-                    // }
                 }).unwrap_or_default();
             }
             "downloadSettings" => {
@@ -111,24 +94,11 @@ pub fn g_config() -> Config {
                         }
                     };
                     config.download_settings.insert(k.to_string(), match_downset(v));
-                    // let downset = &mut config.download_settings;
-                    // match k {
-                    //     "caimoge" => downset.caimoge = match_downset(v),
-                    //     "wbxsw" => downset.wbxsw = match_downset(v),
-                    //     "aixiashu" => downset.aixiashu = match_downset(v),
-                    //     _ => (),
-                    // }
                 }).unwrap_or_default();
             }
             "threadNum" => {
                 config.thread_num = if let Some(v) = v.as_f64() {
-                    mydebug(&v.to_string());
-                    // v as u16
-                    if let Ok(v) = v.to_string().parse() {
-                        v
-                    } else {
-                        20
-                    }
+                    v as u16
                 } else {
                     20
                 }

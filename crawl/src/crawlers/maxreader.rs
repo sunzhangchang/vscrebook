@@ -34,7 +34,9 @@ impl Crawl for Maxreader {
                         let mut number = "未知".to_string();
                         let mut synopsis = "未知".to_string();
 
-                        if g_config().show_more_info["maxreader"] {
+                        let f = (&g_config().show_more_info)["maxreader"];
+
+                        if f {
                             let response = get(menu_url.as_str(), None).await?;
                             let doc = Document::from(&response.text().await?);
                             status = doc.select(".count > ul:nth-child(1) > li:nth-child(5) > span:nth-child(1)").text().to_string();

@@ -9,12 +9,12 @@ use crawlers::wbxsw::Wbxsw;
 use crawlers::crawl::Crawl;
 use crawlers::aixiashu::Aixiashu;
 use crawlers::caimoge::Caimoge;
-use futures::{future::join_all, join};
+use crawlers::maxreader::Maxreader;
+use futures::future::join_all;
 use js_sys::{Object, Reflect};
 use search_book::SearchBook;
 use wasm_bindgen::prelude::*;
 
-use crate::crawlers::maxreader::Maxreader;
 
 #[wasm_bindgen(js_name = rsSearch)]
 pub async fn rs_search(search_key: String) -> Object {
@@ -27,18 +27,12 @@ pub async fn rs_search(search_key: String) -> Object {
         }
     }
 
-    let res = join!(
-        // s!(Aixiashu{}),
-        // s!(Caimoge{}),
-        // s!(Wbxsw{}),
+    let res = join_all([
+        s!(Aixiashu{}),
+        s!(Caimoge{}),
+        s!(Wbxsw{}),
         s!(Maxreader{}),
-    );
-    // let res = join_all([
-    //     // s!(Aixiashu{}),
-    //     // s!(Caimoge{}),
-    //     // s!(Wbxsw{}),
-    //     s!(Maxreader{}),
-    // ]).await;
+    ]).await;
 
     macro_rules! push_res {
         ($($x: expr), *) => {
@@ -51,10 +45,10 @@ pub async fn rs_search(search_key: String) -> Object {
         };
     }
 
-    // for i in res {
-    //     push_res!(i);
-    // }
-    push_res!(res.0);
+    for i in res {
+        push_res!(i);
+    }
+    // push_res!(res.0);
 
     let obj = Object::default();
     Reflect::set(&obj, &"results".into(), &serde_json::to_string(&results).unwrap().into()).unwrap();
