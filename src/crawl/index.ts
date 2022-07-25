@@ -1,21 +1,5 @@
 import { window } from "vscode"
-import axios from 'axios'
-import { USER_AGENT } from "./utils"
-import axiosRetry from "axios-retry"
 import { rsDownload, rsSearch } from "../../crawl/pkg/crawl"
-
-axiosRetry(axios, {
-    retries: 3,
-    shouldResetTimeout: true,
-})
-
-axios.defaults["axios-retry"] = {
-    retries: 3,
-    shouldResetTimeout: true,
-}
-axios.defaults.timeout = 3000
-axios.defaults.headers.common['User-Agent'] = USER_AGENT
-axios.defaults.responseType = 'arraybuffer'
 
 export async function search(searchKey: string): Promise<SearchBook[]> {
     window.showInformationMessage('正在搜索')
