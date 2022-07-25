@@ -5,6 +5,11 @@ pub mod util {
     extern "C" {
         pub fn mydebug(s: &str);
     }
+
+    #[wasm_bindgen(raw_module = "../../src/define_in_js")]
+    extern "C" {
+        pub fn myerror(s: &str);
+    }
 }
 
 pub mod net {

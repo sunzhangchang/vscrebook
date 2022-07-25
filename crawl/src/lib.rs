@@ -14,6 +14,7 @@ use futures::future::join_all;
 use js_sys::{Object, Reflect};
 use search_book::SearchBook;
 use wasm_bindgen::prelude::*;
+use utils::util::{myerror};
 
 
 #[wasm_bindgen(js_name = rsSearch)]
@@ -39,7 +40,10 @@ pub async fn rs_search(search_key: String) -> Object {
             $(
                 match $x {
                     Ok(mut res) => results.append(&mut res),
-                    Err(e) => errors.push(e.to_string()),
+                    Err(e) => {
+                        myerror("requestError");
+                        errors.push(e.to_string());
+                    },
                 }
             )*
         };
