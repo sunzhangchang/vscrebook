@@ -2,7 +2,7 @@
   "name": "vscrebook",
   "displayName": "vscrebook",
   "description": "VSCode 摸鱼阅读器",
-  "version": "0.15.1",
+  "version": "0.16.0",
   "engines": {
     "vscode": "^1.68.1"
   },
@@ -20,6 +20,9 @@
     "划水"
   ],
   "publisher": "Cyanogenaq",
+  "workspaces": [
+    "crawl"
+  ],
   "activationEvents": [
     "onCommand:vscrebook.showMenu"
   ],
@@ -55,7 +58,12 @@
         },
         "vscrebook.showMoreInfo": {
           "type": "object",
-          "default": {},
+          "default": {
+            "caimoge": true,
+            "wbxsw": false,
+            "aixiashu": false,
+            "maxreader": false
+          },
           "properties": {
             "caimoge": {
               "type": "boolean",
@@ -68,15 +76,24 @@
             "aixiashu": {
               "type": "boolean",
               "default": false
+            },
+            "maxreader": {
+              "type": "boolean",
+              "default": false
             }
           },
           "description": "设置网络书籍中是否显示书籍更多信息"
         },
         "vscrebook.downloadSettings": {
           "type": "object",
-          "default": {},
+          "default": {
+            "caimoge": "txt & chapters",
+            "wbxsw": "chaptersOnly",
+            "aixiashu": "txt & chapters",
+            "maxreader": "chaptersOnly"
+          },
           "properties": {
-            "采墨阁": {
+            "caimoge": {
               "type": "string",
               "enum": [
                 "disable",
@@ -86,7 +103,7 @@
               ],
               "default": "txt & chapters"
             },
-            "58小说网": {
+            "wbxsw": {
               "type": "string",
               "enum": [
                 "disable",
@@ -96,7 +113,7 @@
               ],
               "default": "chaptersOnly"
             },
-            "爱下书小说网": {
+            "aixiashu": {
               "type": "string",
               "enum": [
                 "disable",
@@ -105,11 +122,21 @@
                 "txt & chapters"
               ],
               "default": "txt & chapters"
+            },
+            "maxreader": {
+              "type": "string",
+              "enum": [
+                "disable",
+                "txtOnly",
+                "chaptersOnly",
+                "txt & chapters"
+              ],
+              "default": "chaptersOnly"
             }
           },
           "description": "网络书籍下载设置"
         },
-        "vscrebook.downThreadAmount": {
+        "vscrebook.threadNum": {
           "type": "number",
           "default": 20,
           "description": "下载线程数"
@@ -187,9 +214,11 @@
   "scripts": {
     "clear": "gulp clear",
     "vscode:prepublish": "npm run build",
-    "build:debug": "gulp dev",
-    "build": "gulp prod",
-    "watch": "gulp watch",
+    "build:dev": "npm run pack:dev crawl && gulp dev",
+    "build": "npm run pack crawl && gulp prod",
+    "watch": "npm run pack:dev crawl && gulp dev",
+    "pack": "wasm-pack build -t bundler",
+    "pack:dev": "wasm-pack build -t bundler --dev",
     "package": "vsce package",
     "vsce:publish": "vsce publish",
     "vsce:package": "vsce package",
@@ -208,6 +237,7 @@
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
     "@vscode/test-electron": "^2.1.5",
+    "core-js": "^3.23.4",
     "esbuild": "^0.14.49",
     "esbuild-loader": "^2.19.0",
     "eslint": "^8.19.0",
@@ -217,7 +247,7 @@
     "regenerator-runtime": "^0.13.9",
     "swc-loader": "^0.2.3",
     "typescript": "^4.7.4",
-    "vsce": "^2.9.3",
+    "vsce": "^2.10.0",
     "webpack": "^5.73.0",
     "webpack-cli": "^4.10.0"
   },
@@ -230,12 +260,9 @@
   },
   "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md",
   "dependencies": {
-    "axios": "^0.27.2",
-    "axios-retry": "^3.3.1",
     "chardet": "^1.4.0",
-    "cheerio": "^1.0.0-rc.12",
-    "core-js": "^3.23.4",
     "iconv-lite": "^0.6.3",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "node-fetch": "^3.2.9"
   }
 }

@@ -16,13 +16,13 @@ function clear(cb) {
     cb()
 }
 
-const { runWebpack } = require('./scripts/runWebpack')
+const { runWebpack, watchWebpack } = require('./scripts/runWebpack')
 const webpackConfig = require('./webpack.config')
 
 let devConfig = Object.create(webpackConfig)
 devConfig.mode = "development"
 
-function dev(cb) {
+async function dev(cb) {
     runWebpack(devConfig, 'build-dev', cb)
 }
 
@@ -37,7 +37,7 @@ webpackConfig.optimization = {
     minimize: true,
     minimizer: [
         new ESBuildMinifyPlugin({
-            target: 'es2015',
+            target: 'es2020',
             legalComments: 'none',
             css: true,
             implementation: esbuild,
@@ -45,15 +45,15 @@ webpackConfig.optimization = {
     ]
 }
 
-function prod(cb) {
+async function prod(cb) {
     runWebpack(prodConfig, 'build-prod', cb)
 }
 
 let watchConfig = Object.create(devConfig)
 watchConfig.watch = true
 
-function watch(cb) {
-    runWebpack(watchConfig, 'watch', cb)
+async function watch(cb) {
+    watchWebpack(watchConfig, 'watch', cb)
 }
 
 module.exports = {

@@ -26,6 +26,10 @@ const extensionConfig = {
     externals: {
         vscode: "commonjs vscode",
     },
+    experiments: {
+        asyncWebAssembly: true,
+        syncWebAssembly: true,
+    },
     resolve: {
         extensions: [".ts", ".js"],
     },
@@ -37,6 +41,10 @@ const extensionConfig = {
                 loader: "swc-loader",
                 options: swcrc(isDev),
             },
+            {
+                test: /\.wasm$/,
+                type: 'webassembly/async',
+            }
         ],
     },
 }

@@ -38,29 +38,31 @@ export const ExtConfig: ConfigSetObj = {
     },
     showMoreInfo: {
         name: `${extName}.showMoreInfo`,
-        desc: '设置网络书籍中是否显示书籍更新状态',
+        desc: '设置网络书籍中是否显示书籍更多信息',
         default: {
             caimoge: true,
             wbxsw: false,
             aixiashu: false,
+            maxreader: false,
         },
         type: 'object',
         form: 'choose',
-        choices: ['caimoge', 'wbxsw', 'aixiashu'],
+        choices: ['caimoge', 'wbxsw', 'aixiashu', 'maxreader'],
     },
     downloadSettings: {
         name: `${extName}.downloadSettings`,
         desc: '网络书籍下载设置',
         default: {
-            '采墨阁': 'txt & chapters',
-            '58小说网': 'chaptersOnly',
-            '爱下书小说网': 'txt & chapters',
+            'caimoge': 'txt & chapters',
+            'wbxsw': 'chaptersOnly',
+            'aixiashu': 'txt & chapters',
+            'maxreader': 'chaptersOnly',
         },
         type: 'object',
         form: 'none',
     },
-    downThreadAmount: {
-        name: `${extName}.downThreadAmount`,
+    threadNum: {
+        name: `${extName}.threadNum`,
         desc: '下载线程数',
         default: 20,
         type: 'number',
@@ -114,7 +116,7 @@ let config: ConfigType = {
     displayMode: getWsConfig(ExtConfig.displayMode.name) as DisplayMode,
     showMoreInfo: getWsConfig(ExtConfig.showMoreInfo.name) as ShowMoreInfo,
     downloadSettings: getWsConfig(ExtConfig.downloadSettings.name) as DownloadSettings,
-    downThreadAmount: getWsConfig(ExtConfig.downThreadAmount.name) as DownThreadAmount,
+    threadNum: getWsConfig(ExtConfig.threadNum.name) as ThreadNum,
 }
 
 export function setConfig(key: string, value: unknown): void {
@@ -140,6 +142,6 @@ export function getConfig(): ConfigType {
         displayMode: getInnerConfig(ExtConfig.displayMode.name) as DisplayMode,
         showMoreInfo: getInnerConfig(ExtConfig.showMoreInfo.name) as ShowMoreInfo,
         downloadSettings: getInnerConfig(ExtConfig.downloadSettings.name) as DownloadSettings,
-        downThreadAmount: getInnerConfig(ExtConfig.downThreadAmount.name) as DownThreadAmount,
+        threadNum: getInnerConfig(ExtConfig.threadNum.name) as ThreadNum,
     }
 }

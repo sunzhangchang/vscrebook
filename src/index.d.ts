@@ -6,19 +6,21 @@ declare type ShowMoreInfo = {
     caimoge: boolean
     wbxsw: boolean
     aixiashu: boolean
+    maxreader: boolean
 }
 
 declare type DownloadSettings = Record<string, 'disable' | 'txtOnly' | 'chaptersOnly' | 'txt & chapters'>
 
-declare type DownThreadAmount = number
+declare type ThreadNum = number
 
-declare type ConfigType = ConfigBase<number, string, number, DisplayMode, ShowMoreInfo, DownloadSettings, DownThreadAmount>
+declare type ConfigType = ConfigBase<number, string, number, DisplayMode, ShowMoreInfo, DownloadSettings, ThreadNum>
 
 declare type Source =
     | '本地'
     | '采墨阁'
     | '58小说网'
     | '爱下书小说网'
+    | '醉读'
 
 declare type BookInfo = {
     bookName: string
@@ -60,7 +62,7 @@ declare type ConfigBase<T, U, V, W, X, Y, Z> = {
     displayMode: W
     showMoreInfo: X
     downloadSettings: Y
-    downThreadAmount: Z
+    threadNum: Z
 }
 
 declare type obj = Record<string, unknown>
@@ -69,4 +71,10 @@ declare type searchCtxResult = {
     index: number
     page: number
     txt: string
+}
+
+declare function get_config(): {
+    showMoreInfo: ShowMoreInfo
+    threadNum: ThreadNum
+    downloadSettings: DownloadSettings
 }

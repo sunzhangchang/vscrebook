@@ -13,6 +13,7 @@ export enum Errors {
     downloadNovelFailed,
     importSearchError,
     chapterLost,
+    requestError,
 }
 
 export function myerror(err: Errors): void {
@@ -45,6 +46,11 @@ export function myerror(err: Errors): void {
 
         case Errors.fetchError: {
             msg = '拉取链接失败!'
+            break
+        }
+
+        case Errors.requestError: {
+            msg = '网络请求失败!'
             break
         }
 
