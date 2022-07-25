@@ -20,6 +20,8 @@ import { getConfig } from "./core/config"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).fetch = fetch
 
+export { mydebug } from './utils/debug'
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function get_config() {
     return {

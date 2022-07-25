@@ -61,7 +61,8 @@
           "default": {
             "caimoge": true,
             "wbxsw": false,
-            "aixiashu": false
+            "aixiashu": false,
+            "maxreader": false
           },
           "properties": {
             "caimoge": {
@@ -75,6 +76,10 @@
             "aixiashu": {
               "type": "boolean",
               "default": false
+            },
+            "maxreader": {
+              "type": "boolean",
+              "default": false
             }
           },
           "description": "设置网络书籍中是否显示书籍更多信息"
@@ -84,7 +89,8 @@
           "default": {
             "caimoge": "txt & chapters",
             "wbxsw": "chaptersOnly",
-            "aixiashu": "txt & chapters"
+            "aixiashu": "txt & chapters",
+            "maxreader": "chaptersOnly"
           },
           "properties": {
             "caimoge": {
@@ -116,6 +122,16 @@
                 "txt & chapters"
               ],
               "default": "txt & chapters"
+            },
+            "maxreader": {
+              "type": "string",
+              "enum": [
+                "disable",
+                "txtOnly",
+                "chaptersOnly",
+                "txt & chapters"
+              ],
+              "default": "chaptersOnly"
             }
           },
           "description": "网络书籍下载设置"
@@ -200,7 +216,7 @@
     "vscode:prepublish": "npm run build",
     "build:dev": "npm run pack:dev crawl && gulp dev",
     "build": "npm run pack crawl && gulp prod",
-    "watch": "npm run pack:dev crawl && gulp watch",
+    "watch": "npm run pack:dev crawl && gulp dev",
     "pack": "wasm-pack build -t bundler",
     "pack:dev": "wasm-pack build -t bundler --dev",
     "package": "vsce package",

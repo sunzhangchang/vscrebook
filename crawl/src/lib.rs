@@ -9,7 +9,7 @@ use crawlers::wbxsw::Wbxsw;
 use crawlers::crawl::Crawl;
 use crawlers::aixiashu::Aixiashu;
 use crawlers::caimoge::Caimoge;
-use futures::future::join_all;
+use futures::{future::join_all, join};
 use js_sys::{Object, Reflect};
 use search_book::SearchBook;
 use wasm_bindgen::prelude::*;
@@ -27,12 +27,18 @@ pub async fn rs_search(search_key: String) -> Object {
         }
     }
 
-    let res = join_all([
-        s!(Aixiashu{}),
-        s!(Caimoge{}),
-        s!(Wbxsw{}),
+    let res = join!(
+        // s!(Aixiashu{}),
+        // s!(Caimoge{}),
+        // s!(Wbxsw{}),
         s!(Maxreader{}),
-    ]).await;
+    );
+    // let res = join_all([
+    //     // s!(Aixiashu{}),
+    //     // s!(Caimoge{}),
+    //     // s!(Wbxsw{}),
+    //     s!(Maxreader{}),
+    // ]).await;
 
     macro_rules! push_res {
         ($($x: expr), *) => {
@@ -44,11 +50,11 @@ pub async fn rs_search(search_key: String) -> Object {
             )*
         };
     }
-    
-    for i in res {
-        push_res!(i);
-    }
-    // push_res!(res.0, res.1, res.2, res.3);
+
+    // for i in res {
+    //     push_res!(i);
+    // }
+    push_res!(res.0);
 
     let obj = Object::default();
     Reflect::set(&obj, &"results".into(), &serde_json::to_string(&results).unwrap().into()).unwrap();
@@ -78,7 +84,7 @@ pub async fn rs_download(source: String, menu_url: String, dir: String, name: St
     
             let mut f = std::fs::File::create(path).unwrap();
             f.write(data.as_bytes()).unwrap();
-    
+
             if let Some(path) = path.as_os_str().to_str() {
                 Ok(path.to_string())
             } else {

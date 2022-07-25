@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
+use crate::utils::util::mydebug;
+
 
 // #[derive(Default)]
 // pub struct ShowMoreInfo {
@@ -53,9 +55,10 @@ fn forin<F>(obj: JsValue, func: &mut F) -> Result<(), String>
         // let mut res = Vec::new();
         for it in Array::iter(&Object::entries(&obj.into())) {
             let a: Array = it.into();
-            let key: &str = &a.at(0).as_string().unwrap();
-            let value: JsValue = a.at(1);
-            func(key, value)
+            if let Some(key) = a.at(0).as_string() {
+                let value: JsValue = a.at(1);
+                func(&key, value);
+            }
             // res.push((key.to_string(), value));
         }
         Ok(())
@@ -72,7 +75,9 @@ pub fn g_config() -> Config {
         match k {
             "showMoreInfo" => {
                 forin(v, &mut |k, v| {
-                    config.show_more_info.insert(k.to_string(), v.as_bool().unwrap());
+                    if let Some(v) = v.as_bool() {
+                        config.show_more_info.insert(k.to_string(), v);
+                    }
                     // match k {
                     //     "caimoge" => {
                     //         smi.caimoge = v.as_bool().unwrap();
@@ -93,12 +98,16 @@ pub fn g_config() -> Config {
             "downloadSettings" => {
                 forin(v, &mut |k, v| {
                     let match_downset = |s: JsValue| {
-                        match s.as_string().unwrap().as_str() {
-                            "disable" => DownSet::Disable,
-                            "txtOnly" => DownSet::TxtOnly,
-                            "chaptersOnly" => DownSet::ChaptersOnly,
-                            "txt & chapters" => DownSet::TxtAndChapters,
-                            _ => DownSet::default(),
+                        if let Some(s) = s.as_string() {
+                            match s.as_str() {
+                                "disable" => DownSet::Disable,
+                                "txtOnly" => DownSet::TxtOnly,
+                                "chaptersOnly" => DownSet::ChaptersOnly,
+                                "txt & chapters" => DownSet::TxtAndChapters,
+                                _ => DownSet::default(),
+                            }
+                        } else {
+                            DownSet::default()
                         }
                     };
                     config.download_settings.insert(k.to_string(), match_downset(v));
@@ -112,7 +121,17 @@ pub fn g_config() -> Config {
                 }).unwrap_or_default();
             }
             "threadNum" => {
-                config.thread_num = v.as_f64().unwrap() as u16
+                config.thread_num = if let Some(v) = v.as_f64() {
+                    mydebug(&v.to_string());
+                    // v as u16
+                    if let Ok(v) = v.to_string().parse() {
+                        v
+                    } else {
+                        20
+                    }
+                } else {
+                    20
+                }
             }
             _ => {}
         }

@@ -38,15 +38,16 @@ export const ExtConfig: ConfigSetObj = {
     },
     showMoreInfo: {
         name: `${extName}.showMoreInfo`,
-        desc: '设置网络书籍中是否显示书籍更新状态',
+        desc: '设置网络书籍中是否显示书籍更多信息',
         default: {
             caimoge: true,
             wbxsw: false,
             aixiashu: false,
+            maxreader: false,
         },
         type: 'object',
         form: 'choose',
-        choices: ['caimoge', 'wbxsw', 'aixiashu'],
+        choices: ['caimoge', 'wbxsw', 'aixiashu', 'maxreader'],
     },
     downloadSettings: {
         name: `${extName}.downloadSettings`,
@@ -55,6 +56,7 @@ export const ExtConfig: ConfigSetObj = {
             'caimoge': 'txt & chapters',
             'wbxsw': 'chaptersOnly',
             'aixiashu': 'txt & chapters',
+            'maxreader': 'chaptersOnly',
         },
         type: 'object',
         form: 'none',

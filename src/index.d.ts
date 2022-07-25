@@ -6,6 +6,7 @@ declare type ShowMoreInfo = {
     caimoge: boolean
     wbxsw: boolean
     aixiashu: boolean
+    maxreader: boolean
 }
 
 declare type DownloadSettings = Record<string, 'disable' | 'txtOnly' | 'chaptersOnly' | 'txt & chapters'>
@@ -19,6 +20,7 @@ declare type Source =
     | '采墨阁'
     | '58小说网'
     | '爱下书小说网'
+    | '醉读'
 
 declare type BookInfo = {
     bookName: string
