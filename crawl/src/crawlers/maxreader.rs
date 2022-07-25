@@ -13,6 +13,7 @@ pub struct Maxreader;
 #[async_trait(?Send)]
 impl Crawl for Maxreader {
     const SOURCE_NAME: &'static str = "醉读";
+    const SOURCE_NAME_ENG: &'static str = "maxreader";
     const SEARCH_URL: &'static str = "https://www.maxreader.la/search/result.html";
     const SEARCH_QUERY: &'static str = "searchkey";
 
@@ -34,14 +35,15 @@ impl Crawl for Maxreader {
                         let mut number = "未知".to_string();
                         let mut synopsis = "未知".to_string();
 
-                        let f = (&g_config().show_more_info)["maxreader"];
-
-                        if f {
-                            let response = get(menu_url.as_str(), None).await?;
-                            let doc = Document::from(&response.text().await?);
-                            status = doc.select(".count > ul:nth-child(1) > li:nth-child(5) > span:nth-child(1)").text().to_string();
-                            number = doc.select(".count > ul:nth-child(1) > li:nth-child(11) > span:nth-child(1)").text().to_string();
-                            synopsis = doc.select("#bookintro > p:nth-child(1)").text().to_string();
+                        let configs = g_config();
+                        if let Some(&flg) = configs.show_more_info.get(Self::SOURCE_NAME_ENG) {
+                            if flg {
+                                let response = get(menu_url.as_str(), None).await?;
+                                let doc = Document::from(&response.text().await?);
+                                status = doc.select(".count > ul:nth-child(1) > li:nth-child(5) > span:nth-child(1)").text().to_string();
+                                number = doc.select(".count > ul:nth-child(1) > li:nth-child(11) > span:nth-child(1)").text().to_string();
+                                synopsis = doc.select("#bookintro > p:nth-child(1)").text().to_string();
+                            }    
                         }
 
                         result.push(SearchBook {

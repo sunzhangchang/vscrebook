@@ -3,23 +3,27 @@ use futures::future::join_all;
 use nipper::Document;
 use reqwest::Url;
 
-use crate::{SearchBook, config::{g_config, DownSet}, utils::net::get};
+use crate::{SearchBook, config::{g_config, DownSet}, utils::{net::get, util::mydebug}};
 
 #[async_trait(?Send)]
 pub trait Crawl {
-    // const SOURCE_URL: &'static str;
     const SOURCE_NAME: &'static str;
+    const SOURCE_NAME_ENG: &'static str;
     const SEARCH_URL: &'static str;
     const SEARCH_QUERY: &'static str;
 
     async fn search_detail(&self, search_key: &str) -> reqwest::Result<Vec<SearchBook>>;
 
     async fn search(&self, search_key: &str) -> reqwest::Result<Vec<SearchBook>> {
+        mydebug(&format!("{}: search {}", Self::SOURCE_NAME, search_key));
         let configs = g_config();
 
-        if let Some(DownSet::Disable) = configs.download_settings.get(Self::SOURCE_NAME) {
+        if let Some(DownSet::Disable) = configs.download_settings.get(Self::SOURCE_NAME_ENG) {
+            mydebug(&format!("{}: disable", Self::SOURCE_NAME));
             return Ok(vec![]);
         }
+
+        mydebug(&format!("{}: {:?}", Self::SOURCE_NAME, configs.download_settings.get(Self::SOURCE_NAME_ENG)));
 
         self.search_detail(search_key).await
     }
