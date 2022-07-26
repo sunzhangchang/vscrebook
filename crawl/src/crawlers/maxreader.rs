@@ -28,7 +28,7 @@ impl Crawl for Maxreader {
             let menu_url = i.select("a:nth-child(1)").attr("href");
             if let Some(url) = menu_url {
                 let url: String = url.into();
-                let url = url.replace("read", "book");
+                let url = url.replace("book", "read");
                 if let Ok(u) = Url::parse(Self::SEARCH_URL) {
                     if let Ok(menu_url) = u.join(&url) {
                         let mut status = "未知".to_string();
