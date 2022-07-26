@@ -23,8 +23,6 @@ pub trait Crawl {
             return Ok(vec![]);
         }
 
-        mydebug(&format!("{}: {:?}", Self::SOURCE_NAME, configs.download_settings.get(Self::SOURCE_NAME_ENG)));
-
         self.search_detail(search_key).await
     }
 
@@ -39,11 +37,10 @@ pub trait Crawl {
     }
 
     async fn get_one_page(&self, doc: &Document) -> reqwest::Result<String> {
-        let mut res = String::new();
+        let mut res = String::from(self.get_context(&doc).await?);
         if let Some(selector) = Self::NEXT_PAGE {
             if let Some(ele) = doc.try_select(selector) {
                 if ele.text().contains("页") {
-                    mydebug("getting: 页");
                     if let Some(next_page_url) = ele.attr("href") {
                         if let Ok(url) = Url::parse(Self::SEARCH_URL) {
                             if let Ok(url) = url.join(&next_page_url.to_string()) {
@@ -51,7 +48,6 @@ pub trait Crawl {
                                 let response = get(&url, None).await?;
                                 let doc = Document::from(&response.text().await?);
                                 res.push_str(&self.get_one_page(&doc).await?);
-                                mydebug("got： 页");
                             }
                         }
                     }
@@ -65,9 +61,7 @@ pub trait Crawl {
         let response = get(&url, None).await?;
         let doc = Document::from(&response.text().await?);
         let title = doc.select(Self::CHAPTERS_TITLE_SELECTOR).text();
-        mydebug(&format!("getting: {}", title));
         let context = self.get_one_page(&doc).await?;
-        mydebug(&format!("got: {}", title));
         Ok(format!("======== {} ======== \n {}", title, context))
     }
 
