@@ -74,4 +74,5 @@ impl Crawl for Maxreader {
     const CHAPTERS_SELECTOR: &'static str = "#readerlists > ul:nth-child(1) > li > a:nth-child(1)";
     const CHAPTERS_TITLE_SELECTOR: &'static str = "a.color7:nth-child(1)";
     const CONTEXT_SELECTOR: &'static str = "div.size16";
+    const NEXT_PAGE: Option<&'static str> = Some(".pt-nextchapter");
 }
