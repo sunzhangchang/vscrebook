@@ -1,6 +1,6 @@
 {
     "name": "@vscrebook/config",
-    "version": "1.0.0-alpha.0",
+    "version": "1.0.1",
     "description": "> TODO: description",
     "author": "sunzhangchang <642311409@qq.com>",
     "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md/tree/main/packages/config#readme",
@@ -20,6 +20,6 @@
         "url": "https://github.com/sunzhangchang/vscrebook/issues"
     },
     "dependencies": {
-        "@vscrebook/utils": "^1.0.0-alpha.0"
+        "@vscrebook/utils": "^1.0.1"
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@vscrebook/crawl",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.ts",
   "scripts": {
@@ -12,8 +12,8 @@
   "author": "sunzhangchang(Cyanogenaq) <642311409@qq.com>",
   "license": "MIT",
   "dependencies": {
-    "@vscrebook/config": "^1.0.0-alpha.0",
-    "@vscrebook/utils": "^1.0.0-alpha.0",
+    "@vscrebook/config": "^1.0.1",
+    "@vscrebook/utils": "^1.0.1",
     "node-fetch": "^3.2.10"
   }
 }
