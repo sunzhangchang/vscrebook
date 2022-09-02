@@ -16,16 +16,63 @@ function subscribeCmd(context: ExtensionContext): void {
     }
 }
 
-function showText(msg: string): void {
-    window.setStatusBarMessage(msg)
-}
-
-function showBoss(): void {
-    window.setStatusBarMessage('')
-}
-
 export function activate(extContext: ExtensionContext) {
     const config = new ConfigBase<WorkspaceConfiguration>(extContext.globalStorageUri.fsPath, workspace.getConfiguration)
+
+    const statusBar = window.createStatusBarItem()
+
+    function showText(msg: string): void {
+        switch (config.displayMode) {
+            case 'statusBar': default: {
+                statusBar.show()
+                statusBar.text = msg
+                break
+            }
+
+            case 'showInformation': {
+                statusBar.hide()
+                window.showInformationMessage(msg)
+                break
+            }
+        }
+    }
+
+    const codes: string[] = [
+        'Java - System.out.println("Hello World");',
+        'Scala - println("Hello, world!")',
+        'Kotlin - println("Hello, world!")',
+        'Groovy - println "Hello, world!"',
+        'C - printf("Hello, World!");',
+        'C# - System.Console.WriteLine("Hello World!"); ',
+        'C++ - cout << "Hello, world!" << endl;',
+        'Python - print("Hello, World!")',
+        'PHP - echo "Hello World!";',
+        'Ruby - puts "Hello World!";',
+        'Rust - println!("Hello, World!");',
+        'Perl - print "Hello, World!";',
+        'Lua - print("Hello World!")',
+        'Golang - fmt.Println("Hello, World!")',
+        'JavaScript - console.log("Hello, World!")',
+        'TypeScript - console.log("Hello, World!")',
+        'ReScript - Js.log("Hello, World!")',
+        'PureScript - log "Hello, World!"',
+        'Scala.js - println("Hello, World!")',
+    ]
+
+    function showBoss(): void {
+        switch (config.displayMode) {
+            case 'statusBar': default: {
+                const index: number = Math.floor(Math.random() * codes.length)
+                showText(codes[index])
+                break
+            }
+
+            case 'showInformation': {
+                commands.executeCommand('notifications.hideToasts')
+                break
+            }
+        }
+    }
 
     const context = new Context(extContext.globalStorageUri.fsPath, extContext.globalState)
 
