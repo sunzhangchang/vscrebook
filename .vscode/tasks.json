@@ -5,12 +5,12 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "watch",
+			"script": "build:dev",
 			"problemMatcher": [
 				"$ts-webpack-watch",
 				"$tslint-webpack-watch"
 			],
-			"isBackground": true,
+			// "isBackground": true,
 			"presentation": {
 				"reveal": "never",
 				"group": "watchers"
@@ -18,7 +18,8 @@
 			"group": {
 				"kind": "build",
 				"isDefault": true
-			}
+			},
+			"path": "extension"
 		},
 		{
 			"type": "npm",
