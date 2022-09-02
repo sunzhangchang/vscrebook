@@ -1,7 +1,7 @@
 {
   "name": "vscrebook",
   "displayName": "vscrebook",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "VSCode 摸鱼阅读器",
   "author": "sunzhangchang <642311409@qq.com>",
   "publisher": "Cyanogenaq",
@@ -39,8 +39,8 @@
     "publish": "vsce publish"
   },
   "dependencies": {
-    "@vscrebook/config": "^1.0.1",
-    "@vscrebook/core": "^1.0.1"
+    "@vscrebook/config": "^1.0.2",
+    "@vscrebook/core": "^1.0.2"
   },
   "devDependencies": {
     "@swc/core": "^1.2.245",
