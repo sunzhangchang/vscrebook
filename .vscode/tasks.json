@@ -5,7 +5,7 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "build:dev",
+			"script": "build -- dev",
 			"problemMatcher": [
 				"$ts-webpack-watch",
 				"$tslint-webpack-watch"

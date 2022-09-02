@@ -17,7 +17,7 @@ function subscribeCmd(context: ExtensionContext): void {
 }
 
 export function activate(extContext: ExtensionContext) {
-    const config = new ConfigBase<WorkspaceConfiguration>(extContext.globalStorageUri.fsPath, workspace.getConfiguration)
+    const config = new ConfigBase<WorkspaceConfiguration>(workspace.getConfiguration)
 
     const statusBar = window.createStatusBarItem()
 
@@ -91,6 +91,7 @@ export function activate(extContext: ExtensionContext) {
         config,
         context
     )
+
 
     registerCmd('showMenu', () => {
         core.start()

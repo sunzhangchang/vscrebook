@@ -15,4 +15,10 @@ export class Context {
     set booklist(v: Record<string, BookInfo>) {
         this.globalState.update<Record<string, BookInfo>>('booklist', v)
     }
+
+    setBook(key: string, value: BookInfo): void {
+        const books = this.booklist
+        books[key] = value
+        this.booklist = books
+    }
 }

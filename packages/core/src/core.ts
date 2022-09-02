@@ -52,6 +52,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
 
     get booklist(): Record<string, BookInfo> { return this.context.booklist }
     set booklist(v: Record<string, BookInfo>) { this.context.booklist = v }
+    setBook(key: string, value: BookInfo) { this.context.setBook(key, value) }
 
     async showBookList(): Promise<string | undefined> {
         const books = this.booklist
@@ -264,7 +265,9 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     }
 
     private async delBookFromList(bookName: string): Promise<void> {
-        delete this.booklist[bookName]
+        const books = this.booklist
+        delete books[bookName]
+        this.booklist = books
     }
 
     async deleteBook(): Promise<undefined> {
@@ -284,7 +287,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     }
 
     async updateBook(key: string, value: BookInfo): Promise<void> {
-        this.booklist[key] = value
+        this.setBook(key, value)
     }
 
     async showMainMenu(): Promise<BookInfo | undefined | null> {
@@ -424,7 +427,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
             return
         }
 
-        res.curPage = Math.max(1, Math.ceil((res.curPage - 1) * res.pageSize / this.config.pageSize))
+        res.curPage = Math.max(1, Math.ceil(res.curPage * res.pageSize / this.config.pageSize))
         this.updateBook(res.bookName, res)
         // myerror(JSON.stringify(this.booklist))
         await this.newBook(join(this.context.globalStoragePath, setExtTo(res.bookName, 'txt')), res.source)
