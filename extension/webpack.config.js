@@ -2,9 +2,8 @@
 
 "use strict"
 
-import { dirname, resolve } from 'path'
-import { fileURLToPath } from 'url'
-import swcrc from './.swcrc'
+const { resolve } = require('path')
+const swcrc = require('./.swcrc')
 
 const env = process.env.NODE_ENV
 
@@ -13,7 +12,7 @@ const isDev = env ? env === 'development' : false
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
 
-const dir = __dirname ?? dirname(fileURLToPath(import.meta.url))
+const dir = __dirname
 
 /** @type WebpackConfig */
 const extensionConfig = {
