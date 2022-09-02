@@ -1,0 +1,19 @@
+{
+  "name": "@vscrebook/crawl",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "pack": "wasm-pack build -t bundler",
+    "build": "npm run pack",
+    "build:dev": "npm run pack -- --dev"
+  },
+  "keywords": [],
+  "author": "sunzhangchang(Cyanogenaq) <642311409@qq.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@vscrebook/config": "^0.1.0",
+    "@vscrebook/utils": "^0.1.0",
+    "node-fetch": "^3.2.10"
+  }
+}
