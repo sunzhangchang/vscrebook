@@ -88,7 +88,7 @@ interface SaveDialogOptions<Uri> {
 
 type QuickPick = (s: string[], opt?: PickOptions) => Thenable<string | undefined>
 type ShowMsg = <T extends string>(s: string, ...items: T[]) => Thenable<T | undefined>
-type Input = (options?: InputBoxOptions | undefined) => Thenable<string | undefined>
+type Input = (options?: InputBoxOptions) => Thenable<string | undefined>
 type OpenDialog<Uri extends { fsPath: string }> = (options?: OpenDialogOptions<Uri>) => Thenable<Uri[] | undefined>
 type SaveDialog<Uri extends { fsPath: string }> = (options?: SaveDialogOptions<Uri>) => Thenable<Uri | undefined>
 

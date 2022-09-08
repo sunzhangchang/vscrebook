@@ -1,11 +1,12 @@
 import _ from "lodash"
 import { ConfigBase } from "@vscrebook/config"
-import { copyFileToUTF8Sync, Errors, Memento, myerror, readBookFile, readFileToUTF8Sync, setExtTo } from "@vscrebook/utils"
+import { Cancelled, copyFileToUTF8Sync, Errors, Memento, readFileToUTF8Sync, setExtTo, myerror } from "@vscrebook/utils"
 import { Context } from "./context"
 import { join, parse } from "path"
 import { readFile, unlink, writeFile } from "fs/promises"
 import { rsDownload, rsSearch, getConfig } from "@vscrebook/crawl"
 import { writeFileSync } from "fs"
+import { Book } from "./book"
 
 enum Chooses {
     local = '本地书籍',
@@ -28,12 +29,7 @@ enum ImExport {
 }
 
 export class Core<Uri extends { fsPath: string }, Configuration extends Memento> {
-    private book: {
-        text: string,
-        totPage: number,
-        name: string,
-        source: Source,
-    } | null = null
+    private book: Book
 
     private isBoss = false
 
@@ -48,23 +44,28 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
         public context: Context
     ) {
         getConfig(config)
+        this.book = new Book(this.setBook)
+    }
+
+    error(err: Errors | string): void {
+        this.window.error(myerror(err))
     }
 
     get booklist(): Record<string, BookInfo> { return this.context.booklist }
     set booklist(v: Record<string, BookInfo>) { this.context.booklist = v }
-    setBook(key: string, value: BookInfo) { this.context.setBook(key, value) }
+    async setBook(key: string, value: BookInfo) { this.context.setBook(key, value) }
 
-    async showBookList(): Promise<string | undefined> {
+    async showBookList(): Promise<string | Cancelled> {
         const books = this.booklist
-        return this.window.pick(Object.keys(books), {
+        return Cancelled.from(await this.window.pick(Object.keys(books), {
             matchOnDescription: true
-        })
+        }))
     }
 
-    async selectBook(): Promise<BookInfo | null> {
-        const book: string | undefined = await this.showBookList()
-        if (_.isUndefined(book)) {
-            return null
+    async selectBook(): Promise<BookInfo | Cancelled> {
+        const book = await this.showBookList()
+        if (Cancelled.is(book)) {
+            return Cancelled.cancelled
         }
         const books = this.booklist
         return books[book]
@@ -91,7 +92,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     async download(source: string, menuURL: string, dir: string, name: string): Promise<string | undefined> {
         return rsDownload(source, menuURL).then(res => {
             if (_.isUndefined(res)) {
-                myerror('下载出现错误')
+                this.error('下载出现错误')
                 return undefined
             }
 
@@ -104,7 +105,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
             this.window.info('下载完成!')
             return path
         }).catch(err => {
-            myerror((err as Error).message)
+            this.error((err as Error).message)
             return undefined
         })
     }
@@ -113,9 +114,9 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
         bookPath: string
         source: Source
     } | undefined> {
-        const chos = await this.window.pick(_.values(Chooses), {
+        const chos = Cancelled.from(await this.window.pick(_.values(Chooses), {
             matchOnDescription: true,
-        })
+        }))
         switch (chos) {
             case Chooses.local: {
                 return this.window.open().then(res => {
@@ -141,7 +142,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
                         return
                     }
                     if (_.isEmpty(_.trim(searchKey))) {
-                        myerror(Errors.searchKeyEmpty)
+                        this.error(Errors.searchKeyEmpty)
                     } else {
                         break
                     }
@@ -149,7 +150,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
 
                 const list = await this.search(searchKey ?? '')
                 if (_.isNil(list)) {
-                    myerror(Errors.searchedNothing)
+                    this.error(Errors.searchedNothing)
                     return
                 }
                 const strlist: string[] = []
@@ -166,7 +167,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
                 const one = list.find((iter) => _.isEqual(iter.书名, bookName))
 
                 if (_.isUndefined(one)) {
-                    myerror(Errors.chooseFaild)
+                    this.error(Errors.chooseFaild)
                     return
                 }
 
@@ -182,6 +183,10 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
                     bookPath: downloadPath,
                     source: one.书源,
                 }
+            }
+
+            default: {
+                break
             }
         }
     }
@@ -225,11 +230,11 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
                     break
                 }
 
-                const newBookName = await this.window.input({
+                const newBookName = Cancelled.from(await this.window.input({
                     title: '书名重复! 请输入新书名(留空覆盖, 退出取消添加):',
                     placeHolder: bookName,
-                })
-                if (_.isUndefined(newBookName)) {
+                }))
+                if (Cancelled.is(newBookName)) {
                     this.window.info('取消添加!')
                     return
                 }
@@ -258,7 +263,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
             source,
         }
 
-        this.updateBook(bookName, newBook)
+        this.setBook(bookName, newBook)
 
         this.window.info('添加成功')
         return newBook
@@ -271,9 +276,9 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     }
 
     async deleteBook(): Promise<undefined> {
-        const book: string | undefined = await this.showBookList()
+        const book = await this.showBookList()
 
-        if (_.isUndefined(book)) {
+        if (Cancelled.is(book)) {
             return
         }
 
@@ -286,15 +291,14 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
         return
     }
 
-    async updateBook(key: string, value: BookInfo): Promise<void> {
-        this.setBook(key, value)
-    }
-
-    async showMainMenu(): Promise<BookInfo | undefined | null> {
-        const act = await this.window.pick(_.values(LibActions), {
+    async showMainMenu(): Promise<BookInfo | undefined | Cancelled> {
+        const act = Cancelled.from(await this.window.pick(_.values(LibActions), {
             matchOnDescription: true
-        })
-        let res: BookInfo | undefined | null
+        }))
+        if (Cancelled.is(act)) {
+            return Cancelled.cancelled
+        }
+        let res: BookInfo | undefined | Cancelled
         switch (act) {
             case LibActions.select: {
                 res = await this.selectBook()
@@ -316,110 +320,30 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
                 res = undefined
                 break
             }
-
-            default: {
-                res = undefined
-                break
-            }
         }
         return res
     }
 
     async newBook(path?: string, source?: Source): Promise<void> {
-        if (_.isUndefined(path)) {
-            this.book = null
+        const res = await this.book.newBook(this.config.pageSize, path, source)
+        if (!res) {
             this.showBoss()
-            return
         }
-
-        const src = source ?? '本地'
-
-        this.book = {
-            text: readBookFile(path),
-            totPage: 0,
-            name: parse(path).name,
-            source: src,
-        }
-        this.book.totPage = Math.ceil(this.book.text.length / this.config.pageSize)
-    }
-
-    async getPageNumber(jumpPage?: number): Promise<number | null> {
-        if (_.isNull(this.book)) {
-            return null
-        }
-
-        let page = jumpPage ?? this.booklist[this.book.name].curPage
-
-        if (page < 0) {
-            page = 0
-        }
-
-        if (page > this.book.totPage + 1) {
-            page = this.book.totPage + 1
-        }
-
-        return page
-    }
-
-    async getStartEnd(): Promise<[number, number] | undefined> {
-        if (_.isNull(this.book)) {
-            return
-        }
-
-        const pageSize = this.config.pageSize
-        const ed: number = this.booklist[this.book.name].curPage * pageSize
-        return [ed - pageSize, ed]
-    }
-
-    async getPageText(jumpPage?: number): Promise<string> {
-        if (_.isNull(this.book)) {
-            return ''
-        }
-
-        const page = await this.getPageNumber(jumpPage)
-
-        if (_.isNull(page)) {
-            return ''
-        }
-
-        this.updateBook(this.book.name, {
-            bookName: this.book.name,
-            pageSize: this.config.pageSize,
-            curPage: page,
-            source: this.book.source,
-        })
-
-        if (page === 0) {
-            return '您阅读到第一页了!'
-        }
-
-        if (page === this.book.totPage + 1) {
-            return '您阅读到最后一页了!'
-        }
-
-        const tmp = await this.getStartEnd()
-
-        if (_.isUndefined(tmp)) {
-            return ''
-        }
-
-        const [st, ed] = tmp
-        return `${this.book.text.substring(st, ed)}    ${this.booklist[this.book.name].curPage}/${this.book.totPage}`
     }
 
     async showNovelText(page?: number): Promise<void> {
-        if (_.isNull(this.book)) {
-            myerror(Errors.bookUndefined)
+        if (_.isNull(this.book.book)) {
+            this.error(Errors.bookUndefined)
             return
         }
-        const text = await this.getPageText(page)
+        const text = await this.book.getPageText(this.booklist[this.book.book.name].curPage, this.config.pageSize, page)
         this.showText(text)
         this.isBoss = false
     }
 
     async start(): Promise<void> {
         const res = await this.showMainMenu()
-        if (_.isNull(res)) {
+        if (Cancelled.is(res)) {
             return
         }
         if (_.isUndefined(res)) {
@@ -428,15 +352,14 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
         }
 
         res.curPage = Math.max(1, Math.ceil(res.curPage * res.pageSize / this.config.pageSize))
-        this.updateBook(res.bookName, res)
-        // myerror(JSON.stringify(this.booklist))
+        await this.setBook(res.bookName, res)
         await this.newBook(join(this.context.globalStoragePath, setExtTo(res.bookName, 'txt')), res.source)
             .then(async () => {
                 await this.showNovelText()
             })
     }
 
-    get bookinfo(): BookInfo { return this.getBook((this.book ?? { name: "" }).name) }
+    get bookinfo(): BookInfo { return this.getBook((this.book.book ?? { name: "" }).name) }
 
     getBook(name: string): BookInfo {
         return this.booklist[name]
@@ -444,7 +367,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
 
     showPrev(): void {
         if (_.isNull(this.book)) {
-            myerror(Errors.bookUndefined)
+            this.error(Errors.bookUndefined)
             return
         }
         this.showNovelText(this.bookinfo.curPage - 1)
@@ -452,7 +375,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
 
     showNext(): void {
         if (_.isNull(this.book)) {
-            myerror(Errors.bookUndefined)
+            this.error(Errors.bookUndefined)
             return
         }
         this.showNovelText(this.bookinfo.curPage + 1)
@@ -510,16 +433,16 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     }
 
     showJump(): void {
-        if (_.isNull(this.book)) {
-            myerror(Errors.bookUndefined)
+        if (_.isNull(this.book.book)) {
+            this.error(Errors.bookUndefined)
             return
         }
         this.window.input({
             prompt: '请输入跳转页数: ',
-            placeHolder: `跳转页数(默认跳转到当前页: ${this.bookinfo.curPage}, 总页数: ${this.book.totPage})`
+            placeHolder: `跳转页数(默认跳转到当前页: ${this.bookinfo.curPage}, 总页数: ${this.book.book.totPage})`
         }).then(val => {
             if (_.isNull(this.book)) {
-                myerror(Errors.bookUndefined)
+                this.error(Errors.bookUndefined)
                 return
             }
             this.showNovelText(_.isUndefined(val) ? undefined : (+val))
@@ -530,7 +453,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
 
     autoFlipp(): void {
         if (_.isNull(this.book)) {
-            myerror(Errors.bookUndefined)
+            this.error(Errors.bookUndefined)
             return
         }
         if (this.isBoss) {
@@ -554,20 +477,20 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     }
 
     bookSearch(keyword: string): searchCtxResult[] {
-        if (_.isNil(this.book)) {
+        if (_.isNil(this.book.book)) {
             return []
         }
         const list: searchCtxResult[] = []
         const re = new RegExp(keyword, 'g')
         const true_ = true
         while (true_) {
-            const res = re.exec(this.book.text)
+            const res = re.exec(this.book.book.text)
             if (_.isNull(res)) {
                 break
             }
             const index = res.index
             const page = Math.ceil(index / this.config.pageSize)
-            const txt = this.book.text.substring(index - 30, index + 31)
+            const txt = this.book.book.text.substring(index - 30, index + 31)
             list.push({
                 index,
                 page,
@@ -579,7 +502,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
 
     async searchContext(): Promise<void> {
         if (_.isNil(this.book)) {
-            myerror(Errors.bookUndefined)
+            this.error(Errors.bookUndefined)
             return
         }
         const keyword = await this.window.input({
@@ -731,7 +654,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
                             })
                     })
                     .catch((err) => {
-                        myerror(Errors.importSearchError)
+                        this.error(Errors.importSearchError)
                         console.error((err as Error).message)
                     })
             )

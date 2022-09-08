@@ -1,4 +1,4 @@
-import { Memento, myerror } from "@vscrebook/utils"
+import { Errors, Memento } from "@vscrebook/utils"
 import { existsSync, mkdirSync } from "fs"
 import { homedir } from "os"
 import { join } from "path"
@@ -6,13 +6,16 @@ import { join } from "path"
 export class ConfigBase<Configuration extends Memento> {
     private readonly rootSection = 'vscrebook'
 
-    constructor(private getConfig: (section: string) => Configuration) {
+    constructor(
+        private getConfig: (section: string) => Configuration,
+        private error: (err: Errors | string) => void
+    ) {
         if (!existsSync(this.downloadPath)) {
             try {
                 mkdirSync(this.downloadPath)
             } catch (error) {
-                myerror((error as Error).message)
-                myerror('下载路径异常，请更换下载路径!')
+                this.error((error as Error).message)
+                this.error('下载路径异常，请更换下载路径!')
             }
         }
     }

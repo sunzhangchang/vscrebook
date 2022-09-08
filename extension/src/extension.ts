@@ -1,6 +1,7 @@
 import { Context, Core } from "@vscrebook/core"
 import { ConfigBase } from "@vscrebook/config"
 import { Uri, window, WorkspaceConfiguration, ExtensionContext, workspace, Disposable, commands } from "vscode"
+import { Errors, myerror } from "@vscrebook/utils"
 
 const extName = 'vscrebook'
 
@@ -16,8 +17,10 @@ function subscribeCmd(context: ExtensionContext): void {
     }
 }
 
-export function activate(extContext: ExtensionContext) {
-    const config = new ConfigBase<WorkspaceConfiguration>(workspace.getConfiguration)
+async function tryActivate(extContext: ExtensionContext): Promise<void> {
+    const config = new ConfigBase<WorkspaceConfiguration>(workspace.getConfiguration, (err: Errors | string) => {
+        window.showErrorMessage(myerror(err))
+    })
 
     const statusBar = window.createStatusBarItem()
 
@@ -155,6 +158,13 @@ export function activate(extContext: ExtensionContext) {
     })
 
     subscribeCmd(extContext)
+}
+
+export async function activate(extContext: ExtensionContext) {
+    return tryActivate(extContext).catch((err) => {
+        window.showErrorMessage(`Cannot activate vscrebook: ${(err as Error).message}`)
+        throw err
+    })
 }
 
 export function deactivate(): void {

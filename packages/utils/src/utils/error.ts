@@ -1,5 +1,4 @@
 import _ from "lodash"
-import { window } from "vscode"
 
 export enum Errors {
     bookUndefined,
@@ -17,7 +16,7 @@ export enum Errors {
     requestError,
 }
 
-export function myerror(err: Errors | string): void {
+export function myerror(err: Errors | string): string {
     let msg: string
     if (_.isString(err)) {
         msg = err
@@ -89,5 +88,5 @@ export function myerror(err: Errors | string): void {
             }
         }
     }
-    window.showErrorMessage(msg)
+    return msg
 }
