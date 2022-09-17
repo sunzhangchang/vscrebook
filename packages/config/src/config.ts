@@ -3,6 +3,8 @@ import { existsSync, mkdirSync } from "fs"
 import { homedir } from "os"
 import { join } from "path"
 
+const home = homedir()
+
 export class ConfigBase<Configuration extends Memento> {
     private readonly rootSection = 'vscrebook'
 
@@ -35,7 +37,12 @@ export class ConfigBase<Configuration extends Memento> {
     get pageSize(): number { return this.get<number>('pageSize', 25) }
     set pageSize(v: number) { this.update('pageSize', v) }
 
-    get downloadPath(): string { return this.get<string>('downloadPath', join(homedir(), 'downloads')) }
+    get downloadPath(): string {
+        const dir = join(home, 'Downloads')
+        const path = this.get<string>('downloadPath', dir)
+        path.replaceAll('${homedir}', home)
+        return path ?? dir
+    }
     set downloadPath(v: string) { this.update('downloadPath', v) }
 
     get autoFlipTime(): number { return this.get<number>('autoFlipTime', 3000) }
