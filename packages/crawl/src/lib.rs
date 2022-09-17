@@ -9,14 +9,13 @@ use crawlers::aixiashu::Aixiashu;
 use crawlers::caimoge::Caimoge;
 use crawlers::maxreader::Maxreader;
 use futures::future::join_all;
-use js_sys::{Object, Reflect};
 use search_book::SearchBook;
 use wasm_bindgen::prelude::*;
 use utils::util::{myerror, mydebug};
 
 
 #[wasm_bindgen(js_name = rsSearch)]
-pub async fn rs_search(search_key: String) -> Object {
+pub async fn rs_search(search_key: String) -> JsValue {
     let mut results: Vec<SearchBook> = Vec::new();
     let mut errors: Vec<String> = Vec::new();
 
@@ -50,12 +49,8 @@ pub async fn rs_search(search_key: String) -> Object {
     for i in res {
         push_res!(i);
     }
-    // push_res!(res.0);
 
-    let obj = Object::default();
-    Reflect::set(&obj, &"results".into(), &serde_json::to_string(&results).unwrap().into()).unwrap();
-    Reflect::set(&obj, &"errors".into(), &serde_json::to_string(&errors).unwrap().into()).unwrap();
-    obj
+    serde_wasm_bindgen::to_value(&(results, errors)).unwrap()
 }
 
 #[wasm_bindgen(js_name = rsDownload)]

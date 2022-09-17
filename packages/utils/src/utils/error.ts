@@ -14,6 +14,7 @@ export enum Errors {
     importSearchError,
     chapterLost,
     requestError,
+    downloadPathError,
 }
 
 export function myerror(err: Errors | string): string {
@@ -79,6 +80,11 @@ export function myerror(err: Errors | string): string {
 
             case Errors.chapterLost: {
                 msg = '章节获取失败!'
+                break
+            }
+
+            case Errors.downloadPathError: {
+                msg = '下载路径异常，请更换下载路径!'
                 break
             }
 

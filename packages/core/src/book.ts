@@ -1,4 +1,4 @@
-import { readBookFile } from "@vscrebook/utils"
+import { BookIsNull, readBookFile } from "@vscrebook/utils"
 import _ from "lodash"
 import { parse } from "path"
 
@@ -12,8 +12,8 @@ type B = {
 export class Book {
     private _book: B | null = null
 
-    get book(): B | null { return this._book }
-    set book(v: B | null) { this._book = v }
+    get book(): B | BookIsNull { return this._book ?? BookIsNull.yes }
+    set book(v: B | BookIsNull) { this._book = BookIsNull.is(v) ? null : v }
 
     constructor(
         private updateBook: (k: string, v: BookInfo) => Promise<void>
@@ -22,7 +22,7 @@ export class Book {
 
     async newBook(pageSize: number, path?: string, source?: Source): Promise<boolean> {
         if (_.isUndefined(path)) {
-            this.book = null
+            this.book = BookIsNull.yes
             return false
         }
 
@@ -38,9 +38,9 @@ export class Book {
         return true
     }
 
-    async getPageNumber(curPage: number, jumpPage?: number): Promise<number | null> {
-        if (_.isNull(this.book)) {
-            return null
+    async getPageNumber(curPage: number, jumpPage?: number): Promise<number | BookIsNull> {
+        if (BookIsNull.is(this.book)) {
+            return BookIsNull.yes
         }
 
         let page = jumpPage ?? curPage
@@ -56,24 +56,24 @@ export class Book {
         return page
     }
 
-    async getStartEnd(pageSize: number, curPage: number): Promise<[number, number] | undefined> {
+    async getStartEnd(pageSize: number, curPage: number): Promise<[number, number] |  BookIsNull> {
         if (_.isNull(this.book)) {
-            return
+            return BookIsNull.yes
         }
 
         const ed: number = curPage * pageSize
         return [ed - pageSize, ed]
     }
 
-    async getPageText(curPage: number, pageSize: number, jumpPage?: number): Promise<string> {
-        if (_.isNull(this.book)) {
-            return ''
+    async getPageText(curPage: number, pageSize: number, jumpPage?: number): Promise<string | BookIsNull> {
+        if (BookIsNull.is(this.book)) {
+            return BookIsNull.yes
         }
 
         const page = await this.getPageNumber(curPage, jumpPage)
 
-        if (_.isNull(page)) {
-            return ''
+        if (BookIsNull.is(page)) {
+            return BookIsNull.yes
         }
 
         await this.updateBook(this.book.name, {
@@ -91,13 +91,13 @@ export class Book {
             return '您阅读到最后一页了!'
         }
 
-        const tmp = await this.getStartEnd(pageSize, curPage)
+        const tmp = await this.getStartEnd(pageSize, page)
 
-        if (_.isUndefined(tmp)) {
-            return ''
+        if (BookIsNull.is(tmp)) {
+            return BookIsNull.yes
         }
 
         const [st, ed] = tmp
-        return `${this.book.text.substring(st, ed)}    ${curPage}/${this.book.totPage}`
+        return `${this.book.text.substring(st, ed)}    ${page}/${this.book.totPage}`
     }
 }

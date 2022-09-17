@@ -43,6 +43,7 @@ module.exports = (isDev = false) => {
             }
         },
         minify: !isDev,
+        sourceMaps: isDev,
     }
     return config
 }

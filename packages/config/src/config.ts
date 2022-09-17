@@ -67,6 +67,14 @@ export class ConfigBase<Configuration extends Memento> {
     set downloadSettings(v: DownloadSettings) {
         this.update('downloadSettings', v)
     }
+
+    get bossTexts(): BossTexts {
+        return this.get<object>('bossTexts', []) as BossTexts
+    }
+
+    set bossTexts(v: BossTexts) {
+        this.update('downloadSettings', v)
+    }
 }
 
 // class Config extends ConfigBase<Uri, WorkspaceConfiguration> {

@@ -3,7 +3,6 @@ import { readFileSync, writeFileSync } from 'fs'
 import { decode, encode } from 'iconv-lite'
 import _ from 'lodash'
 import { format, parse } from 'path'
-export * from './debug'
 export * from './error'
 
 export function detect(filePath: string): string {

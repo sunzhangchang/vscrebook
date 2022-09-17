@@ -1,83 +1,64 @@
 import { Context, Core } from "@vscrebook/core"
 import { ConfigBase } from "@vscrebook/config"
-import { Uri, window, WorkspaceConfiguration, ExtensionContext, workspace, Disposable, commands } from "vscode"
+import { Uri, window, WorkspaceConfiguration, ExtensionContext, workspace, commands } from "vscode"
 import { Errors, myerror } from "@vscrebook/utils"
+import { Showing } from "@vscrebook/core/src/showing"
+import { Command } from "./command"
 
-const extName = 'vscrebook'
+class Config extends ConfigBase<WorkspaceConfiguration> {}
 
-const cmds: Disposable[] = []
+const cmd = new Command()
 
-function registerCmd(name: string, func: () => void): void {
-    cmds.push(commands.registerCommand(`${extName}.${name}`, () => { func() }))
+function showError(err: Errors | string) {
+    window.showErrorMessage(myerror(err))
 }
 
-function subscribeCmd(context: ExtensionContext): void {
-    for (const iter of cmds) {
-        context.subscriptions.push(iter)
+const statusBar = window.createStatusBarItem()
+
+function showText(config: Config, msg: string): void {
+    switch (config.displayMode) {
+        case 'statusBar': default: {
+            statusBar.show()
+            statusBar.text = msg
+            break
+        }
+
+        case 'showInformation': {
+            statusBar.hide()
+            window.showInformationMessage(msg)
+            break
+        }
+    }
+}
+
+function showBoss(config: Config): void {
+    switch (config.displayMode) {
+        case 'statusBar': default: {
+            const index: number = Math.floor(Math.random() * config.bossTexts.length)
+            showText(config, config.bossTexts[index])
+            break
+        }
+
+        case 'showInformation': {
+            commands.executeCommand('notifications.hideToasts')
+            break
+        }
     }
 }
 
 async function tryActivate(extContext: ExtensionContext): Promise<void> {
-    const config = new ConfigBase<WorkspaceConfiguration>(workspace.getConfiguration, (err: Errors | string) => {
-        window.showErrorMessage(myerror(err))
-    })
+    const config = new Config(workspace.getConfiguration, showError)
 
-    const statusBar = window.createStatusBarItem()
+    const context = new Context(
+        extContext.globalStorageUri.fsPath,
+        extContext.globalState,
+        showError
+    )
 
-    function showText(msg: string): void {
-        switch (config.displayMode) {
-            case 'statusBar': default: {
-                statusBar.show()
-                statusBar.text = msg
-                break
-            }
-
-            case 'showInformation': {
-                statusBar.hide()
-                window.showInformationMessage(msg)
-                break
-            }
-        }
-    }
-
-    const codes: string[] = [
-        'Java - System.out.println("Hello World");',
-        'Scala - println("Hello, world!")',
-        'Kotlin - println("Hello, world!")',
-        'Groovy - println "Hello, world!"',
-        'C - printf("Hello, World!");',
-        'C# - System.Console.WriteLine("Hello World!"); ',
-        'C++ - cout << "Hello, world!" << endl;',
-        'Python - print("Hello, World!")',
-        'PHP - echo "Hello World!";',
-        'Ruby - puts "Hello World!";',
-        'Rust - println!("Hello, World!");',
-        'Perl - print "Hello, World!";',
-        'Lua - print("Hello World!")',
-        'Golang - fmt.Println("Hello, World!")',
-        'JavaScript - console.log("Hello, World!")',
-        'TypeScript - console.log("Hello, World!")',
-        'ReScript - Js.log("Hello, World!")',
-        'PureScript - log "Hello, World!"',
-        'Scala.js - println("Hello, World!")',
-    ]
-
-    function showBoss(): void {
-        switch (config.displayMode) {
-            case 'statusBar': default: {
-                const index: number = Math.floor(Math.random() * codes.length)
-                showText(codes[index])
-                break
-            }
-
-            case 'showInformation': {
-                commands.executeCommand('notifications.hideToasts')
-                break
-            }
-        }
-    }
-
-    const context = new Context(extContext.globalStorageUri.fsPath, extContext.globalState)
+    const showing = new Showing(
+        (msg: string) => showText(config, msg),
+        () => showBoss(config),
+    )
 
     const core = new Core<Uri, WorkspaceConfiguration>(
         {
@@ -89,25 +70,23 @@ async function tryActivate(extContext: ExtensionContext): Promise<void> {
             open: window.showOpenDialog,
             save: window.showSaveDialog
         },
-        showText,
-        showBoss,
+        showing,
         config,
         context
     )
 
-
-    registerCmd('showMenu', () => {
+    cmd.register('showMenu', () => {
         core.start()
     })
 
-    registerCmd('bossKey', () => {
+    cmd.register('bossKey', () => {
         core.toggleBoss()
     })
 
     let cntNext = 0
     let lstNextTime = new Date().getTime()
     // 下一页
-    registerCmd('nextPage', () => {
+    cmd.register('nextPage', () => {
         const now = new Date().getTime()
         if (now - lstNextTime <= 50) {
             lstNextTime = now
@@ -120,13 +99,13 @@ async function tryActivate(extContext: ExtensionContext): Promise<void> {
         }
         lstNextTime = now
         core.showNext()
-        core.refreshAuto()
+        core.showing.refreshAuto()
     })
 
     let cntPrev = 0
     let lstPrevTime = new Date().getTime()
     // 上一页
-    registerCmd('prevPage', () => {
+    cmd.register('prevPage', () => {
         const now = new Date().getTime()
         if (now - lstPrevTime <= 50) {
             lstPrevTime = now
@@ -139,25 +118,25 @@ async function tryActivate(extContext: ExtensionContext): Promise<void> {
         }
         lstPrevTime = now
         core.showPrev()
-        core.refreshAuto()
+        core.showing.refreshAuto()
     })
 
     // 跳转
-    registerCmd('jumpPage', () => {
+    cmd.register('jumpPage', () => {
         core.showJump()
     })
 
     // 自动翻页
-    registerCmd('autoFlip', () => {
+    cmd.register('autoFlip', () => {
         core.autoFlipp()
     })
 
     // 搜索内容
-    registerCmd('search', () => {
+    cmd.register('search', () => {
         core.searchContext()
     })
 
-    subscribeCmd(extContext)
+    cmd.subscribe(extContext)
 }
 
 export async function activate(extContext: ExtensionContext) {
@@ -168,5 +147,6 @@ export async function activate(extContext: ExtensionContext) {
 }
 
 export function deactivate(): void {
-    console.log(`Extension ${extName} is deactive.`)
+    console.log(`Extension vscrebook is deactive.`)
+    cmd.disposeAll()
 }

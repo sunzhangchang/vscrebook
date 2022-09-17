@@ -15,16 +15,7 @@ import fetch, { Headers, Request, Response } from "node-fetch"
 (global as any).fetch = fetch
 
 export { mydebug } from '@vscrebook/utils'
-import { myerror as mye, Errors } from '@vscrebook/utils'
-
-export function myerror(s: string) {
-    const m = _.get(Errors, s)
-    if (_.isUndefined(m)) {
-        mye(s)
-    } else {
-        mye(m)
-    }
-}
+import { Errors } from '@vscrebook/utils'
 
 let config: {
     get showMoreInfo(): ShowMoreInfo
@@ -35,6 +26,19 @@ let config: {
 
 export function getConfig<C extends Memento>(c: ConfigBase<C>) {
     config = c
+}
+
+export let myerror: (s: string) => void
+
+export function getShowError(mye: (s: string | Errors) => void) {
+    myerror = (s: string) => {
+        const m = _.get(Errors, s)
+        if (_.isUndefined(m)) {
+            mye(s)
+        } else {
+            mye(m)
+        }
+    }
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

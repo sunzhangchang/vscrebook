@@ -12,6 +12,8 @@ declare type ShowMoreInfo = Record<SourceEng, boolean>
 
 declare type DownloadSettings = Record<SourceEng, 'disable' | 'txtOnly' | 'chaptersOnly' | 'txt & chapters'>
 
+declare type BossTexts = string[]
+
 declare type ThreadNum = number
 
 // declare type ConfigType = ConfigBase<number, string, number, DisplayMode, ShowMoreInfo, DownloadSettings, ThreadNum>

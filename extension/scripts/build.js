@@ -12,22 +12,24 @@ console.log(args)
 
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
 
-/** @type { {dev: WebpackConfig, prod: WebpackConfig, watch: WebpackConfig } } */
-const config = {
-    dev: {
-        ...webpackConfig,
-        mode: 'development',
-    },
-    prod: {
-        ...webpackConfig,
-        mode: 'production',
-    },
-    watch: {
-        ...webpackConfig,
-        mode: 'development',
-        watch: true,
-    }
-}
+// /** @type { {dev: WebpackConfig, prod: WebpackConfig, watch: WebpackConfig } } */
+/** @type {WebpackConfig} */
+let config = {}
+// const config = {
+//     dev: {
+//         ...webpackConfig(true),
+//         mode: 'development',
+//     },
+//     prod: {
+//         ...webpackConfig(false),
+//         mode: 'production',
+//     },
+//     watch: {
+//         ...webpackConfig(true),
+//         mode: 'development',
+//         watch: true,
+//     }
+// }
 
 logger.info(`cwd: ${process.cwd()}`)
 
@@ -52,15 +54,21 @@ let mode = ''
 switch (args[0]) {
     case 'dev': case '-d': case '--dev':
         mode = 'dev'
+        config = webpackConfig(true)
         break
 
     case 'prod': case '-p': case '--prod': default:
         clear()
         mode = 'prod'
+        config = webpackConfig(false)
         break
 
     case 'watch': case '-w': case '--watch':
         mode = 'watch'
+        config = {
+            ...webpackConfig(true),
+            watch: true,
+        }
         break
 }
 
@@ -71,7 +79,7 @@ logger.info('[crawl] finish building')
 logger.info('[extension] start building')
 !(
     (mode === 'watch' ? watchWebpack : runWebpack)(
-        config[mode],
+        config,
         'dev',
         () => {
             logger.info('[extension] build succedful!')

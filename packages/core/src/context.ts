@@ -1,12 +1,20 @@
-import { Memento } from "@vscrebook/utils"
+import { Errors, Memento } from "@vscrebook/utils"
+import { existsSync, mkdirSync } from "fs"
 
 export class Context {
-    readonly globalStoragePath: string
-    readonly globalState: Memento
-
-    constructor(globalStoragePath: string, globalState: Memento) {
-        this.globalStoragePath = globalStoragePath
-        this.globalState = globalState
+    constructor(
+        public globalStoragePath: string,
+        public globalState: Memento,
+        private error: (err: Errors | string) => void,
+    ) {
+        if (!existsSync(globalStoragePath)) {
+            try {
+                mkdirSync(globalStoragePath)
+            } catch (e) {
+                this.error((e as Error).message)
+                this.error(`globalStorage 路径异常，请手动创建!\nPath: ${globalStoragePath}`)
+            }
+        }
     }
 
     get booklist(): Record<string, BookInfo> {
