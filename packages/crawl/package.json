@@ -15,5 +15,6 @@
     "@vscrebook/config": "^1.2.0",
     "@vscrebook/utils": "^1.2.0",
     "node-fetch": "^3.2.10"
-  }
+  },
+  "gitHead": "13c44aa48887432713af8f602b61852cef273a82"
 }
