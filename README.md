@@ -71,6 +71,7 @@ vscode 插件市场，搜索 `vscrebook`，安装
 - `vscrebook.displayMode`: 显示小说文字的方式
 - `vscrebook.showMoreInfo`: 设置网络书籍中是否显示书籍更多信息
 - `vscrebook.downloadSettings`: 网络书籍下载设置
+- `vscrebook.bossTexts`: 老板键随机显示的文本
 - 修改快捷键：首选项 -- 键盘快捷方式(`Ctrl + K Ctrl + S`)
 
 ## Tips
@@ -99,4 +100,4 @@ vscode 插件市场，搜索 `vscrebook`，安装
 | 自动老板键 |      不支持       |                                     支持                                     |                   支持                   |
 |  自动翻页  |      不支持       |                                    不支持                                    |                   支持                   |
 |  阅读方式  |      状态栏       |                                    状态栏                                    |             状态栏, 弹出信息             |
-|  更新时间  |     2019.8.7      |                                  2022.7.14                                   |                2022.9.2                 |
+|  更新时间  |     2019.8.7      |                                  2022.7.14                                   |                2022.9.17                 |
