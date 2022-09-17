@@ -1,2 +1,2 @@
 export * from './pkg/crawl'
-export { getConfig, getShowError } from './define_in_js'
+export { getConfig, getShowError, getShowDebug } from './define_in_js'

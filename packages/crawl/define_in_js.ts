@@ -14,7 +14,6 @@ import fetch, { Headers, Request, Response } from "node-fetch"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).fetch = fetch
 
-export { mydebug } from '@vscrebook/utils'
 import { Errors } from '@vscrebook/utils'
 
 let config: {
@@ -29,6 +28,7 @@ export function getConfig<C extends Memento>(c: ConfigBase<C>) {
 }
 
 export let myerror: (s: string) => void
+export let mydebug: (s: string) => void
 
 export function getShowError(mye: (s: string | Errors) => void) {
     myerror = (s: string) => {
@@ -39,6 +39,10 @@ export function getShowError(mye: (s: string | Errors) => void) {
             mye(m)
         }
     }
+}
+
+export function getShowDebug(mdebug: (s: string) => void) {
+    mydebug = mdebug
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

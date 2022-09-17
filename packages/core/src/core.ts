@@ -4,7 +4,7 @@ import { Cancelled, copyFileToUTF8Sync, Errors, Memento, readFileToUTF8Sync, set
 import { Context } from "./context"
 import { join, parse } from "path"
 import { readFile, unlink, writeFile } from "fs/promises"
-import { getConfig, getShowError } from "@vscrebook/crawl"
+import { getConfig, getShowDebug, getShowError } from "@vscrebook/crawl"
 import { Book } from "./book"
 import { Showing } from "./showing"
 import { Logger } from "./logger"
@@ -54,6 +54,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
 
         this.logger.info('WASM gets logger.')
         getShowError(this.logger.error)
+        getShowDebug((msg: string) => process.env.mode === 'development' ?? this.logger.info(msg))
 
         this.book = new Book(this.setBook.bind(this))
     }
