@@ -1,6 +1,6 @@
 {
   "name": "@vscrebook/core",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "vscrebook核心",
   "author": "sunzhangchang <642311409@qq.com>",
   "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md/tree/main/packages/core#readme",
@@ -24,6 +24,6 @@
     "url": "https://github.com/sunzhangchang/vscrebook/issues"
   },
   "dependencies": {
-    "@vscrebook/utils": "^1.0.1"
+    "@vscrebook/utils": "^1.1.0"
   }
 }

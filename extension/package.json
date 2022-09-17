@@ -38,8 +38,8 @@
     "publish": "vsce publish"
   },
   "dependencies": {
-    "@vscrebook/config": "^1.0.2",
-    "@vscrebook/core": "^1.0.2"
+    "@vscrebook/config": "^1.1.0",
+    "@vscrebook/core": "^1.1.0"
   },
   "devDependencies": {
     "@swc/core": "^1.3.1",
