@@ -40,8 +40,7 @@ export class ConfigBase<Configuration extends Memento> {
     get downloadPath(): string {
         const dir = join(home, 'Downloads')
         const path = this.get<string>('downloadPath', dir)
-        path.replaceAll('${homedir}', home)
-        return path ?? dir
+        return path.replaceAll('${homedir}', home) ?? dir
     }
     set downloadPath(v: string) { this.update('downloadPath', v) }
 
