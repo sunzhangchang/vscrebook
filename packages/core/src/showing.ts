@@ -4,12 +4,8 @@ import _ from "lodash"
 export class Showing {
     public isBoss = false
 
-    // public autoFlipping: NodeJS.Timeout | null = null
-    // public showBossInterval: NodeJS.Timeout | null = null
-    // public isAutoFlipping: boolean = false
-    // public isShowBossInteval: boolean = false
-    public autoFlipping: Inteval = new Inteval()
-    public showBossInterval: Inteval = new Inteval()
+    public autoFlipping = new Inteval()
+    public showBossInterval = new Inteval()
 
     constructor(
         public showText: ShowText,
