@@ -1,5 +1,4 @@
 import { Interval } from "@vscrebook/utils"
-import _ from "lodash"
 
 export class Showing {
     public isBoss = false
@@ -34,8 +33,5 @@ export class Showing {
         this.autoFlipping.clear()
         this.showBossInterval.clear()
         this.setShowBossInterval()
-    }
-
-    showChangelog(): void {
     }
 }

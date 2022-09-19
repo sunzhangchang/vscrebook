@@ -5,9 +5,6 @@ const extName = 'vscrebook'
 export class Command {
     private cmds: Disposable[] = []
 
-    constructor() {
-    }
-
     register(name: string, func: () => void): void {
         this.cmds.push(commands.registerCommand(`${extName}.${name}`, () => { func() }))
     }

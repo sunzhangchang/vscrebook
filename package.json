@@ -31,7 +31,7 @@
     "ext:build:dev": "npm run build -w vscrebook -- dev",
     "ext:package": "npm run package -w vscrebook",
     "ext:publish": "npm run publish -w vscrebook",
-    "lint": "eslint src --ext ts"
+    "lint": "eslint packages extension --ext ts"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.185",
