@@ -49,10 +49,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
 
         this.crawl = new Crawl(window.info, this.logger.error)
 
-        this.logger.info('WASM gets configs.')
         getConfig(config)
-
-        this.logger.info('WASM gets logger.')
         getShowError(this.logger.error)
         getShowDebug((msg: string) => process.env.mode === 'development' ?? this.logger.info(msg))
 
