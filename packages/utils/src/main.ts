@@ -26,19 +26,19 @@ export class BookIsNull {
     }
 }
 
-export class Inteval {
-    private inteval: NodeJS.Timeout | null = null
+export class Interval {
+    private interval: NodeJS.Timeout | null = null
 
-    has(): boolean { return !_.isNull(this.inteval) }
+    has(): boolean { return !_.isNull(this.interval) }
 
     set(callback: () => void, ms: number) {
-        this.inteval = setInterval(callback, ms)
+        this.interval = setInterval(callback, ms)
     }
 
     clear() {
-        if (!_.isNull(this.inteval)) {
-            clearInterval(this.inteval)
-            this.inteval = null
+        if (!_.isNull(this.interval)) {
+            clearInterval(this.interval)
+            this.interval = null
         }
     }
 }

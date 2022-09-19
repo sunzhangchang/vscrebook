@@ -1,11 +1,11 @@
-import { Inteval } from "@vscrebook/utils"
+import { Interval } from "@vscrebook/utils"
 import _ from "lodash"
 
 export class Showing {
     public isBoss = false
 
-    public autoFlipping = new Inteval()
-    public showBossInterval = new Inteval()
+    public autoFlipping = new Interval()
+    public showBossInterval = new Interval()
 
     constructor(
         public showText: ShowText,
@@ -34,5 +34,8 @@ export class Showing {
         this.autoFlipping.clear()
         this.showBossInterval.clear()
         this.setShowBossInterval()
+    }
+
+    showChangelog(): void {
     }
 }
