@@ -1,6 +1,6 @@
 {
     "name": "@vscrebook/config",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "> TODO: description",
     "author": "sunzhangchang <642311409@qq.com>",
     "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md/tree/main/packages/config#readme",
@@ -20,7 +20,7 @@
         "url": "https://github.com/sunzhangchang/vscrebook/issues"
     },
     "dependencies": {
-        "@vscrebook/utils": "^1.2.1"
+        "@vscrebook/utils": "^1.2.2"
     },
     "gitHead": "4ebca2e6db3e3f9531e36f8dbc777eeed991863c"
 }

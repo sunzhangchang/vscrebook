@@ -1,6 +1,6 @@
 {
   "name": "@vscrebook/crawl",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "",
   "main": "index.ts",
   "scripts": {
@@ -12,8 +12,8 @@
   "author": "sunzhangchang(Cyanogenaq) <642311409@qq.com>",
   "license": "MIT",
   "dependencies": {
-    "@vscrebook/config": "^1.2.1",
-    "@vscrebook/utils": "^1.2.1",
+    "@vscrebook/config": "^1.2.2",
+    "@vscrebook/utils": "^1.2.2",
     "node-fetch": "^3.2.10"
   },
   "gitHead": "4ebca2e6db3e3f9531e36f8dbc777eeed991863c"
