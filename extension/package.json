@@ -51,7 +51,6 @@
     "esbuild": "^0.15.7",
     "esbuild-loader": "^2.20.0",
     "eslint": "^8.23.1",
-    "fancy-log": "^2.0.0",
     "plugin-error": "^2.0.0",
     "swc-loader": "^0.2.3",
     "vsce": "^2.11.0",

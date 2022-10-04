@@ -72,10 +72,6 @@ switch (args[0]) {
         break
 }
 
-logger.info('[crawl] start building')
-cp.execSync(`cd ../ && npm run -w @vscrebook/crawl build${mode === 'prod' ? '' : ':dev'}`)
-logger.info('[crawl] finish building')
-
 logger.info('[extension] start building')
 !(
     (mode === 'watch' ? watchWebpack : runWebpack)(
