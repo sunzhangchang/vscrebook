@@ -12,6 +12,7 @@
     "typescript.tsc.autoDetect": "off",
     "conventionalCommits.scopes": [
         "crawler",
-        "core"
+        "core",
+        "root"
     ]
 }
