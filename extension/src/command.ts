@@ -5,17 +5,17 @@ const extName = 'vscrebook'
 export class Command {
     private cmds: Disposable[] = []
 
-    register(name: string, func: () => void): void {
+    async register(name: string, func: () => void): Promise<void> {
         this.cmds.push(commands.registerCommand(`${extName}.${name}`, () => { func() }))
     }
 
-    subscribe(context: ExtensionContext): void {
+    async subscribe(context: ExtensionContext): Promise<void> {
         for (const iter of this.cmds) {
             context.subscriptions.push(iter)
         }
     }
 
-    disposeAll(): void {
+    async disposeAll(): Promise<void> {
         for (const iter of this.cmds) {
             iter.dispose()
         }
