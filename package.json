@@ -28,6 +28,7 @@
   ],
   "scripts": {
     "script": "node scripts/script.mjs",
+    "ext:build:dev": "npm run script ext build dev",
     "lint": "eslint packages extension --ext ts"
   },
   "devDependencies": {
