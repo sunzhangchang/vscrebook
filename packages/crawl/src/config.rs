@@ -41,7 +41,7 @@ pub struct Config {
     // pub thread_num: ThreadNum,
 }
 
-#[wasm_bindgen(raw_module = "../define_in_js")]
+#[wasm_bindgen(raw_module = "../define_in_js.ts")]
 extern "C" {
     fn get_config() -> JsValue;
 }

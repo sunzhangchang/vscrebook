@@ -51,7 +51,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
 
         getConfig(config)
         getShowError(this.logger.error)
-        getShowDebug((msg: string) => process.env.mode === 'development' ?? this.logger.info(msg))
+        getShowDebug((msg: string) => process.env.mode === 'development' || this.logger.info(msg))
 
         this.book = new Book(this.setBook.bind(this))
     }
@@ -108,7 +108,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
             this.showNovelText(+res)
             this.showing.showBossInterval.clear()
             this.showing.setShowBossInterval()
-        } catch (e) {
+        } catch (_e) {
             this.logger.error('请输入一个正整数!')
         }
     }

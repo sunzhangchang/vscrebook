@@ -1,30 +1,30 @@
 {
-  "name": "@vscrebook/core",
-  "version": "1.2.2",
-  "description": "vscrebook核心",
-  "author": "sunzhangchang <642311409@qq.com>",
-  "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md/tree/main/packages/core#readme",
-  "license": "MIT",
-  "main": "./src/main.ts",
-  "directories": {
-    "src": "src",
-    "test": "__tests__"
-  },
-  "files": [
-    "src"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sunzhangchang/vscrebook.git"
-  },
-  "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
-  },
-  "bugs": {
-    "url": "https://github.com/sunzhangchang/vscrebook/issues"
-  },
-  "dependencies": {
-    "@vscrebook/utils": "^1.2.2"
-  },
-  "gitHead": "4ebca2e6db3e3f9531e36f8dbc777eeed991863c"
+    "name": "@vscrebook/core",
+    "version": "1.2.2",
+    "description": "vscrebook核心",
+    "author": "sunzhangchang <642311409@qq.com>",
+    "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md/tree/main/packages/core#readme",
+    "license": "MIT",
+    "main": "./src/main.ts",
+    "directories": {
+        "src": "src",
+        "test": "__tests__"
+    },
+    "files": [
+        "src"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sunzhangchang/vscrebook.git"
+    },
+    "scripts": {
+        "test": "echo \"Error: run tests from root\" && exit 1"
+    },
+    "bugs": {
+        "url": "https://github.com/sunzhangchang/vscrebook/issues"
+    },
+    "dependencies": {
+        "@vscrebook/utils": "^1.2.2"
+    },
+    "gitHead": "4ebca2e6db3e3f9531e36f8dbc777eeed991863c"
 }

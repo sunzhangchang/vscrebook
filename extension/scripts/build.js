@@ -1,7 +1,7 @@
 // @ts-check
 
-const { runWebpack, watchWebpack } = require('./runWebpack')
-const webpackConfig = require('../webpack.config')
+const { runRspack, watchRspack } = require('./runRspack')
+const rspackConfig = require('../rspack.config')
 const logger = require('fancy-log')
 const cp = require('child_process')
 const { existsSync, rmSync } = require('fs')
@@ -10,10 +10,10 @@ const args = process.argv.slice(2)
 
 console.log(args)
 
-/** @typedef {import('webpack').Configuration} WebpackConfig **/
+/** @typedef {import('@rspack/core').Configuration} RspackConfig **/
 
 // /** @type { {dev: WebpackConfig, prod: WebpackConfig, watch: WebpackConfig } } */
-/** @type {WebpackConfig} */
+/** @type {RspackConfig} */
 let config = {}
 // const config = {
 //     dev: {
@@ -54,19 +54,19 @@ let mode = ''
 switch (args[0]) {
     case 'dev': case '-d': case '--dev':
         mode = 'dev'
-        config = webpackConfig(true)
+        config = rspackConfig(true)
         break
 
     case 'prod': case '-p': case '--prod': default:
         clear()
         mode = 'prod'
-        config = webpackConfig(false)
+        config = rspackConfig(false)
         break
 
     case 'watch': case '-w': case '--watch':
         mode = 'watch'
         config = {
-            ...webpackConfig(true),
+            ...rspackConfig(true),
             watch: true,
         }
         break
@@ -74,7 +74,7 @@ switch (args[0]) {
 
 logger.info('[extension] start building')
 !(
-    (mode === 'watch' ? watchWebpack : runWebpack)(
+    (mode === 'watch' ? watchRspack : runRspack)(
         config,
         'dev',
         () => {

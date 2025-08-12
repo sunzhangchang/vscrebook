@@ -10,11 +10,11 @@ const swcrc = require('./.swcrc')
 // const isDev = env ? env === 'development' : false
 
 //@ts-check
-/** @typedef {import('webpack').Configuration} WebpackConfig **/
+/** @typedef {import('@rspack/core').Configuration} RspackConfig **/
 
 const dir = __dirname
 
-/** @type {(isDev: boolean) => WebpackConfig} */
+/** @type {(isDev: boolean) => RspackConfig} */
 const extensionConfig = (isDev) => {
     console.log(isDev)
     return {
@@ -33,7 +33,6 @@ const extensionConfig = (isDev) => {
         devtool: isDev ? 'eval-source-map' : false,
         experiments: {
             asyncWebAssembly: true,
-            syncWebAssembly: true,
         },
         resolve: {
             extensions: [".ts", ".js"],
@@ -43,7 +42,7 @@ const extensionConfig = (isDev) => {
                 {
                     test: /\.ts?$/,
                     exclude: /node_modules/,
-                    loader: "swc-loader",
+                    loader: 'builtin:swc-loader',
                     options: swcrc(isDev),
                 },
                 {

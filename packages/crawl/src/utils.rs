@@ -1,12 +1,12 @@
 pub mod util {
     use wasm_bindgen::prelude::*;
 
-    #[wasm_bindgen(raw_module = "../define_in_js")]
+    #[wasm_bindgen(raw_module = "../define_in_js.ts")]
     extern "C" {
         pub fn mydebug(s: &str);
     }
 
-    #[wasm_bindgen(raw_module = "../define_in_js")]
+    #[wasm_bindgen(raw_module = "../define_in_js.ts")]
     extern "C" {
         pub fn myerror(s: &str);
     }
