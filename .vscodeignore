@@ -5,7 +5,7 @@
 **/src/**
 **/.gitignore
 **/.yarnrc
-**/webpack.config.js
+**/rspack.config.js
 **/vsc-extension-quickstart.md
 **/tsconfig.json
 # **/.eslintrc.json

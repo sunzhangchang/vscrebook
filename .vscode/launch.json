@@ -20,6 +20,7 @@
 			],
 			"outFiles": [
 				"${workspaceFolder}/extension/dist/**/*.js",
+				"${workspaceFolder}/extension/dist/**/*.wasm",
 			],
 			"preLaunchTask": "${defaultBuildTask}"
 		},
