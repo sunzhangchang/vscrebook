@@ -9,7 +9,7 @@ export type BookDocument = {
     source: Source,
 }
 
-type BookLoader = (path: string) => Pick<BookDocument, 'text' | 'name'>
+type BookLoader = (path: string) => Pick<BookDocument, 'text' | 'name'> | Promise<Pick<BookDocument, 'text' | 'name'>>
 
 export type BookPage = {
     page: number,
@@ -34,7 +34,7 @@ export class Book {
         }
 
         const src = source ?? '本地'
-        const loadedBook = this.loadBook(path)
+        const loadedBook = await this.loadBook(path)
 
         this.book = {
             text: loadedBook.text,
