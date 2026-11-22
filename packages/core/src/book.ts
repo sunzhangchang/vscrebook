@@ -10,6 +10,11 @@ type B = {
 
 type BookLoader = (path: string) => Pick<B, 'text' | 'name'>
 
+export type BookPage = {
+    page: number,
+    text: string,
+}
+
 export class Book {
     private _book: B | null = null
 
@@ -17,7 +22,6 @@ export class Book {
     set book(v: B | BookIsNull) { this._book = BookIsNull.is(v) ? null : v }
 
     constructor(
-        private updateBook: (k: string, v: BookInfo) => Promise<void>,
         private loadBook: BookLoader,
     ) {
     }
@@ -68,7 +72,7 @@ export class Book {
         return [ed - pageSize, ed]
     }
 
-    async getPageText(curPage: number, pageSize: number, jumpPage?: number): Promise<string | BookIsNull> {
+    async getPageText(curPage: number, pageSize: number, jumpPage?: number): Promise<BookPage | BookIsNull> {
         if (BookIsNull.is(this.book)) {
             return BookIsNull.yes
         }
@@ -79,19 +83,12 @@ export class Book {
             return BookIsNull.yes
         }
 
-        await this.updateBook(this.book.name, {
-            bookName: this.book.name,
-            pageSize,
-            curPage: page,
-            source: this.book.source,
-        })
-
         if (page === 0) {
-            return '您阅读到第一页了!'
+            return { page, text: '您阅读到第一页了!' }
         }
 
         if (page === this.book.totPage + 1) {
-            return '您阅读到最后一页了!'
+            return { page, text: '您阅读到最后一页了!' }
         }
 
         const tmp = await this.getStartEnd(pageSize, page)
@@ -101,6 +98,9 @@ export class Book {
         }
 
         const [st, ed] = tmp
-        return `${this.book.text.substring(st, ed)}    ${page}/${this.book.totPage}`
+        return {
+            page,
+            text: `${this.book.text.substring(st, ed)}    ${page}/${this.book.totPage}`,
+        }
     }
 }

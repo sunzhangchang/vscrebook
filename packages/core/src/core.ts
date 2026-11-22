@@ -55,13 +55,10 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
             if (process.env.mode === 'development') this.logger.info(msg)
         })
 
-        this.book = new Book(
-            this.setBook.bind(this),
-            (path) => ({
-                text: readFileToUTF8Sync(path),
-                name: parse(path).name,
-            }),
-        )
+        this.book = new Book((path) => ({
+            text: readFileToUTF8Sync(path),
+            name: parse(path).name,
+        }))
     }
 
     get booklist(): Record<string, BookInfo> { return this.context.booklist }
@@ -69,15 +66,22 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     async setBook(key: string, value: BookInfo) { this.context.setBook(key, value) }
 
     async showNovelText(page?: number): Promise<void> {
-        if (BookIsNull.is(this.book.book)) {
+        const book = this.book.book
+        if (BookIsNull.is(book)) {
             this.logger.error(Errors.bookUndefined)
             return
         }
-        const text = await this.book.getPageText(this.booklist[this.book.book.name].curPage, this.config.pageSize, page)
-        if (BookIsNull.is(text)) {
+        const result = await this.book.getPageText(this.booklist[book.name].curPage, this.config.pageSize, page)
+        if (BookIsNull.is(result)) {
             return
         }
-        this.showing.showText(text)
+        await this.setBook(book.name, {
+            bookName: book.name,
+            pageSize: this.config.pageSize,
+            curPage: result.page,
+            source: book.source,
+        })
+        this.showing.showText(result.text)
         this.showing.isBoss = false
     }
 
