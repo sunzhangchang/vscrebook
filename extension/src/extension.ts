@@ -1,8 +1,8 @@
-import { Context, Core } from "@vscrebook/core"
+import { Showing } from "@vscrebook/core"
+import { Context, Core } from "@vscrebook/core/vscode"
 import { ConfigBase } from "@vscrebook/config"
 import { Uri, window, WorkspaceConfiguration, ExtensionContext, workspace, commands } from "vscode"
 import { Errors, myerror } from "@vscrebook/utils"
-import { Showing } from "@vscrebook/core/src/showing"
 import { Command } from "./command"
 
 class Config extends ConfigBase<WorkspaceConfiguration> { }

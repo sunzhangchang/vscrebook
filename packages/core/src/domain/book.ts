@@ -1,5 +1,6 @@
 import { BookIsNull } from "@vscrebook/utils"
 import _ from "lodash"
+import type { Source } from "./types"
 
 export type BookDocument = {
     text: string,

@@ -2,6 +2,7 @@ import { Interval } from "@vscrebook/utils"
 
 export type PresentationMode = 'normal' | 'stealth'
 export type ApplyPresentationMode = (mode: PresentationMode) => void | Promise<void>
+export type ShowText = (message: string) => void
 
 export class Showing {
     public isBoss = false

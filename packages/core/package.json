@@ -6,12 +6,17 @@
   "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md/tree/main/packages/core#readme",
   "license": "MIT",
   "main": "./src/main.ts",
+  "exports": {
+    ".": "./src/main.ts",
+    "./vscode": "./vscode.ts"
+  },
   "directories": {
     "src": "src",
     "test": "__tests__"
   },
   "files": [
-    "src"
+    "src",
+    "vscode.ts"
   ],
   "repository": {
     "type": "git",

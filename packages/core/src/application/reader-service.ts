@@ -1,6 +1,7 @@
 import { BookIsNull, Errors } from "@vscrebook/utils"
-import { Book, BookDocument } from "./book"
-import { PresentationMode, Showing } from "./showing"
+import { Book, BookDocument } from "../domain/book"
+import type { BookInfo, SearchContextResult, Source } from "../domain/types"
+import { PresentationMode, Showing } from "../presentation/showing"
 
 export interface ReaderDependencies {
     getBookInfo(name: string): BookInfo | undefined
@@ -117,12 +118,12 @@ export class ReaderService {
         void this.showPage(this.bookinfo.curPage + 1)
     }
 
-    search(keyword: string): searchCtxResult[] {
+    search(keyword: string): SearchContextResult[] {
         const book = this.currentBook
         if (BookIsNull.is(book) || keyword.length === 0) return []
 
         const pageSize = this.dependencies.getPageSize()
-        const matches: searchCtxResult[] = []
+        const matches: SearchContextResult[] = []
         let fromIndex = 0
         while (fromIndex < book.text.length) {
             const index = book.text.indexOf(keyword, fromIndex)

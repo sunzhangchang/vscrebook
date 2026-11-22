@@ -5,12 +5,11 @@ import { Context } from "./context"
 import { join, parse } from "path"
 import { readFile, unlink, writeFile } from "fs/promises"
 import { getConfig, getShowDebug, getShowError } from "@vscrebook/crawl"
-import { Book } from "./book"
-import { Showing } from "./showing"
+import { Book } from "../../domain/book"
+import { Showing, PresentationMode } from "../../presentation/showing"
 import { Logger } from "./logger"
 import { Crawl } from "./crawl"
-import { ReaderService } from "./reader"
-import { PresentationMode } from "./showing"
+import { ReaderService } from "../../application/reader-service"
 
 enum Chooses {
     local = '本地书籍',
