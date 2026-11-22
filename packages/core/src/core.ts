@@ -480,11 +480,8 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
         }
 
         const page = parseInt(res.split(': ')[0])
-        await new Promise(() => {
-            this.showNovelText(page)
-        }).then(() => {
-            this.window.info('跳转成功!')
-        })
+        await this.showNovelText(page)
+        this.window.info('跳转成功!')
     }
 
     async imexport(): Promise<void> {
