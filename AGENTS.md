@@ -34,3 +34,4 @@ Choose checks based on the changed code and report what ran.
 - Match the nearest relevant history. A common title format is `type(scope): :emoji: 简短说明`, for example `fix(all): :bug: 修复阅读流程并清理激活声明`. Keep the title concise and use an emoji only when it fits the established style.
 - Present the proposed title and wait for the user's explicit confirmation or edits before committing. A request to commit authorizes drafting the title, not committing it.
 - After confirmation, use the confirmed title exactly. Do not amend commits, rewrite history, or include unrelated changes.
+- After a local commit, do not automatically push, sync, publish, or otherwise send changes to a remote. Do so only when the user explicitly requests that remote action.
