@@ -1,6 +1,5 @@
-import { BookIsNull, readBookFile } from "@vscrebook/utils"
+import { BookIsNull } from "@vscrebook/utils"
 import _ from "lodash"
-import { parse } from "path"
 
 type B = {
     text: string,
@@ -9,6 +8,8 @@ type B = {
     source: Source,
 }
 
+type BookLoader = (path: string) => Pick<B, 'text' | 'name'>
+
 export class Book {
     private _book: B | null = null
 
@@ -16,7 +17,8 @@ export class Book {
     set book(v: B | BookIsNull) { this._book = BookIsNull.is(v) ? null : v }
 
     constructor(
-        private updateBook: (k: string, v: BookInfo) => Promise<void>
+        private updateBook: (k: string, v: BookInfo) => Promise<void>,
+        private loadBook: BookLoader,
     ) {
     }
 
@@ -27,11 +29,12 @@ export class Book {
         }
 
         const src = source ?? '本地'
+        const loadedBook = this.loadBook(path)
 
         this.book = {
-            text: readBookFile(path),
+            text: loadedBook.text,
             totPage: 0,
-            name: parse(path).name,
+            name: loadedBook.name,
             source: src,
         }
         this.book.totPage = Math.ceil(this.book.text.length / pageSize)

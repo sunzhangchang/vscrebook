@@ -55,7 +55,13 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
             if (process.env.mode === 'development') this.logger.info(msg)
         })
 
-        this.book = new Book(this.setBook.bind(this))
+        this.book = new Book(
+            this.setBook.bind(this),
+            (path) => ({
+                text: readFileToUTF8Sync(path),
+                name: parse(path).name,
+            }),
+        )
     }
 
     get booklist(): Record<string, BookInfo> { return this.context.booklist }
