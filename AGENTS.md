@@ -29,6 +29,7 @@ Choose checks based on the changed code and report what ran.
 
 ## Commits
 
+- After each complete, independently reviewable change, immediately provide a suggested commit title that matches the repository style, even when the user has not asked to commit. Keep the suggestion scoped to that change; do not imply that it has been committed.
 - Before preparing a commit, inspect the relevant diff and recent history. Exclude the current `HEAD` commit when inferring message style.
 - Match the nearest relevant history. A common title format is `type(scope): :emoji: 简短说明`, for example `fix(all): :bug: 修复阅读流程并清理激活声明`. Keep the title concise and use an emoji only when it fits the established style.
 - Present the proposed title and wait for the user's explicit confirmation or edits before committing. A request to commit authorizes drafting the title, not committing it.
