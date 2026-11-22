@@ -43,7 +43,7 @@ switch (env) {
 const map = {
     'ext': {
         name: 'ext',
-        scope: 'extension',
+        scope: './extension',
         cmd: {
             'build': 'build',
             'build:dev': 'build dev',
@@ -71,7 +71,7 @@ function doTask(task) {
         }
     }
 
-    const command = `npm run ${task.cmd[cmd]} -w ${task.scope}`
+    const command = `pnpm --filter ${task.scope} run ${task.cmd[cmd]}`
 
     logger.info(`[${task.name}] Running command: '${command}'`)
     cp.execSync(command, {

@@ -36,7 +36,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     private crawl: Crawl
 
     constructor(
-        private window: Window<Uri>,
+        private window: VscrebookWindow<Uri>,
         public showing: Showing,
         public config: ConfigBase<Configuration>,
         public context: Context
@@ -51,7 +51,9 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
 
         getConfig(config)
         getShowError(this.logger.error)
-        getShowDebug((msg: string) => process.env.mode === 'development' ?? this.logger.info(msg))
+        getShowDebug((msg: string) => {
+            if (process.env.mode === 'development') this.logger.info(msg)
+        })
 
         this.book = new Book(this.setBook.bind(this))
     }

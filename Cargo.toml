@@ -1,4 +1,8 @@
 [workspace]
+resolver = "3"
 members = [
     "packages/crawl"
 ]
+
+[workspace.package]
+rust-version = "1.100"

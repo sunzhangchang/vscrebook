@@ -96,7 +96,7 @@ type SaveDialog<Uri extends { fsPath: string }> = (options?: SaveDialogOptions<U
 
 type ShowText = (msg: string) => void
 
-type Window<Uri extends { fsPath: string }> = {
+type VscrebookWindow<Uri extends { fsPath: string }> = {
     pick: QuickPick
     info: ShowMsg
     warn: ShowMsg

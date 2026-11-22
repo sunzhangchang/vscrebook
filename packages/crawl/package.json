@@ -5,15 +5,15 @@
   "main": "index.ts",
   "scripts": {
     "pack": "wasm-pack build -t bundler",
-    "build": "npm run pack",
-    "build:dev": "npm run pack -- --dev"
+    "build": "pnpm run pack",
+    "build:dev": "pnpm run pack -- --dev"
   },
   "keywords": [],
   "author": "sunzhangchang(Cyanogenaq) <642311409@qq.com>",
   "license": "MIT",
   "dependencies": {
-    "@vscrebook/config": "^1.2.2",
-    "@vscrebook/utils": "^1.2.2",
+    "@vscrebook/config": "workspace:^1.2.2",
+    "@vscrebook/utils": "workspace:^1.2.2",
     "node-fetch": "^3.2.10"
   },
   "gitHead": "4ebca2e6db3e3f9531e36f8dbc777eeed991863c"

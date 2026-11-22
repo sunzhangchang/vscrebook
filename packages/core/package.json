@@ -24,7 +24,7 @@
     "url": "https://github.com/sunzhangchang/vscrebook/issues"
   },
   "dependencies": {
-    "@vscrebook/utils": "^1.2.2"
+    "@vscrebook/utils": "workspace:^1.2.2"
   },
   "gitHead": "4ebca2e6db3e3f9531e36f8dbc777eeed991863c"
 }

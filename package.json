@@ -22,29 +22,27 @@
     "url": "https://github.com/sunzhangchang/vscrebook"
   },
   "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md",
-  "workspaces": [
-    "packages/*",
-    "extension"
-  ],
+  "packageManager": "pnpm@12.21.0",
   "scripts": {
     "script": "node scripts/script.mjs",
-    "ext:build:dev": "npm run script ext build dev",
-    "lint": "eslint packages extension --ext ts"
+    "ext:build:dev": "pnpm run script ext build dev",
+    "lint": "oxlint . --ignore-pattern node_modules/** --ignore-pattern target/** --ignore-pattern packages/crawl/pkg/** --ignore-pattern extension/dist/**",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build": "pnpm --filter ./extension run build"
   },
   "devDependencies": {
+    "@vscode/vsce": "^4.1.1",
+    "binaryen": "^132.0.0",
+    "rolldown": "^1.3.3",
     "@types/lodash": "^4.14.186",
-    "@types/node": "^18.8.4",
-    "@types/vscode": "^1.72.0",
-    "@typescript-eslint/eslint-plugin": "^5.40.0",
-    "@typescript-eslint/parser": "^5.40.0",
-    "eslint": "^8.25.0",
+    "@types/node": "^22.19.0",
+    "@types/vscode": "^1.106.0",
     "fancy-log": "^2.0.0",
-    "lerna": "^5.6.2",
-    "regenerator-runtime": "^0.13.9",
-    "typescript": "^4.8.4"
+    "oxlint": "^1.94.0",
+    "typescript": "^7.0.2"
   },
   "dependencies": {
-    "chardet": "^1.5.0",
+    "chardet": "^2.1.0",
     "iconv-lite": "^0.6.3",
     "lodash": "^4.17.21"
   }
