@@ -1,25 +1,21 @@
-import { Errors, Memento } from "@vscrebook/utils"
-import { existsSync, mkdirSync } from "fs"
-import { homedir } from "os"
-import { join } from "path"
+export interface ConfigSection {
+    get<T>(key: string, defaultValue: T): T
+    update<T>(key: string, value: T): unknown
+}
 
-const home = homedir()
+export interface ConfigBaseOptions {
+    homeDirectory: string
+    ensureDownloadDirectory?: (path: string) => void
+}
 
-export class ConfigBase<Configuration extends Memento> {
+export class ConfigBase<Configuration extends ConfigSection> {
     private readonly rootSection = 'vscrebook'
 
     constructor(
         private getConfig: (section: string) => Configuration,
-        private error: (err: Errors | string) => void
+        private options: ConfigBaseOptions
     ) {
-        if (!existsSync(this.downloadPath)) {
-            try {
-                mkdirSync(this.downloadPath)
-            } catch (error) {
-                this.error((error as Error).message)
-                this.error('下载路径异常，请更换下载路径!')
-            }
-        }
+        this.options.ensureDownloadDirectory?.(this.downloadPath)
     }
 
     private get cfg(): Configuration {
@@ -38,9 +34,9 @@ export class ConfigBase<Configuration extends Memento> {
     set pageSize(v: number) { this.update('pageSize', v) }
 
     get downloadPath(): string {
-        const dir = join(home, 'Downloads')
+        const dir = `${this.options.homeDirectory}/Downloads`
         const path = this.get<string>('downloadPath', dir)
-        return path.replaceAll('${homedir}', home) ?? dir
+        return path.replaceAll('${homedir}', this.options.homeDirectory)
     }
     set downloadPath(v: string) { this.update('downloadPath', v) }
 
@@ -79,11 +75,6 @@ export class ConfigBase<Configuration extends Memento> {
     }
 
     set bossTexts(v: BossTexts) {
-        this.update('downloadSettings', v)
+        this.update('bossTexts', v)
     }
 }
-
-// class Config extends ConfigBase<Uri, WorkspaceConfiguration> {
-// }
-
-// export const cfg = new Config(Uri.parse(''), workspace.getConfiguration)

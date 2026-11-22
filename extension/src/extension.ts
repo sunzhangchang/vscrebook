@@ -4,6 +4,8 @@ import { ConfigBase } from "@vscrebook/config"
 import { Uri, window, WorkspaceConfiguration, ExtensionContext, workspace, commands } from "vscode"
 import { Errors, myerror } from "@vscrebook/utils"
 import { Command } from "./command"
+import { mkdirSync } from "node:fs"
+import { homedir } from "node:os"
 
 class Config extends ConfigBase<WorkspaceConfiguration> { }
 
@@ -48,7 +50,17 @@ async function showBoss(config: Config): Promise<void> {
 
 async function tryActivate(extContext: ExtensionContext): Promise<void> {
     return ((async () => {
-        const config = new Config(workspace.getConfiguration, showError)
+        const config = new Config(workspace.getConfiguration, {
+            homeDirectory: homedir(),
+            ensureDownloadDirectory(path) {
+                try {
+                    mkdirSync(path, { recursive: true })
+                } catch (error) {
+                    showError((error as Error).message)
+                    showError('下载路径异常，请更换下载路径!')
+                }
+            },
+        })
 
         const context = new Context(
             extContext.globalStorageUri.fsPath,
