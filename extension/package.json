@@ -46,9 +46,6 @@
     "rolldown-plugin-wasm": "^0.3.2",
     "typescript": "^7.0.2"
   },
-  "activationEvents": [
-    "onCommand:vscrebook.showMenu"
-  ],
   "contributes": {
     "configuration": {
       "title": "Vscre Book",

@@ -8,7 +8,6 @@ const cmdd = args[1] ?? 'build'
 let env = args[2] ?? ''
 
 const scopes = ['ext', 'crawl',]
-const envs = ['dev', 'prod', '',]
 
 if (!scopes.includes(scope)) {
     logger.error('Please provide the scope!')

@@ -106,13 +106,15 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
             return Cancelled.cancelled
         }
 
-        try {
-            this.showNovelText(+res)
-            this.showing.showBossInterval.clear()
-            this.showing.setShowBossInterval()
-        } catch (e) {
-            this.logger.error('请输入一个正整数!')
+        const page = res.trim() === '' ? this.bookinfo.curPage : Number(res)
+        if (!Number.isInteger(page) || page < 1) {
+            this.window.warn('请输入一个正整数!')
+            return
         }
+
+        await this.showNovelText(page)
+        this.showing.showBossInterval.clear()
+        this.showing.setShowBossInterval()
     }
 
     autoFlipp(): void {
@@ -436,7 +438,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
                 break
             }
             const index = res.index
-            const page = Math.ceil(index / this.config.pageSize)
+            const page = Math.floor(index / this.config.pageSize) + 1
             const txt = this.book.book.text.substring(index - 30, index + 31)
             list.push({
                 index,
@@ -560,51 +562,46 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
 
     async importList(listPath: string): Promise<void> {
         const list = JSON.parse(await readFile(listPath, 'utf8')) as Record<string, BookInfo>
+        let imported = 0
+        let skipped = 0
+        let failed = 0
 
-        _.forIn(list, async (v) => {
+        for (const v of Object.values(list)) {
             const book = parse(v.bookName)
+            try {
+                const searchedList = await this.crawl.search(book.name)
+                const searchedBook = searchedList.find((item) => _.isEqual(book.name, item.书名))
 
-            await (
-                this.crawl.search(book.name)
-                    .then((searchedList) => {
-                        const searchedBook = (() => {
-                            const res = searchedList.find((v) => _.isEqual(book.name, v.书名))
-                            if (!_.isUndefined(res)) {
-                                return res
-                            }
-                            if (v.source === '本地') {
-                                return
-                            } else {
-                                throw new Error(`导入书籍 《${book.name}》 失败!`)
-                            }
-                        })()
+                if (_.isUndefined(searchedBook)) {
+                    if (v.source === '本地') {
+                        skipped++
+                        continue
+                    }
+                    throw new Error(`导入书籍《${book.name}》失败: 未找到匹配书籍`)
+                }
 
-                        if (_.isUndefined(searchedBook)) {
-                            return
-                        }
+                const bookPath = await this.crawl.download(
+                    searchedBook.书源,
+                    searchedBook.目录链接,
+                    this.config.downloadPath,
+                    searchedBook.书名
+                )
+                if (_.isUndefined(bookPath)) {
+                    throw new Error('下载出现错误!')
+                }
 
-                        this.crawl.download(searchedBook.书源, searchedBook.目录链接, this.config.downloadPath, searchedBook.书名)
-                            .then((bookPath) => {
-                                if (_.isUndefined(bookPath)) {
-                                    throw new Error("下载出现错误!")
-                                }
-                                this.addBook(true, setExtTo(bookPath, 'txt'), {
-                                    ...v,
-                                    source: searchedBook.书源,
-                                }).then(() => {
-                                    this.window.info(`导入书籍 《${book.name}》 成功!`)
-                                })
-                            })
-                            .catch(err => {
-                                console.error((err as Error).message)
-                            })
-                    })
-                    .catch((err) => {
-                        this.logger.error(Errors.importSearchError)
-                        console.error((err as Error).message)
-                    })
-            )
-        })
-        this.window.info('书籍导入完成!')
+                await this.addBook(true, setExtTo(bookPath, 'txt'), {
+                    ...v,
+                    source: searchedBook.书源,
+                })
+                imported++
+            } catch (err) {
+                failed++
+                console.error((err as Error).message)
+                await this.window.warn(`导入书籍《${book.name}》失败!`)
+            }
+        }
+
+        await this.window.info(`书籍导入完成：成功 ${imported} 本，跳过 ${skipped} 本，失败 ${failed} 本。`)
     }
 }
