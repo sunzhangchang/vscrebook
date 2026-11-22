@@ -432,25 +432,24 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     }
 
     bookSearch(keyword: string): searchCtxResult[] {
-        if (BookIsNull.is(this.book.book)) {
+        if (BookIsNull.is(this.book.book) || keyword.length === 0) {
             return []
         }
         const list: searchCtxResult[] = []
-        const re = new RegExp(keyword, 'g')
-        const true_ = true
-        while (true_) {
-            const res = re.exec(this.book.book.text)
-            if (_.isNull(res)) {
-                break
-            }
-            const index = res.index
+        const text = this.book.book.text
+        let fromIndex = 0
+        while (fromIndex < text.length) {
+            const index = text.indexOf(keyword, fromIndex)
+            if (index === -1) break
+
             const page = Math.floor(index / this.config.pageSize) + 1
-            const txt = this.book.book.text.substring(index - 30, index + 31)
+            const txt = text.substring(index - 30, index + 31)
             list.push({
                 index,
                 page,
                 txt,
             })
+            fromIndex = index + keyword.length
         }
         return list
     }
@@ -465,6 +464,10 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
         })
 
         if (_.isUndefined(keyword)) {
+            return
+        }
+        if (keyword.trim().length === 0) {
+            this.logger.error(Errors.searchKeyEmpty)
             return
         }
 
