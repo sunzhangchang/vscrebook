@@ -9,6 +9,8 @@ import { Book } from "./book"
 import { Showing } from "./showing"
 import { Logger } from "./logger"
 import { Crawl } from "./crawl"
+import { ReaderService } from "./reader"
+import { PresentationMode } from "./showing"
 
 enum Chooses {
     local = '本地书籍',
@@ -31,7 +33,7 @@ enum ImExport {
 }
 
 export class Core<Uri extends { fsPath: string }, Configuration extends Memento> {
-    private book: Book
+    private reader: ReaderService
     private logger: Logger
     private crawl: Crawl
 
@@ -55,10 +57,18 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
             if (process.env.mode === 'development') this.logger.info(msg)
         })
 
-        this.book = new Book((path) => ({
+        const book = new Book((path) => ({
             text: readFileToUTF8Sync(path),
             name: parse(path).name,
         }))
+        this.reader = new ReaderService(book, showing, {
+            getBookInfo: (name) => this.booklist[name],
+            setBookInfo: (name, value) => this.setBook(name, value),
+            getPageSize: () => this.config.pageSize,
+            getAutoFlipTime: () => this.config.autoFlipTime,
+            showInfo: (message) => this.window.info(message),
+            reportError: (error) => this.logger.error(error),
+        })
     }
 
     get booklist(): Record<string, BookInfo> { return this.context.booklist }
@@ -66,50 +76,26 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     async setBook(key: string, value: BookInfo) { this.context.setBook(key, value) }
 
     async showNovelText(page?: number): Promise<void> {
-        const book = this.book.book
-        if (BookIsNull.is(book)) {
-            this.logger.error(Errors.bookUndefined)
-            return
-        }
-        const result = await this.book.getPageText(this.booklist[book.name].curPage, this.config.pageSize, page)
-        if (BookIsNull.is(result)) {
-            return
-        }
-        await this.setBook(book.name, {
-            bookName: book.name,
-            pageSize: this.config.pageSize,
-            curPage: result.page,
-            source: book.source,
-        })
-        this.showing.showText(result.text)
-        this.showing.isBoss = false
+        return this.reader.showPage(page)
     }
 
     toggleBoss(): void {
-        if (BookIsNull.is(this.book.book)) {
-            this.showing.showBoss()
-            return
-        }
-        if (this.showing.isBoss) {
-            this.showNovelText()
-            this.showing.showBossInterval.clear()
-            this.showing.setShowBossInterval()
-        } else {
-            this.showing.showBoss()
-            this.showing.autoFlipping.clear()
-            this.showing.showBossInterval.clear()
-        }
+        this.reader.toggleBoss()
+    }
+
+    setPresentationMode(mode: PresentationMode): Promise<void> {
+        return this.reader.setPresentationMode(mode)
     }
 
     async showJump(): Promise<void | Cancelled> {
-        if (BookIsNull.is(this.book.book)) {
+        if (BookIsNull.is(this.reader.currentBook)) {
             this.logger.error(Errors.bookUndefined)
             return
         }
 
         const res = Cancelled.from(await this.window.input({
             prompt: '请输入跳转页数: ',
-            placeHolder: `跳转页数(默认跳转到当前页: ${this.bookinfo.curPage}, 总页数: ${this.book.book.totPage})`
+            placeHolder: `跳转页数(默认跳转到当前页: ${this.bookinfo.curPage}, 总页数: ${this.reader.currentBook.totPage})`
         }))
 
         if (Cancelled.is(res)) {
@@ -128,38 +114,15 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     }
 
     autoFlipp(): void {
-        if (BookIsNull.is(this.book.book)) {
-            this.logger.error(Errors.bookUndefined)
-            return
-        }
-        if (this.showing.isBoss) {
-            this.showing.autoFlipping.clear()
-            return
-        }
-        if (this.showing.autoFlipping.has()) {
-            this.showing.autoFlipping.clear()
-            this.showing.setShowBossInterval()
-            return
-        } else {
-            this.window.info(`开始自动翻页! 当前设置: 每 ${this.config.autoFlipTime} 毫秒(ms)翻页!`)
-            this.showing.setAutoFlipInterval(this.showNext.bind(this), this.config.autoFlipTime)
-        }
+        this.reader.autoFlip()
     }
 
     showPrev(): void {
-        if (BookIsNull.is(this.book.book)) {
-            this.logger.error(Errors.bookUndefined)
-            return
-        }
-        this.showNovelText(this.bookinfo.curPage - 1)
+        this.reader.showPrevious()
     }
 
     showNext(): void {
-        if (BookIsNull.is(this.book.book)) {
-            this.logger.error(Errors.bookUndefined)
-            return
-        }
-        this.showNovelText(this.bookinfo.curPage + 1)
+        this.reader.showNext()
     }
 
     async showBookList(): Promise<string | Cancelled> {
@@ -359,11 +322,11 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
         this.window.info('删除成功')
         this.showing.showBoss()
 
-        if (BookIsNull.is(this.book.book)) {
+        if (BookIsNull.is(this.reader.currentBook)) {
             return
         }
 
-        if (!_.isEqual(this.book.book.name, book)) {
+        if (!_.isEqual(this.reader.currentBook.name, book)) {
             return Cancelled.cancelled
         }
         return
@@ -403,10 +366,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     }
 
     async newBook(path?: string, source?: Source): Promise<void> {
-        const res = await this.book.newBook(this.config.pageSize, path, source)
-        if (!res) {
-            this.showing.showBoss()
-        }
+        await this.reader.open(path, source)
     }
 
     async start(): Promise<void> {
@@ -428,7 +388,7 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     }
 
     get bookinfo(): BookInfo {
-        return this.getBook((BookIsNull.is(this.book.book) ? { name: "" } : this.book.book).name)
+        return this.reader.bookinfo
     }
 
     getBook(name: string): BookInfo {
@@ -436,30 +396,11 @@ export class Core<Uri extends { fsPath: string }, Configuration extends Memento>
     }
 
     bookSearch(keyword: string): searchCtxResult[] {
-        if (BookIsNull.is(this.book.book) || keyword.length === 0) {
-            return []
-        }
-        const list: searchCtxResult[] = []
-        const text = this.book.book.text
-        let fromIndex = 0
-        while (fromIndex < text.length) {
-            const index = text.indexOf(keyword, fromIndex)
-            if (index === -1) break
-
-            const page = Math.floor(index / this.config.pageSize) + 1
-            const txt = text.substring(index - 30, index + 31)
-            list.push({
-                index,
-                page,
-                txt,
-            })
-            fromIndex = index + keyword.length
-        }
-        return list
+        return this.reader.search(keyword)
     }
 
     async searchContext(): Promise<void> {
-        if (BookIsNull.is(this.book.book)) {
+        if (BookIsNull.is(this.reader.currentBook)) {
             this.logger.error(Errors.bookUndefined)
             return
         }

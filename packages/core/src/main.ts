@@ -1,2 +1,6 @@
 export { Core } from './core'
 export { Context } from './context'
+export { ReaderService } from './reader'
+export { Showing } from './showing'
+export type { ReaderDependencies } from './reader'
+export type { ApplyPresentationMode, PresentationMode } from './showing'

@@ -1,14 +1,14 @@
 import { BookIsNull } from "@vscrebook/utils"
 import _ from "lodash"
 
-type B = {
+export type BookDocument = {
     text: string,
     totPage: number,
     name: string,
     source: Source,
 }
 
-type BookLoader = (path: string) => Pick<B, 'text' | 'name'>
+type BookLoader = (path: string) => Pick<BookDocument, 'text' | 'name'>
 
 export type BookPage = {
     page: number,
@@ -16,10 +16,10 @@ export type BookPage = {
 }
 
 export class Book {
-    private _book: B | null = null
+    private _book: BookDocument | null = null
 
-    get book(): B | BookIsNull { return this._book ?? BookIsNull.yes }
-    set book(v: B | BookIsNull) { this._book = BookIsNull.is(v) ? null : v }
+    get book(): BookDocument | BookIsNull { return this._book ?? BookIsNull.yes }
+    set book(v: BookDocument | BookIsNull) { this._book = BookIsNull.is(v) ? null : v }
 
     constructor(
         private loadBook: BookLoader,
