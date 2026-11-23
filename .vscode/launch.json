@@ -11,15 +11,15 @@
 			"request": "launch",
 			"args": [
 				"--disable-extensions",
-				"--extensionDevelopmentPath=${workspaceFolder}/extension/"
+				"--extensionDevelopmentPath=${workspaceFolder}/apps/vscode-extension/"
 			],
 			"sourceMaps": true,
 			"resolveSourceMapLocations": [
-				"${workspaceFolder}/extension/dist/**",
+				"${workspaceFolder}/apps/vscode-extension/dist/**",
 				"!**/node_modules/**"
 			],
 			"outFiles": [
-				"${workspaceFolder}/extension/dist/**/*.js",
+				"${workspaceFolder}/apps/vscode-extension/dist/**/*.js",
 			],
 			"preLaunchTask": "${defaultBuildTask}"
 		},

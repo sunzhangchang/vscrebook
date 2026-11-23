@@ -6,6 +6,10 @@
   "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/README.md/tree/main/packages/utils#readme",
   "license": "MIT",
   "main": "src/main.ts",
+  "exports": {
+    ".": "./src/main.ts",
+    "./shared": "./src/shared.ts"
+  },
   "directories": {
     "src": "src"
   },
@@ -18,6 +22,11 @@
   },
   "bugs": {
     "url": "https://github.com/sunzhangchang/vscrebook/issues"
+  },
+  "dependencies": {
+    "chardet": "^2.1.0",
+    "iconv-lite": "^0.6.3",
+    "lodash": "^4.17.21"
   },
   "gitHead": "4ebca2e6db3e3f9531e36f8dbc777eeed991863c"
 }

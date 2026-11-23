@@ -2,15 +2,15 @@
 
 ## Project map
 
-- `extension/` is the VS Code host: commands, status bar, and VS Code API integration.
+- `apps/vscode-extension/` is the VS Code host: commands, status bar, dialogs, and VS Code API integration.
 - `packages/core/src/domain/` contains host-independent book and reading types.
 - `packages/core/src/application/` contains reader workflows; keep host UI and storage behind callbacks.
 - `packages/core/src/presentation/` contains presentation behavior shared by hosts.
-- `packages/core/src/adapters/vscode/` contains the VS Code/Node coordinator and adapters. Import it through `@vscrebook/core/vscode`.
-- `@vscrebook/core` is the shared reader entry point; keep VS Code and Node APIs out of its exports.
+- `@vscrebook/core` contains host-independent reading domain, application workflows, and presentation contracts; keep VS Code and Node APIs out of its exports.
 - `packages/config/` and `packages/utils/` contain configuration and shared utilities.
 - `packages/crawl/` contains the Rust/WASM crawler and its TypeScript bridge.
-- There is no Tauri/Vite desktop app in this repository yet; do not assume its host adapters or build scripts exist.
+- `apps/desktop/` is the Tauri 2 + Vue 3 + Vite desktop host; native window behavior belongs in its Tauri adapter/Rust layer.
+- `apps/vscode-extension/src/adapters/vscode/` contains VS Code-specific coordination, storage, dialogs, logging, and filesystem adapters.
 
 ## Changes
 

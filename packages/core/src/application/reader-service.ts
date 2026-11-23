@@ -1,4 +1,4 @@
-import { BookIsNull, Errors } from "@vscrebook/utils"
+import { BookIsNull, Errors } from "@vscrebook/utils/shared"
 import { Book, BookDocument } from "../domain/book"
 import type { BookInfo, SearchContextResult, Source } from "../domain/types"
 import { PresentationMode, Showing } from "../presentation/showing"

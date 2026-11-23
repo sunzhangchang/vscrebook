@@ -1,0 +1,28 @@
+{
+  "name": "vscrebook-desktop",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "test": "node --experimental-strip-types tests/reader-controls.test.mjs && node --experimental-strip-types tests/book-library.test.mjs && node --experimental-strip-types tests/page-layout.test.mjs && node --experimental-strip-types tests/reader-state.test.mjs"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-global-shortcut": "^2.4.1",
+    "@tauri-apps/plugin-store": "^2.5.1",
+    "@vscrebook/core": "workspace:^1.2.2",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "fake-indexeddb": "^6.2.8",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.16",
+    "vue-tsc": "^3.3.5"
+  }
+}

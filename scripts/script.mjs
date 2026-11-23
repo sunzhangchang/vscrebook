@@ -42,7 +42,7 @@ switch (env) {
 const map = {
     'ext': {
         name: 'ext',
-        scope: './extension',
+        scope: './apps/vscode-extension',
         cmd: {
             'build': 'build',
             'build:dev': 'build dev',

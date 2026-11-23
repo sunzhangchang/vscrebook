@@ -1,6 +1,6 @@
 export { Book } from './domain/book'
 export type { BookDocument, BookPage } from './domain/book'
-export type { BookInfo, SearchContextResult, Source } from './domain/types'
+export type { BookInfo, SearchBook, SearchContextResult, Source } from './domain/types'
 export { ReaderService } from './application/reader-service'
 export type { ReaderDependencies } from './application/reader-service'
 export { Showing } from './presentation/showing'

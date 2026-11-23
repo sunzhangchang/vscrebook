@@ -1,4 +1,4 @@
-import { Interval } from "@vscrebook/utils"
+import { Interval } from "@vscrebook/utils/shared"
 
 export type PresentationMode = 'normal' | 'stealth'
 export type ApplyPresentationMode = (mode: PresentationMode) => void | Promise<void>

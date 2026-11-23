@@ -1,4 +1,4 @@
-import { BookIsNull } from "@vscrebook/utils"
+import { BookIsNull } from "@vscrebook/utils/shared"
 import _ from "lodash"
 import type { Source } from "./types"
 

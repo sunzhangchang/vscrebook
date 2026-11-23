@@ -1,5 +1,4 @@
-import { ConfigBase } from "@vscrebook/config"
-import { Memento } from "@vscrebook/utils"
+import type { ConfigBase, DownloadSettings, ShowMoreInfo } from "@vscrebook/config"
 import _ from "lodash"
 import fetch, { Headers, Request, Response } from "node-fetch"
 
@@ -14,7 +13,7 @@ import fetch, { Headers, Request, Response } from "node-fetch"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).fetch = fetch
 
-import { Errors } from '@vscrebook/utils'
+import { Errors } from '@vscrebook/utils/shared'
 
 let config: {
     get showMoreInfo(): ShowMoreInfo
@@ -23,7 +22,7 @@ let config: {
     set downloadSettings(v: DownloadSettings)
 }
 
-export function getConfig<C extends Memento>(c: ConfigBase<C>) {
+export function getConfig(c: Pick<ConfigBase, 'showMoreInfo' | 'downloadSettings'>) {
     config = c
 }
 

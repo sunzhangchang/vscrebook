@@ -1,14 +1,17 @@
+import type { BossTexts, DisplayMode, DownloadSettings, ShowMoreInfo } from './types'
+
+export type { BossTexts, DisplayMode, DownloadSettings, ShowMoreInfo, SourceEngine } from './types'
+
 export interface ConfigSection {
     get<T>(key: string, defaultValue: T): T
     update<T>(key: string, value: T): unknown
 }
-
 export interface ConfigBaseOptions {
     homeDirectory: string
     ensureDownloadDirectory?: (path: string) => void
 }
 
-export class ConfigBase<Configuration extends ConfigSection> {
+export class ConfigBase<Configuration extends ConfigSection = ConfigSection> {
     private readonly rootSection = 'vscrebook'
 
     constructor(

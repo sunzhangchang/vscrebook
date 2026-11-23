@@ -6,7 +6,7 @@
   "scripts": {
     "pack": "wasm-pack build -t bundler",
     "build": "pnpm run pack",
-    "build:dev": "pnpm run pack -- --dev"
+    "build:dev": "pnpm run pack --dev"
   },
   "keywords": [],
   "author": "sunzhangchang(Cyanogenaq) <642311409@qq.com>",

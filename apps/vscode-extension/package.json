@@ -1,0 +1,254 @@
+{
+  "name": "vscrebook",
+  "displayName": "vscrebook",
+  "version": "1.2.2",
+  "description": "VSCode 摸鱼阅读器",
+  "author": "sunzhangchang <642311409@qq.com>",
+  "publisher": "Cyanogenaq",
+  "homepage": "https://github.com/sunzhangchang/vscrebook/blob/main/apps/vscode-extension/README.md",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "txt",
+    "novel",
+    "book",
+    "小说",
+    "神器",
+    "摸鱼",
+    "划水"
+  ],
+  "main": "./dist/extension.js",
+  "type": "module",
+  "engines": {
+    "vscode": "^1.106.0",
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunzhangchang/vscrebook.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sunzhangchang/vscrebook/issues"
+  },
+  "scripts": {
+    "build": "node ./scripts/build.mjs",
+    "package": "pnpm run build && vsce package --no-dependencies",
+    "publish": "pnpm run build && vsce publish"
+  },
+  "dependencies": {
+    "@vscrebook/config": "workspace:^1.2.2",
+    "@vscrebook/core": "workspace:^1.2.2"
+  },
+  "devDependencies": {
+    "rolldown-plugin-wasm": "^0.3.2",
+    "typescript": "^7.0.2"
+  },
+  "contributes": {
+    "configuration": {
+      "title": "Vscre Book",
+      "type": "object",
+      "properties": {
+        "vscrebook.pageSize": {
+          "type": "number",
+          "default": 25,
+          "description": "每页显示字数"
+        },
+        "vscrebook.downloadPath": {
+          "type": "string",
+          "default": "${homedir}/Downloads",
+          "description": "下载的小说的储存路径"
+        },
+        "vscrebook.autoFlipTime": {
+          "type": "number",
+          "default": "3000",
+          "description": "自动翻页的速度(每页的时间/ms)"
+        },
+        "vscrebook.displayMode": {
+          "type": "string",
+          "enum": [
+            "statusBar",
+            "showInformation"
+          ],
+          "default": "statusBar",
+          "description": "显示小说文字的方式"
+        },
+        "vscrebook.showMoreInfo": {
+          "type": "object",
+          "default": {
+            "caimoge": true,
+            "wbxsw": false,
+            "aixiashu": false,
+            "maxreader": false
+          },
+          "properties": {
+            "caimoge": {
+              "type": "boolean",
+              "default": true
+            },
+            "wbxsw": {
+              "type": "boolean",
+              "default": false
+            },
+            "aixiashu": {
+              "type": "boolean",
+              "default": false
+            },
+            "maxreader": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "description": "设置网络书籍中是否显示书籍更多信息"
+        },
+        "vscrebook.downloadSettings": {
+          "type": "object",
+          "default": {
+            "caimoge": "txt & chapters",
+            "wbxsw": "chaptersOnly",
+            "aixiashu": "txt & chapters",
+            "maxreader": "chaptersOnly"
+          },
+          "properties": {
+            "caimoge": {
+              "type": "string",
+              "enum": [
+                "disable",
+                "txtOnly",
+                "chaptersOnly",
+                "txt & chapters"
+              ],
+              "default": "txt & chapters"
+            },
+            "wbxsw": {
+              "type": "string",
+              "enum": [
+                "disable",
+                "txtOnly",
+                "chaptersOnly",
+                "txt & chapters"
+              ],
+              "default": "chaptersOnly"
+            },
+            "aixiashu": {
+              "type": "string",
+              "enum": [
+                "disable",
+                "txtOnly",
+                "chaptersOnly",
+                "txt & chapters"
+              ],
+              "default": "txt & chapters"
+            },
+            "maxreader": {
+              "type": "string",
+              "enum": [
+                "disable",
+                "txtOnly",
+                "chaptersOnly",
+                "txt & chapters"
+              ],
+              "default": "chaptersOnly"
+            }
+          },
+          "description": "网络书籍下载设置"
+        },
+        "vscrebook.bossTexts": {
+          "type": "array",
+          "default": [
+            "Java - System.out.println(\"Hello World\");",
+            "Scala - println(\"Hello, world!\")",
+            "Kotlin - println(\"Hello, world!\")",
+            "Groovy - println \"Hello, world!\"",
+            "C - printf(\"Hello, World!\");",
+            "C# - System.Console.WriteLine(\"Hello World!\"); ",
+            "C++ - std::cout << \"Hello, world!\" << std::endl;",
+            "Python - print(\"Hello, World!\")",
+            "PHP - echo \"Hello World!\";",
+            "Ruby - puts \"Hello World!\";",
+            "Rust - println!(\"Hello, World!\");",
+            "Perl - print \"Hello, World!\";",
+            "Lua - print(\"Hello World!\")",
+            "Golang - fmt.Println(\"Hello, World!\")",
+            "JavaScript - console.log(\"Hello, World!\")",
+            "TypeScript - console.log(\"Hello, World!\")",
+            "ReScript - Js.log(\"Hello, World!\")",
+            "PureScript - log \"Hello, World!\"",
+            "Scala.js - println(\"Hello, World!\")"
+          ],
+          "description": "老板键随机显示的文本"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "vscrebook.showMenu",
+        "title": "vscrebook: menu 打开 vscrebook 菜单"
+      },
+      {
+        "command": "vscrebook.bossKey",
+        "title": "vscrebook: bossKey"
+      },
+      {
+        "command": "vscrebook.prevPage",
+        "title": "vscrebook: prevPage"
+      },
+      {
+        "command": "vscrebook.nextPage",
+        "title": "vscrebook: nextPage"
+      },
+      {
+        "command": "vscrebook.jumpPage",
+        "title": "vscrebook: jumpPage"
+      },
+      {
+        "command": "vscrebook.autoFlip",
+        "title": "vscrebook: autoFlip"
+      },
+      {
+        "command": "vscrebook.search",
+        "title": "vscrebook: search"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "vscrebook.showMenu",
+        "key": "ctrl+alt+;",
+        "mac": "cmd+;"
+      },
+      {
+        "command": "vscrebook.bossKey",
+        "key": "ctrl+alt+/",
+        "mac": "cmd+/"
+      },
+      {
+        "command": "vscrebook.prevPage",
+        "key": "ctrl+alt+,",
+        "mac": "cmd+,"
+      },
+      {
+        "command": "vscrebook.nextPage",
+        "key": "ctrl+alt+.",
+        "mac": "cmd+."
+      },
+      {
+        "command": "vscrebook.jumpPage",
+        "key": "ctrl+alt+'",
+        "mac": "cmd+'"
+      },
+      {
+        "command": "vscrebook.autoFlip",
+        "key": "ctrl+alt+m",
+        "mac": "cmd+m"
+      },
+      {
+        "command": "vscrebook.search",
+        "key": "ctrl+alt+l",
+        "mac": "cmd+l"
+      }
+    ]
+  },
+  "gitHead": "4ebca2e6db3e3f9531e36f8dbc777eeed991863c"
+}

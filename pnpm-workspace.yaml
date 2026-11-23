@@ -1,6 +1,6 @@
 packages:
   - 'packages/*'
-  - 'extension'
+  - 'apps/*'
 
 allowBuilds:
   '@vscode/vsce-sign': false

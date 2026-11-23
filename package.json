@@ -26,9 +26,10 @@
   "scripts": {
     "script": "node scripts/script.mjs",
     "ext:build:dev": "pnpm run script ext build dev",
-    "lint": "oxlint . --ignore-pattern node_modules/** --ignore-pattern target/** --ignore-pattern packages/crawl/pkg/** --ignore-pattern extension/dist/**",
+    "lint": "oxlint . --ignore-pattern node_modules/** --ignore-pattern target/** --ignore-pattern packages/crawl/pkg/** --ignore-pattern apps/vscode-extension/dist/**",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "build": "pnpm --filter ./extension run build"
+    "desktop:dev": "pnpm --filter vscrebook-desktop tauri dev",
+    "build": "pnpm --filter ./apps/vscode-extension run build"
   },
   "devDependencies": {
     "@vscode/vsce": "^4.1.1",

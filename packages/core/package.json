@@ -7,16 +7,14 @@
   "license": "MIT",
   "main": "./src/main.ts",
   "exports": {
-    ".": "./src/main.ts",
-    "./vscode": "./vscode.ts"
+    ".": "./src/main.ts"
   },
   "directories": {
     "src": "src",
     "test": "__tests__"
   },
   "files": [
-    "src",
-    "vscode.ts"
+    "src"
   ],
   "repository": {
     "type": "git",
@@ -29,6 +27,7 @@
     "url": "https://github.com/sunzhangchang/vscrebook/issues"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "@vscrebook/utils": "workspace:^1.2.2"
   },
   "gitHead": "4ebca2e6db3e3f9531e36f8dbc777eeed991863c"
